@@ -53,6 +53,14 @@ sealed class Screen(
         selectedIcon = Icons.Filled.Settings,
         unselectedIcon = Icons.Outlined.Settings
     )
+
+    // Non-bottom navigation screens
+    object Breathing : Screen(
+        route = "breathing",
+        title = "Nefes Egzersizi",
+        selectedIcon = Icons.Filled.Home, // Placeholder
+        unselectedIcon = Icons.Outlined.Home // Placeholder
+    )
 }
 
 // List of all bottom navigation screens
