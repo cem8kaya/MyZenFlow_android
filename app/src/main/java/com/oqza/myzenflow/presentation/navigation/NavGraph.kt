@@ -10,6 +10,7 @@ import com.oqza.myzenflow.presentation.screens.FocusScreen
 import com.oqza.myzenflow.presentation.screens.HomeScreen
 import com.oqza.myzenflow.presentation.screens.ProfileScreen
 import com.oqza.myzenflow.presentation.screens.SettingsScreen
+import com.oqza.myzenflow.presentation.screens.ZenGardenScreen
 
 @Composable
 fun NavGraph(
@@ -26,6 +27,10 @@ fun NavGraph(
 
         composable(route = Screen.Focus.route) {
             FocusScreen()
+        }
+
+        composable(route = Screen.ZenGarden.route) {
+            ZenGardenScreen()
         }
 
         composable(route = Screen.Calendar.route) {

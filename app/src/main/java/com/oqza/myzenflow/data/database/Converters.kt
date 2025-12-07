@@ -1,6 +1,7 @@
 package com.oqza.myzenflow.data.database
 
 import androidx.room.TypeConverter
+import com.oqza.myzenflow.data.entities.AchievementType
 import com.oqza.myzenflow.data.models.BreathingExercise
 import com.oqza.myzenflow.data.models.MoodLevel
 import com.oqza.myzenflow.data.models.SessionType
@@ -54,5 +55,15 @@ class Converters {
     @TypeConverter
     fun moodLevelToInt(mood: MoodLevel?): Int? {
         return mood?.value
+    }
+
+    @TypeConverter
+    fun fromAchievementType(value: String?): AchievementType? {
+        return value?.let { AchievementType.valueOf(it) }
+    }
+
+    @TypeConverter
+    fun achievementTypeToString(type: AchievementType?): String? {
+        return type?.name
     }
 }

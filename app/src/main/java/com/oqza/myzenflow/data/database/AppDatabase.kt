@@ -5,9 +5,11 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.oqza.myzenflow.data.dao.AchievementDao
 import com.oqza.myzenflow.data.dao.BreathingSessionDao
 import com.oqza.myzenflow.data.dao.FocusSessionDao
 import com.oqza.myzenflow.data.dao.MeditationSessionDao
+import com.oqza.myzenflow.data.entities.AchievementEntity
 import com.oqza.myzenflow.data.entities.BreathingSessionEntity
 import com.oqza.myzenflow.data.entities.FocusSessionEntity
 import com.oqza.myzenflow.data.entities.MeditationSessionEntity
@@ -20,9 +22,10 @@ import com.oqza.myzenflow.data.entities.MeditationSessionEntity
     entities = [
         MeditationSessionEntity::class,
         FocusSessionEntity::class,
-        BreathingSessionEntity::class
+        BreathingSessionEntity::class,
+        AchievementEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = true
 )
 @TypeConverters(Converters::class)
@@ -31,6 +34,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun meditationSessionDao(): MeditationSessionDao
     abstract fun focusSessionDao(): FocusSessionDao
     abstract fun breathingSessionDao(): BreathingSessionDao
+    abstract fun achievementDao(): AchievementDao
 
     companion object {
         const val DATABASE_NAME = "myzenflow_database"
@@ -41,7 +45,7 @@ abstract class AppDatabase : RoomDatabase() {
          * Migration plan:
          * - Version 1: Initial database with MeditationSession and FocusSession tables
          * - Version 2: Add BreathingSession table
-         * - Version 3 (planned): Add user preferences table, achievement tracking
+         * - Version 3: Add Achievement table for gamification
          * - Version 4 (planned): Add social features, friend connections
          * - Version 5 (planned): Add custom meditation guides, audio files
          */
@@ -69,10 +73,18 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
-        // Example migration from version 2 to 3 (for future use)
+        // Migration from version 2 to 3: Add achievements table
         val MIGRATION_2_3 = object : Migration(2, 3) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                // Future migration code will go here
+                database.execSQL("""
+                    CREATE TABLE IF NOT EXISTS achievements (
+                        type TEXT PRIMARY KEY NOT NULL,
+                        unlockedAt INTEGER,
+                        isUnlocked INTEGER NOT NULL,
+                        progress INTEGER NOT NULL,
+                        progressTarget INTEGER NOT NULL
+                    )
+                """.trimIndent())
             }
         }
     }
