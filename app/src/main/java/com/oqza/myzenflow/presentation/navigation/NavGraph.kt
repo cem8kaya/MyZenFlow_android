@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.oqza.myzenflow.presentation.screens.BreathingScreen
 import com.oqza.myzenflow.presentation.screens.CalendarScreen
 import com.oqza.myzenflow.presentation.screens.FocusScreen
 import com.oqza.myzenflow.presentation.screens.HomeScreen
@@ -20,7 +21,7 @@ fun NavGraph(
         startDestination = startDestination
     ) {
         composable(route = Screen.Home.route) {
-            HomeScreen()
+            HomeScreen(navController = navController)
         }
 
         composable(route = Screen.Focus.route) {
@@ -37,6 +38,10 @@ fun NavGraph(
 
         composable(route = Screen.Settings.route) {
             SettingsScreen()
+        }
+
+        composable(route = Screen.Breathing.route) {
+            BreathingScreen()
         }
     }
 }
