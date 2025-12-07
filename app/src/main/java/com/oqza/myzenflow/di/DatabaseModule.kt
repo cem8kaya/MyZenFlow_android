@@ -2,6 +2,7 @@ package com.oqza.myzenflow.di
 
 import android.content.Context
 import androidx.room.Room
+import com.oqza.myzenflow.data.dao.AchievementDao
 import com.oqza.myzenflow.data.dao.BreathingSessionDao
 import com.oqza.myzenflow.data.dao.FocusSessionDao
 import com.oqza.myzenflow.data.dao.MeditationSessionDao
@@ -31,7 +32,10 @@ object DatabaseModule {
             AppDatabase::class.java,
             AppDatabase.DATABASE_NAME
         )
-            .addMigrations(AppDatabase.MIGRATION_1_2)
+            .addMigrations(
+                AppDatabase.MIGRATION_1_2,
+                AppDatabase.MIGRATION_2_3
+            )
             .fallbackToDestructiveMigration() // For development
             .build()
     }
@@ -61,6 +65,15 @@ object DatabaseModule {
     @Singleton
     fun provideBreathingSessionDao(database: AppDatabase): BreathingSessionDao {
         return database.breathingSessionDao()
+    }
+
+    /**
+     * Provides AchievementDao
+     */
+    @Provides
+    @Singleton
+    fun provideAchievementDao(database: AppDatabase): AchievementDao {
+        return database.achievementDao()
     }
 
     /**

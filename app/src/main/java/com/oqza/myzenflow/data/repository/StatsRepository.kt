@@ -69,6 +69,8 @@ class StatsRepository @Inject constructor(
             .maxByOrNull { it.date }
             ?.date?.toLocalDate()
 
+        val treeData = calculateTreeGrowth(totalMinutes, currentStreak)
+
         return UserStats(
             totalSessions = totalSessions,
             totalMinutes = totalMinutes,
@@ -83,7 +85,9 @@ class StatsRepository @Inject constructor(
             sessionsThisMonth = sessionsThisMonth,
             favoriteBreathingExercise = favoriteBreathingExercise,
             mostProductiveTime = mostProductiveTime,
-            lastSessionDate = lastSessionDate
+            lastSessionDate = lastSessionDate,
+            treeLevel = treeData.level,
+            treeGrowthProgress = treeData.progress
         )
     }
 
@@ -223,4 +227,56 @@ class StatsRepository @Inject constructor(
     ): Flow<List<FocusSessionData>> {
         return focusRepository.getSessionsInDateRange(startDate, endDate)
     }
+
+    /**
+     * Calculate tree growth based on total minutes and streak
+     * Tree growth system:
+     * - Level 0 (Seed): 0-30 minutes
+     * - Level 1 (Sprout): 30-120 minutes
+     * - Level 2 (Sapling): 120-360 minutes (6 hours)
+     * - Level 3 (Young Tree): 360-900 minutes (15 hours)
+     * - Level 4 (Mature Tree): 900-1800 minutes (30 hours)
+     * - Level 5 (Grand Tree): 1800+ minutes
+     *
+     * Bonus: Streak multiplier (each day of streak adds 2% to progress)
+     */
+    private fun calculateTreeGrowth(totalMinutes: Int, currentStreak: Int): TreeGrowthData {
+        // Level thresholds in minutes
+        val levelThresholds = listOf(0, 30, 120, 360, 900, 1800)
+
+        // Calculate base level from total minutes
+        var level = 0
+        for (i in levelThresholds.indices.reversed()) {
+            if (totalMinutes >= levelThresholds[i]) {
+                level = i
+                break
+            }
+        }
+
+        // Calculate progress to next level
+        val progress = if (level < 5) {
+            val currentLevelThreshold = levelThresholds[level]
+            val nextLevelThreshold = levelThresholds[level + 1]
+            val minutesIntoLevel = totalMinutes - currentLevelThreshold
+            val minutesNeeded = nextLevelThreshold - currentLevelThreshold
+
+            val baseProgress = minutesIntoLevel.toFloat() / minutesNeeded.toFloat()
+
+            // Apply streak bonus (2% per day, max 50%)
+            val streakBonus = (currentStreak * 0.02f).coerceAtMost(0.5f)
+            (baseProgress + streakBonus).coerceIn(0f, 1f)
+        } else {
+            1f // Max level
+        }
+
+        return TreeGrowthData(level, progress)
+    }
 }
+
+/**
+ * Data class for tree growth information
+ */
+data class TreeGrowthData(
+    val level: Int,      // 0-5
+    val progress: Float  // 0-1 progress to next level
+)

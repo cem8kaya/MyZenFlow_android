@@ -20,7 +20,9 @@ data class UserStats(
     val sessionsThisMonth: Int = 0,
     val favoriteBreathingExercise: BreathingExercise? = null,
     val mostProductiveTime: TimeOfDay? = null,
-    val lastSessionDate: LocalDate? = null
+    val lastSessionDate: LocalDate? = null,
+    val treeLevel: Int = 0, // 0-5 (0 = seed, 5 = full tree)
+    val treeGrowthProgress: Float = 0f // 0-1 progress to next level
 ) {
     val weeklyProgress: Float
         get() = if (weeklyGoalMinutes > 0) {

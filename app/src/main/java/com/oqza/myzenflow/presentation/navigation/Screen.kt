@@ -3,11 +3,13 @@ package com.oqza.myzenflow.presentation.navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Park
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Park
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Timer
@@ -31,6 +33,13 @@ sealed class Screen(
         title = "Odaklan",
         selectedIcon = Icons.Filled.Timer,
         unselectedIcon = Icons.Outlined.Timer
+    )
+
+    object ZenGarden : Screen(
+        route = "zen_garden",
+        title = "Zen Bahçem",
+        selectedIcon = Icons.Filled.Park,
+        unselectedIcon = Icons.Outlined.Park
     )
 
     object Calendar : Screen(
@@ -67,7 +76,7 @@ sealed class Screen(
 val bottomNavigationScreens = listOf(
     Screen.Home,
     Screen.Focus,
-    Screen.Calendar,
+    Screen.ZenGarden,
     Screen.Profile,
     Screen.Settings
 )
