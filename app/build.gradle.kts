@@ -91,6 +91,8 @@ dependencies {
 
     // WorkManager
     implementation("androidx.work:work-runtime-ktx:2.11.0")
+    implementation("androidx.hilt:hilt-work:1.0.0")
+    kapt("androidx.hilt:hilt-compiler:1.0.0")
 
     // Accompanist (for permissions and other utilities)
     val accompanistVersion = "0.32.0"
