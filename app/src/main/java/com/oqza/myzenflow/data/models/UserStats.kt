@@ -1,6 +1,7 @@
 package com.oqza.myzenflow.data.models
 
 import java.time.LocalDate
+import com.oqza.myzenflow.data.models.BreathingExerciseType
 
 /**
  * Data class for user statistics
@@ -18,7 +19,7 @@ data class UserStats(
     val averageSessionDuration: Int = 0, // in minutes
     val sessionsThisWeek: Int = 0,
     val sessionsThisMonth: Int = 0,
-    val favoriteBreathingExercise: BreathingExercise? = null,
+    val favoriteBreathingExercise: BreathingExerciseType? = null,
     val mostProductiveTime: TimeOfDay? = null,
     val lastSessionDate: LocalDate? = null,
     val treeLevel: Int = 0, // 0-5 (0 = seed, 5 = full tree)

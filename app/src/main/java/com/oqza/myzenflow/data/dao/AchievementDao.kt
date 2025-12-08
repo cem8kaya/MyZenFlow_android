@@ -2,7 +2,7 @@ package com.oqza.myzenflow.data.dao
 
 import androidx.room.*
 import com.oqza.myzenflow.data.entities.AchievementEntity
-import com.oqza.myzenflow.data.entities.AchievementType
+import com.oqza.myzenflow.data.models.AchievementType
 import kotlinx.coroutines.flow.Flow
 
 /**

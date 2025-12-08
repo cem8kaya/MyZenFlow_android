@@ -398,7 +398,7 @@ class PomodoroViewModel @Inject constructor(
                     interrupted = interrupted
                 )
 
-                focusRepository.insertSession(session)
+                focusRepository.insertSession(session.toFocusSessionData())
             } catch (e: Exception) {
                 // Handle error silently or log
             }

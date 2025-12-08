@@ -66,6 +66,6 @@ interface BreathingSessionDao {
     @Query("SELECT * FROM breathing_sessions WHERE date >= :startOfDay AND date < :endOfDay")
     suspend fun getSessionsForDay(startOfDay: LocalDateTime, endOfDay: LocalDateTime): List<BreathingSessionEntity>
 
-    @Query("SELECT exerciseId, COUNT(*) as count FROM breathing_sessions WHERE completed = 1 GROUP BY exerciseId ORDER BY count DESC LIMIT 1")
+    @Query("SELECT exerciseId FROM breathing_sessions WHERE completed = 1 GROUP BY exerciseId ORDER BY COUNT(*) DESC LIMIT 1")
     suspend fun getMostUsedExercise(): String?
 }

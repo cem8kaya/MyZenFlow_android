@@ -114,6 +114,7 @@ fun FocusTimerScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ModeSelectionSection(
     selectedMode: FocusMode,
@@ -180,25 +181,30 @@ fun SessionTypeCard(
     sessionType: TimerSessionType,
     cycleInfo: String
 ) {
-    val (backgroundColor, textColor, icon, text) = when (sessionType) {
-        TimerSessionType.WORK -> listOf(
-            MaterialTheme.colorScheme.primaryContainer,
-            MaterialTheme.colorScheme.onPrimaryContainer,
-            Icons.Default.WorkOutline,
-            "Çalışma Seansı"
-        )
-        TimerSessionType.SHORT_BREAK -> listOf(
-            MaterialTheme.colorScheme.tertiaryContainer,
-            MaterialTheme.colorScheme.onTertiaryContainer,
-            Icons.Default.Coffee,
-            "Kısa Mola"
-        )
-        TimerSessionType.LONG_BREAK -> listOf(
-            MaterialTheme.colorScheme.secondaryContainer,
-            MaterialTheme.colorScheme.onSecondaryContainer,
-            Icons.Default.SelfImprovement,
-            "Uzun Mola"
-        )
+    val backgroundColor: Color
+    val textColor: Color
+    val icon: androidx.compose.ui.graphics.vector.ImageVector
+    val text: String
+
+    when (sessionType) {
+        TimerSessionType.WORK -> {
+            backgroundColor = MaterialTheme.colorScheme.primaryContainer
+            textColor = MaterialTheme.colorScheme.onPrimaryContainer
+            icon = Icons.Default.WorkOutline
+            text = "Çalışma Seansı"
+        }
+        TimerSessionType.SHORT_BREAK -> {
+            backgroundColor = MaterialTheme.colorScheme.tertiaryContainer
+            textColor = MaterialTheme.colorScheme.onTertiaryContainer
+            icon = Icons.Default.Coffee
+            text = "Kısa Mola"
+        }
+        TimerSessionType.LONG_BREAK -> {
+            backgroundColor = MaterialTheme.colorScheme.secondaryContainer
+            textColor = MaterialTheme.colorScheme.onSecondaryContainer
+            icon = Icons.Default.SelfImprovement
+            text = "Uzun Mola"
+        }
     }
 
     Card(
@@ -206,7 +212,7 @@ fun SessionTypeCard(
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = backgroundColor as Color
+            containerColor = backgroundColor
         )
     ) {
         Row(
@@ -221,12 +227,12 @@ fun SessionTypeCard(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Icon(
-                    imageVector = icon as androidx.compose.ui.graphics.vector.ImageVector,
+                    imageVector = icon,
                     contentDescription = null,
-                    tint = textColor as Color
+                    tint = textColor
                 )
                 Text(
-                    text = text as String,
+                    text = text,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = textColor
@@ -285,7 +291,7 @@ fun CircularTimerDisplay(
 
         // Progress circle
         CircularProgressIndicator(
-            progress = { animatedProgress },
+            progress = animatedProgress,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(8.dp),
@@ -475,8 +481,9 @@ fun TimerControlButtons(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsRow(
+private fun SettingsRow(
     hapticEnabled: Boolean,
     soundEnabled: Boolean,
     onToggleHaptic: () -> Unit,

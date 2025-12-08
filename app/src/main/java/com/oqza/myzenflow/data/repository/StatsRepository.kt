@@ -187,7 +187,7 @@ class StatsRepository @Inject constructor(
     /**
      * Find user's favorite breathing exercise
      */
-    private fun findFavoriteBreathingExercise(sessions: List<SessionData>): BreathingExercise? {
+    private fun findFavoriteBreathingExercise(sessions: List<SessionData>): BreathingExerciseType? {
         return sessions
             .mapNotNull { it.breathingExercise }
             .groupingBy { it }

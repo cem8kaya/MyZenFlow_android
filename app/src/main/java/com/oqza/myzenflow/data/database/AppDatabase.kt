@@ -26,7 +26,7 @@ import com.oqza.myzenflow.data.entities.MeditationSessionEntity
         AchievementEntity::class
     ],
     version = 3,
-    exportSchema = true
+    exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {

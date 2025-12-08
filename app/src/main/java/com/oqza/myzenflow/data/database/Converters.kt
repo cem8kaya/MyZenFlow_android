@@ -1,8 +1,8 @@
 package com.oqza.myzenflow.data.database
 
 import androidx.room.TypeConverter
-import com.oqza.myzenflow.data.entities.AchievementType
-import com.oqza.myzenflow.data.models.BreathingExercise
+import com.oqza.myzenflow.data.models.AchievementType
+import com.oqza.myzenflow.data.models.BreathingExerciseType
 import com.oqza.myzenflow.data.models.MoodLevel
 import com.oqza.myzenflow.data.models.SessionType
 import java.time.Instant
@@ -38,13 +38,13 @@ class Converters {
     }
 
     @TypeConverter
-    fun fromBreathingExercise(value: String?): BreathingExercise? {
-        return value?.let { BreathingExercise.fromString(it) }
+    fun fromBreathingExercise(value: String?): BreathingExerciseType? {
+        return value?.let { BreathingExerciseType.fromId(it) }
     }
 
     @TypeConverter
-    fun breathingExerciseToString(exercise: BreathingExercise?): String? {
-        return exercise?.name
+    fun breathingExerciseToString(exercise: BreathingExerciseType?): String? {
+        return exercise?.id
     }
 
     @TypeConverter

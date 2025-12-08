@@ -1,6 +1,7 @@
 package com.oqza.myzenflow.presentation.screens
 
 import androidx.compose.animation.core.*
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -116,6 +117,7 @@ fun BreathingScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExerciseSelectionSection(
     selectedExercise: BreathingExerciseType?,
@@ -388,8 +390,9 @@ fun ControlButtonsSection(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsRow(
+private fun SettingsRow(
     hapticEnabled: Boolean,
     soundEnabled: Boolean,
     onToggleHaptic: () -> Unit,

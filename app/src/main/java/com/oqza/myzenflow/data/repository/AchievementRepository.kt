@@ -2,7 +2,7 @@ package com.oqza.myzenflow.data.repository
 
 import com.oqza.myzenflow.data.dao.AchievementDao
 import com.oqza.myzenflow.data.entities.AchievementEntity
-import com.oqza.myzenflow.data.entities.AchievementType
+import com.oqza.myzenflow.data.models.AchievementType
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDateTime
 import java.time.ZoneId

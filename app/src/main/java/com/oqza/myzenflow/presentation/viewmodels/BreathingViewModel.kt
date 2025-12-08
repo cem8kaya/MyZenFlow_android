@@ -14,8 +14,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.currentCoroutineContext
 import java.time.LocalDateTime
 import java.util.UUID
 import javax.inject.Inject
@@ -278,7 +280,7 @@ class BreathingViewModel @Inject constructor(
 
         var elapsedMs = startProgressMs
 
-        while (elapsedMs < totalDurationMs && isActive && !_uiState.value.isPaused) {
+        while (elapsedMs < totalDurationMs && currentCoroutineContext().isActive && !_uiState.value.isPaused) {
             delay(updateIntervalMs)
             elapsedMs += updateIntervalMs
 

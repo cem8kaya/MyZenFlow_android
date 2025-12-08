@@ -2,7 +2,7 @@ package com.oqza.myzenflow.data.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.oqza.myzenflow.data.models.BreathingExercise
+import com.oqza.myzenflow.data.models.BreathingExerciseType
 import com.oqza.myzenflow.data.models.MoodLevel
 import com.oqza.myzenflow.data.models.SessionData
 import com.oqza.myzenflow.data.models.SessionType
@@ -20,7 +20,7 @@ data class MeditationSessionEntity(
     val date: LocalDateTime,
     val duration: Int, // in seconds
     val type: SessionType,
-    val breathingExercise: BreathingExercise? = null,
+    val breathingExercise: BreathingExerciseType? = null,
     val mood: MoodLevel? = null,
     val notes: String? = null,
     val completed: Boolean = true
