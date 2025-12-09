@@ -9,6 +9,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.LocalFireDepartment
+import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -92,21 +96,21 @@ fun TodayStatsRow(
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         StatCard(
-            icon = androidx.compose.material.icons.Icons.Outlined.CheckCircle,
+            icon = Icons.Outlined.CheckCircle,
             label = "Seanslar",
             value = sessionCount.toString(),
             modifier = Modifier.weight(1f)
         )
 
         StatCard(
-            icon = androidx.compose.material.icons.Icons.Outlined.Timer,
+            icon = Icons.Outlined.Timer,
             label = "Dakika",
             value = minutes.toString(),
             modifier = Modifier.weight(1f)
         )
 
         StatCard(
-            icon = androidx.compose.material.icons.Icons.Outlined.LocalFireDepartment,
+            icon = Icons.Outlined.LocalFireDepartment,
             label = "Seri",
             value = streak.toString(),
             modifier = Modifier.weight(1f)
