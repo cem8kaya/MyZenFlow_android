@@ -15,6 +15,7 @@ import androidx.core.app.NotificationManagerCompat
 import com.oqza.myzenflow.MainActivity
 import com.oqza.myzenflow.R
 import com.oqza.myzenflow.data.models.TimerSessionType
+import com.oqza.myzenflow.domain.receivers.TimerActionReceiver
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -120,8 +121,8 @@ class NotificationHelper @Inject constructor(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val notification = NotificationCompat.Builder(context, TIMER_CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher_foreground) // You'll need to add proper icon
+        val notificationBuilder = NotificationCompat.Builder(context, TIMER_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle(title)
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -129,10 +130,27 @@ class NotificationHelper @Inject constructor(
             .setContentIntent(pendingIntent)
             .setVibrate(longArrayOf(0, 500, 250, 500))
             .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-            .build()
+
+        // Add "Start Next" action if there's a next session
+        if (nextSessionType != null) {
+            val startNextIntent = Intent(context, TimerActionReceiver::class.java).apply {
+                action = TimerActionReceiver.ACTION_START_NEXT
+            }
+            val startNextPendingIntent = PendingIntent.getBroadcast(
+                context,
+                5,
+                startNextIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            notificationBuilder.addAction(
+                R.drawable.ic_launcher_foreground,
+                "Başla",
+                startNextPendingIntent
+            )
+        }
 
         try {
-            notificationManager.notify(TIMER_NOTIFICATION_ID, notification)
+            notificationManager.notify(TIMER_NOTIFICATION_ID, notificationBuilder.build())
         } catch (e: SecurityException) {
             // Handle permission denied
         }
@@ -169,7 +187,7 @@ class NotificationHelper @Inject constructor(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val notification = NotificationCompat.Builder(context, TIMER_CHANNEL_ID)
+        val notificationBuilder = NotificationCompat.Builder(context, TIMER_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle(title)
             .setContentText(message)
@@ -179,10 +197,76 @@ class NotificationHelper @Inject constructor(
             .setProgress(100, (progress * 100).toInt(), false)
             .setSound(null) // No sound for progress updates
             .setVibrate(null) // No vibration for progress updates
-            .build()
+
+        // Add action buttons
+        if (isPaused) {
+            // Resume action
+            val resumeIntent = Intent(context, TimerActionReceiver::class.java).apply {
+                action = TimerActionReceiver.ACTION_RESUME
+            }
+            val resumePendingIntent = PendingIntent.getBroadcast(
+                context,
+                1,
+                resumeIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            notificationBuilder.addAction(
+                R.drawable.ic_launcher_foreground,
+                "Devam Et",
+                resumePendingIntent
+            )
+
+            // Stop action
+            val stopIntent = Intent(context, TimerActionReceiver::class.java).apply {
+                action = TimerActionReceiver.ACTION_STOP
+            }
+            val stopPendingIntent = PendingIntent.getBroadcast(
+                context,
+                2,
+                stopIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            notificationBuilder.addAction(
+                R.drawable.ic_launcher_foreground,
+                "Durdur",
+                stopPendingIntent
+            )
+        } else {
+            // Pause action
+            val pauseIntent = Intent(context, TimerActionReceiver::class.java).apply {
+                action = TimerActionReceiver.ACTION_PAUSE
+            }
+            val pausePendingIntent = PendingIntent.getBroadcast(
+                context,
+                3,
+                pauseIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            notificationBuilder.addAction(
+                R.drawable.ic_launcher_foreground,
+                "Duraklat",
+                pausePendingIntent
+            )
+
+            // Stop action
+            val stopIntent = Intent(context, TimerActionReceiver::class.java).apply {
+                action = TimerActionReceiver.ACTION_STOP
+            }
+            val stopPendingIntent = PendingIntent.getBroadcast(
+                context,
+                4,
+                stopIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            notificationBuilder.addAction(
+                R.drawable.ic_launcher_foreground,
+                "Durdur",
+                stopPendingIntent
+            )
+        }
 
         try {
-            notificationManager.notify(PROGRESS_NOTIFICATION_ID, notification)
+            notificationManager.notify(PROGRESS_NOTIFICATION_ID, notificationBuilder.build())
         } catch (e: SecurityException) {
             // Handle permission denied
         }

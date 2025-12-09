@@ -2,6 +2,10 @@ package com.oqza.myzenflow.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.oqza.myzenflow.data.datastore.PomodoroTimerDataStore
 import com.oqza.myzenflow.data.entities.FocusSessionEntity
 import com.oqza.myzenflow.data.models.FocusMode
 import com.oqza.myzenflow.data.models.PomodoroTimerState
@@ -10,16 +14,19 @@ import com.oqza.myzenflow.data.models.TimerStatus
 import com.oqza.myzenflow.data.repository.FocusRepository
 import com.oqza.myzenflow.domain.services.HapticManager
 import com.oqza.myzenflow.domain.services.NotificationHelper
+import com.oqza.myzenflow.domain.workers.PomodoroTimerWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.util.UUID
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -30,7 +37,9 @@ import javax.inject.Inject
 class PomodoroViewModel @Inject constructor(
     private val focusRepository: FocusRepository,
     private val hapticManager: HapticManager,
-    private val notificationHelper: NotificationHelper
+    private val notificationHelper: NotificationHelper,
+    private val timerDataStore: PomodoroTimerDataStore,
+    private val workManager: WorkManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PomodoroTimerState())
@@ -39,10 +48,134 @@ class PomodoroViewModel @Inject constructor(
     private var timerJob: Job? = null
     private var sessionStartTime: LocalDateTime? = null
     private var totalWorkDurationSeconds: Int = 0
+    private var targetCompletionTime: Long = 0L
+
+    // Flow for today's completed sessions
+    private val _todaysSessions = MutableStateFlow<List<com.oqza.myzenflow.data.models.FocusSessionData>>(emptyList())
+    val todaysSessions: StateFlow<List<com.oqza.myzenflow.data.models.FocusSessionData>> = _todaysSessions.asStateFlow()
+
+    // Stats for today
+    private val _todaysStats = MutableStateFlow(TodaysStats())
+    val todaysStats: StateFlow<TodaysStats> = _todaysStats.asStateFlow()
+
+    data class TodaysStats(
+        val completedWorkSessions: Int = 0,
+        val totalFocusMinutes: Int = 0,
+        val currentStreak: Int = 0
+    )
 
     init {
         // Initialize with default Pomodoro mode
         selectMode(FocusMode.POMODORO)
+
+        // Load persisted timer state
+        recoverTimerState()
+
+        // Load today's sessions
+        loadTodaysSessions()
+
+        // Load timer settings from DataStore
+        loadTimerSettings()
+    }
+
+    /**
+     * Load timer settings from DataStore
+     */
+    private fun loadTimerSettings() {
+        viewModelScope.launch {
+            timerDataStore.timerStateFlow.collect { persistedState ->
+                if (_uiState.value.timerStatus == TimerStatus.IDLE) {
+                    _uiState.value = _uiState.value.copy(
+                        customFocusDuration = persistedState.workDurationMinutes,
+                        customBreakDuration = persistedState.shortBreakDurationMinutes,
+                        customLongBreakDuration = persistedState.longBreakDurationMinutes,
+                        totalCycles = persistedState.totalCycles
+                    )
+                }
+            }
+        }
+    }
+
+    /**
+     * Recover timer state from DataStore (app restart/kill recovery)
+     */
+    private fun recoverTimerState() {
+        viewModelScope.launch {
+            val persistedState = timerDataStore.timerStateFlow.first()
+
+            if (persistedState.timerStatus == TimerStatus.RUNNING &&
+                persistedState.startTimeMillis > 0) {
+
+                val elapsedSeconds = ((System.currentTimeMillis() - persistedState.startTimeMillis) / 1000).toInt()
+                val remainingSeconds = persistedState.durationSeconds - elapsedSeconds
+
+                if (remainingSeconds > 0) {
+                    // Timer is still valid, restore state
+                    _uiState.value = _uiState.value.copy(
+                        timerStatus = TimerStatus.RUNNING,
+                        currentSessionType = persistedState.sessionType,
+                        sessionId = persistedState.sessionId,
+                        sessionStartTime = persistedState.startTimeMillis,
+                        timeRemainingSeconds = remainingSeconds,
+                        totalDurationSeconds = persistedState.durationSeconds,
+                        completedWorkSessions = persistedState.completedWorkSessions,
+                        totalCycles = persistedState.totalCycles,
+                        taskName = persistedState.taskName,
+                        progress = 1f - (remainingSeconds.toFloat() / persistedState.durationSeconds.toFloat())
+                    )
+
+                    targetCompletionTime = persistedState.startTimeMillis + (persistedState.durationSeconds * 1000L)
+                    totalWorkDurationSeconds = elapsedSeconds
+
+                    // Resume countdown
+                    startCountdown()
+                } else {
+                    // Timer expired while app was closed, complete the session
+                    timerDataStore.clearTimerState()
+                }
+            }
+        }
+    }
+
+    /**
+     * Load today's sessions from database
+     */
+    private fun loadTodaysSessions() {
+        viewModelScope.launch {
+            val startOfDay = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0)
+            val endOfDay = LocalDateTime.now().withHour(23).withMinute(59).withSecond(59)
+
+            val sessions = focusRepository.getSessionsForDay(startOfDay, endOfDay)
+            _todaysSessions.value = sessions
+
+            // Calculate stats
+            val completedSessions = sessions.count { it.completed }
+            val totalMinutes = sessions.sumOf { it.duration } / 60
+
+            _todaysStats.value = TodaysStats(
+                completedWorkSessions = completedSessions,
+                totalFocusMinutes = totalMinutes,
+                currentStreak = calculateStreak(sessions)
+            )
+        }
+    }
+
+    /**
+     * Calculate current streak
+     */
+    private fun calculateStreak(sessions: List<com.oqza.myzenflow.data.models.FocusSessionData>): Int {
+        val completedSessions = sessions.filter { it.completed }.sortedBy { it.date }
+        if (completedSessions.isEmpty()) return 0
+
+        var streak = 0
+        for (session in completedSessions.reversed()) {
+            if (session.completed) {
+                streak++
+            } else {
+                break
+            }
+        }
+        return streak
     }
 
     /**
@@ -117,6 +250,65 @@ class PomodoroViewModel @Inject constructor(
     fun setTotalCycles(cycles: Int) {
         if (cycles in 1..10) {
             _uiState.value = _uiState.value.copy(totalCycles = cycles)
+            viewModelScope.launch {
+                timerDataStore.updateTotalCycles(cycles)
+            }
+        }
+    }
+
+    /**
+     * Save timer durations to DataStore
+     */
+    fun saveTimerDurations(workMinutes: Int, shortBreakMinutes: Int, longBreakMinutes: Int) {
+        viewModelScope.launch {
+            timerDataStore.updateTimerDurations(
+                workDuration = workMinutes,
+                shortBreakDuration = shortBreakMinutes,
+                longBreakDuration = longBreakMinutes
+            )
+            // Update current state
+            _uiState.value = _uiState.value.copy(
+                customFocusDuration = workMinutes,
+                customBreakDuration = shortBreakMinutes,
+                customLongBreakDuration = longBreakMinutes
+            )
+        }
+    }
+
+    /**
+     * Skip to next session
+     */
+    fun skipToNextSession() {
+        if (_uiState.value.timerStatus == TimerStatus.IDLE) return
+
+        // Cancel current timer
+        timerJob?.cancel()
+        workManager.cancelUniqueWork(PomodoroTimerWorker.WORK_NAME)
+
+        val currentState = _uiState.value
+
+        // Determine next session
+        when (currentState.currentSessionType) {
+            TimerSessionType.WORK -> {
+                val newCompletedWorkSessions = currentState.completedWorkSessions + 1
+                val shouldTakeLongBreak = newCompletedWorkSessions % currentState.totalCycles == 0
+                val nextSessionType = if (shouldTakeLongBreak) {
+                    TimerSessionType.LONG_BREAK
+                } else {
+                    TimerSessionType.SHORT_BREAK
+                }
+
+                transitionToSession(
+                    sessionType = nextSessionType,
+                    completedWorkSessions = newCompletedWorkSessions
+                )
+            }
+            TimerSessionType.SHORT_BREAK, TimerSessionType.LONG_BREAK -> {
+                transitionToSession(
+                    sessionType = TimerSessionType.WORK,
+                    completedWorkSessions = currentState.completedWorkSessions
+                )
+            }
         }
     }
 
@@ -134,10 +326,17 @@ class PomodoroViewModel @Inject constructor(
             totalWorkDurationSeconds = 0
 
             val sessionId = UUID.randomUUID().toString()
+            val startTimeMillis = System.currentTimeMillis()
+
             _uiState.value = currentState.copy(
                 sessionId = sessionId,
-                sessionStartTime = System.currentTimeMillis()
+                sessionStartTime = startTimeMillis
             )
+
+            targetCompletionTime = startTimeMillis + (currentState.timeRemainingSeconds * 1000L)
+        } else if (currentState.timerStatus == TimerStatus.PAUSED) {
+            // Resume from pause - recalculate target completion time
+            targetCompletionTime = System.currentTimeMillis() + (currentState.timeRemainingSeconds * 1000L)
         }
 
         // Provide haptic feedback
@@ -149,8 +348,62 @@ class PomodoroViewModel @Inject constructor(
             isBackgroundTimerActive = true
         )
 
+        // Persist state to DataStore
+        persistTimerState()
+
+        // Schedule background work
+        scheduleBackgroundWork()
+
         // Start the countdown
         startCountdown()
+    }
+
+    /**
+     * Persist timer state to DataStore
+     */
+    private fun persistTimerState() {
+        viewModelScope.launch {
+            val currentState = _uiState.value
+            timerDataStore.saveTimerState(
+                PomodoroTimerDataStore.TimerState(
+                    timerStatus = currentState.timerStatus,
+                    sessionType = currentState.currentSessionType,
+                    sessionId = currentState.sessionId,
+                    startTimeMillis = currentState.sessionStartTime,
+                    durationSeconds = currentState.totalDurationSeconds,
+                    completedWorkSessions = currentState.completedWorkSessions,
+                    totalCycles = currentState.totalCycles,
+                    taskName = currentState.taskName,
+                    workDurationMinutes = currentState.customFocusDuration,
+                    shortBreakDurationMinutes = currentState.customBreakDuration,
+                    longBreakDurationMinutes = currentState.customLongBreakDuration
+                )
+            )
+        }
+    }
+
+    /**
+     * Schedule background work with WorkManager
+     */
+    private fun scheduleBackgroundWork() {
+        val currentState = _uiState.value
+
+        val inputData = Data.Builder()
+            .putLong(PomodoroTimerWorker.KEY_TARGET_COMPLETION_TIME, targetCompletionTime)
+            .putString(PomodoroTimerWorker.KEY_SESSION_TYPE, currentState.currentSessionType.name)
+            .putInt(PomodoroTimerWorker.KEY_TOTAL_DURATION, currentState.totalDurationSeconds)
+            .build()
+
+        val workRequest = OneTimeWorkRequestBuilder<PomodoroTimerWorker>()
+            .setInputData(inputData)
+            .setInitialDelay(0, TimeUnit.MILLISECONDS)
+            .build()
+
+        workManager.enqueueUniqueWork(
+            PomodoroTimerWorker.WORK_NAME,
+            androidx.work.ExistingWorkPolicy.REPLACE,
+            workRequest
+        )
     }
 
     /**
@@ -158,12 +411,17 @@ class PomodoroViewModel @Inject constructor(
      */
     fun pauseTimer() {
         timerJob?.cancel()
+        workManager.cancelUniqueWork(PomodoroTimerWorker.WORK_NAME)
+
         hapticManager.vibrateForPhase(com.oqza.myzenflow.data.models.BreathingPhase.REST)
 
         _uiState.value = _uiState.value.copy(
             timerStatus = TimerStatus.PAUSED,
             isBackgroundTimerActive = false
         )
+
+        // Persist paused state
+        persistTimerState()
 
         // Update progress notification
         val currentState = _uiState.value
@@ -196,6 +454,7 @@ class PomodoroViewModel @Inject constructor(
      */
     fun stopTimer() {
         timerJob?.cancel()
+        workManager.cancelUniqueWork(PomodoroTimerWorker.WORK_NAME)
 
         val currentState = _uiState.value
         val wasRunning = currentState.timerStatus == TimerStatus.RUNNING
@@ -222,8 +481,17 @@ class PomodoroViewModel @Inject constructor(
             sessionId = null
         )
 
+        // Clear persisted state
+        viewModelScope.launch {
+            timerDataStore.clearTimerState()
+        }
+
         totalWorkDurationSeconds = 0
         sessionStartTime = null
+        targetCompletionTime = 0L
+
+        // Reload today's sessions
+        loadTodaysSessions()
     }
 
     /**
@@ -399,6 +667,9 @@ class PomodoroViewModel @Inject constructor(
                 )
 
                 focusRepository.insertSession(session.toFocusSessionData())
+
+                // Reload today's sessions after saving
+                loadTodaysSessions()
             } catch (e: Exception) {
                 // Handle error silently or log
             }
@@ -408,6 +679,7 @@ class PomodoroViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         timerJob?.cancel()
-        notificationHelper.cancelProgressNotification()
+        // Don't cancel WorkManager here - let it continue in background
+        // workManager.cancelUniqueWork(PomodoroTimerWorker.WORK_NAME)
     }
 }

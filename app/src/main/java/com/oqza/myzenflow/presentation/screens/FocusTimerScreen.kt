@@ -1,9 +1,13 @@
 package com.oqza.myzenflow.presentation.screens
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -18,9 +22,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.oqza.myzenflow.data.models.FocusMode
+import com.oqza.myzenflow.data.models.FocusSessionData
 import com.oqza.myzenflow.data.models.TimerSessionType
 import com.oqza.myzenflow.data.models.TimerStatus
 import com.oqza.myzenflow.presentation.viewmodels.PomodoroViewModel
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,11 +34,19 @@ fun FocusTimerScreen(
     viewModel: PomodoroViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val todaysStats by viewModel.todaysStats.collectAsState()
+    val todaysSessions by viewModel.todaysSessions.collectAsState()
+    var showSettingsDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Pomodoro Timer") },
+                actions = {
+                    IconButton(onClick = { showSettingsDialog = true }) {
+                        Icon(Icons.Default.Settings, contentDescription = "Settings")
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -40,39 +54,34 @@ fun FocusTimerScreen(
             )
         }
     ) { paddingValues ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp),
+                .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Mode selection (only when idle)
             if (uiState.timerStatus == TimerStatus.IDLE) {
-                ModeSelectionSection(
-                    selectedMode = uiState.selectedMode,
-                    onModeSelected = { viewModel.selectMode(it) }
+                item {
+                    ModeSelectionSection(
+                        selectedMode = uiState.selectedMode,
+                        onModeSelected = { viewModel.selectMode(it) }
+                    )
+                }
+            }
+
+            // Session type indicator
+            item {
+                SessionTypeCard(
+                    sessionType = uiState.currentSessionType,
+                    cycleInfo = "${uiState.completedWorkSessions}/${uiState.totalCycles * 4}"
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Session type indicator
-            SessionTypeCard(
-                sessionType = uiState.currentSessionType,
-                cycleInfo = "${uiState.completedWorkSessions}/${uiState.totalCycles * 4}"
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
             // Circular timer display
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
+            item {
                 CircularTimerDisplay(
                     timeRemaining = uiState.formatTime(),
                     progress = uiState.calculateProgress(),
@@ -81,36 +90,80 @@ fun FocusTimerScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
-
             // Task name input (only when idle)
             if (uiState.timerStatus == TimerStatus.IDLE) {
-                TaskNameInput(
-                    taskName = uiState.taskName,
-                    onTaskNameChanged = { viewModel.setTaskName(it) }
-                )
-                Spacer(modifier = Modifier.height(16.dp))
+                item {
+                    TaskNameInput(
+                        taskName = uiState.taskName,
+                        onTaskNameChanged = { viewModel.setTaskName(it) }
+                    )
+                }
             }
 
             // Control buttons
-            TimerControlButtons(
-                timerStatus = uiState.timerStatus,
-                onStart = { viewModel.startTimer() },
-                onPause = { viewModel.pauseTimer() },
-                onResume = { viewModel.resumeTimer() },
-                onStop = { viewModel.stopTimer() }
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
+            item {
+                TimerControlButtons(
+                    timerStatus = uiState.timerStatus,
+                    onStart = { viewModel.startTimer() },
+                    onPause = { viewModel.pauseTimer() },
+                    onResume = { viewModel.resumeTimer() },
+                    onStop = { viewModel.stopTimer() },
+                    onSkip = { viewModel.skipToNextSession() }
+                )
+            }
 
             // Settings row
-            SettingsRow(
-                hapticEnabled = uiState.hapticEnabled,
-                soundEnabled = uiState.soundEnabled,
-                onToggleHaptic = { viewModel.toggleHaptic() },
-                onToggleSound = { viewModel.toggleSound() }
-            )
+            item {
+                SettingsRow(
+                    hapticEnabled = uiState.hapticEnabled,
+                    soundEnabled = uiState.soundEnabled,
+                    onToggleHaptic = { viewModel.toggleHaptic() },
+                    onToggleSound = { viewModel.toggleSound() }
+                )
+            }
+
+            // Stats card
+            item {
+                TodaysStatsCard(stats = todaysStats)
+            }
+
+            // Session history
+            if (todaysSessions.isNotEmpty()) {
+                item {
+                    Text(
+                        text = "Bugünün Seansları",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                }
+
+                items(todaysSessions) { session ->
+                    SessionHistoryItem(session = session)
+                }
+            }
+
+            // Bottom spacing
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
+    }
+
+    // Settings dialog
+    if (showSettingsDialog) {
+        TimerSettingsDialog(
+            workDuration = uiState.customFocusDuration,
+            shortBreakDuration = uiState.customBreakDuration,
+            longBreakDuration = uiState.customLongBreakDuration,
+            totalCycles = uiState.totalCycles,
+            onDismiss = { showSettingsDialog = false },
+            onSave = { work, shortBreak, longBreak, cycles ->
+                viewModel.saveTimerDurations(work, shortBreak, longBreak)
+                viewModel.setTotalCycles(cycles)
+                showSettingsDialog = false
+            }
+        )
     }
 }
 
@@ -351,131 +404,149 @@ fun TimerControlButtons(
     onStart: () -> Unit,
     onPause: () -> Unit,
     onResume: () -> Unit,
-    onStop: () -> Unit
+    onStop: () -> Unit,
+    onSkip: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        when (timerStatus) {
-            TimerStatus.IDLE -> {
-                // Start button
-                Button(
-                    onClick = onStart,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary
-                    )
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.PlayArrow,
-                        contentDescription = "Start",
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Başla", style = MaterialTheme.typography.titleMedium)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            when (timerStatus) {
+                TimerStatus.IDLE -> {
+                    // Start button
+                    Button(
+                        onClick = onStart,
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(56.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.PlayArrow,
+                            contentDescription = "Start",
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Başla", style = MaterialTheme.typography.titleMedium)
+                    }
+                }
+
+                TimerStatus.RUNNING -> {
+                    // Pause button
+                    Button(
+                        onClick = onPause,
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(56.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.tertiary
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Pause,
+                            contentDescription = "Pause",
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Duraklat", style = MaterialTheme.typography.titleMedium)
+                    }
+
+                    // Stop button
+                    OutlinedButton(
+                        onClick = onStop,
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(56.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Stop,
+                            contentDescription = "Stop",
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Durdur", style = MaterialTheme.typography.titleMedium)
+                    }
+                }
+
+                TimerStatus.PAUSED -> {
+                    // Resume button
+                    Button(
+                        onClick = onResume,
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(56.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.PlayArrow,
+                            contentDescription = "Resume",
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Devam Et", style = MaterialTheme.typography.titleMedium)
+                    }
+
+                    // Stop button
+                    OutlinedButton(
+                        onClick = onStop,
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(56.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Stop,
+                            contentDescription = "Stop",
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Durdur", style = MaterialTheme.typography.titleMedium)
+                    }
+                }
+
+                TimerStatus.COMPLETED -> {
+                    // Start new session button
+                    Button(
+                        onClick = onStart,
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(56.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Refresh,
+                            contentDescription = "Start New",
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Yeni Seans", style = MaterialTheme.typography.titleMedium)
+                    }
                 }
             }
+        }
 
-            TimerStatus.RUNNING -> {
-                // Pause button
-                Button(
-                    onClick = onPause,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary
-                    )
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Pause,
-                        contentDescription = "Pause",
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Duraklat", style = MaterialTheme.typography.titleMedium)
-                }
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                // Stop button
-                OutlinedButton(
-                    onClick = onStop,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(56.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Stop,
-                        contentDescription = "Stop",
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Durdur", style = MaterialTheme.typography.titleMedium)
-                }
-            }
-
-            TimerStatus.PAUSED -> {
-                // Resume button
-                Button(
-                    onClick = onResume,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary
-                    )
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.PlayArrow,
-                        contentDescription = "Resume",
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Devam Et", style = MaterialTheme.typography.titleMedium)
-                }
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                // Stop button
-                OutlinedButton(
-                    onClick = onStop,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(56.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Stop,
-                        contentDescription = "Stop",
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Durdur", style = MaterialTheme.typography.titleMedium)
-                }
-            }
-
-            TimerStatus.COMPLETED -> {
-                // Start new session button
-                Button(
-                    onClick = onStart,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(56.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Refresh,
-                        contentDescription = "Start New",
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Yeni Seans", style = MaterialTheme.typography.titleMedium)
-                }
+        // Skip button (only when running or paused)
+        if (timerStatus == TimerStatus.RUNNING || timerStatus == TimerStatus.PAUSED) {
+            OutlinedButton(
+                onClick = onSkip,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.SkipNext,
+                    contentDescription = "Skip",
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Sonraki Seans", style = MaterialTheme.typography.bodyLarge)
             }
         }
     }
@@ -490,9 +561,7 @@ private fun SettingsRow(
     onToggleSound: () -> Unit
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         // Haptic feedback toggle
@@ -539,4 +608,256 @@ private fun SettingsRow(
             } else null
         )
     }
+}
+
+@Composable
+fun TodaysStatsCard(stats: PomodoroViewModel.TodaysStats) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
+        ),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                text = "Bugünün İstatistikleri",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSecondaryContainer
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                StatItem(
+                    icon = Icons.Default.CheckCircle,
+                    label = "Tamamlanan",
+                    value = "${stats.completedWorkSessions}"
+                )
+                StatItem(
+                    icon = Icons.Default.Timer,
+                    label = "Odaklanma",
+                    value = "${stats.totalFocusMinutes} dk"
+                )
+                StatItem(
+                    icon = Icons.Default.LocalFireDepartment,
+                    label = "Seri",
+                    value = "${stats.currentStreak}"
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun StatItem(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    label: String,
+    value: String
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(32.dp)
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSecondaryContainer
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
+        )
+    }
+}
+
+@Composable
+fun SessionHistoryItem(session: FocusSessionData) {
+    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+    val sessionColor = if (session.completed) {
+        MaterialTheme.colorScheme.primaryContainer
+    } else {
+        MaterialTheme.colorScheme.errorContainer
+    }
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = sessionColor
+        ),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = if (session.completed) Icons.Default.CheckCircle else Icons.Default.Cancel,
+                    contentDescription = null,
+                    tint = if (session.completed) {
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.onErrorContainer
+                    },
+                    modifier = Modifier.size(24.dp)
+                )
+
+                Column {
+                    Text(
+                        text = session.taskName ?: "Çalışma Seansı",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Text(
+                        text = "${session.duration / 60} dakika • ${session.date.format(timeFormatter)}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                    )
+                }
+            }
+
+            if (session.completedCycles > 0) {
+                Surface(
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = "${session.completedCycles} döngü",
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TimerSettingsDialog(
+    workDuration: Int,
+    shortBreakDuration: Int,
+    longBreakDuration: Int,
+    totalCycles: Int,
+    onDismiss: () -> Unit,
+    onSave: (Int, Int, Int, Int) -> Unit
+) {
+    var workDurationState by remember { mutableStateOf(workDuration.toFloat()) }
+    var shortBreakDurationState by remember { mutableStateOf(shortBreakDuration.toFloat()) }
+    var longBreakDurationState by remember { mutableStateOf(longBreakDuration.toFloat()) }
+    var totalCyclesState by remember { mutableStateOf(totalCycles.toFloat()) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text("Zamanlayıcı Ayarları", style = MaterialTheme.typography.titleLarge)
+        },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                // Work duration slider
+                Column {
+                    Text(
+                        text = "Çalışma Süresi: ${workDurationState.toInt()} dakika",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Slider(
+                        value = workDurationState,
+                        onValueChange = { workDurationState = it },
+                        valueRange = 15f..60f,
+                        steps = 8
+                    )
+                }
+
+                // Short break duration slider
+                Column {
+                    Text(
+                        text = "Kısa Mola: ${shortBreakDurationState.toInt()} dakika",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Slider(
+                        value = shortBreakDurationState,
+                        onValueChange = { shortBreakDurationState = it },
+                        valueRange = 3f..15f,
+                        steps = 11
+                    )
+                }
+
+                // Long break duration slider
+                Column {
+                    Text(
+                        text = "Uzun Mola: ${longBreakDurationState.toInt()} dakika",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Slider(
+                        value = longBreakDurationState,
+                        onValueChange = { longBreakDurationState = it },
+                        valueRange = 10f..30f,
+                        steps = 19
+                    )
+                }
+
+                // Total cycles slider
+                Column {
+                    Text(
+                        text = "Uzun Molaya Kadar: ${totalCyclesState.toInt()} döngü",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Slider(
+                        value = totalCyclesState,
+                        onValueChange = { totalCyclesState = it },
+                        valueRange = 2f..6f,
+                        steps = 3
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    onSave(
+                        workDurationState.toInt(),
+                        shortBreakDurationState.toInt(),
+                        longBreakDurationState.toInt(),
+                        totalCyclesState.toInt()
+                    )
+                }
+            ) {
+                Text("Kaydet")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("İptal")
+            }
+        }
+    )
 }
