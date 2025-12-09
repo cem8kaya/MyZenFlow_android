@@ -189,6 +189,8 @@ private fun getSessionIcon(type: SessionType): ImageVector {
         SessionType.BREATHING -> Icons.Outlined.Air
         SessionType.MEDITATION -> Icons.Outlined.SelfImprovement
         SessionType.FOCUS -> Icons.Outlined.Timer
+        SessionType.MINDFULNESS -> Icons.Outlined.SelfImprovement
+        SessionType.SLEEP -> Icons.Outlined.SelfImprovement // Using SelfImprovement as fallback, or use Bedtime if available
     }
 }
 
@@ -197,9 +199,11 @@ private fun getSessionIcon(type: SessionType): ImageVector {
  */
 private fun getSessionTitle(session: SessionData): String {
     return when (session.type) {
-        SessionType.BREATHING -> session.breathingExercise?.displayName ?: "Nefes Egzersizi"
-        SessionType.MEDITATION -> "Meditasyon"
-        SessionType.FOCUS -> "Odaklanma"
+        SessionType.BREATHING -> session.breathingExercise?.displayName ?: session.type.displayName
+        SessionType.MEDITATION -> session.type.displayName
+        SessionType.FOCUS -> session.type.displayName
+        SessionType.MINDFULNESS -> session.type.displayName
+        SessionType.SLEEP -> session.type.displayName
     }
 }
 
