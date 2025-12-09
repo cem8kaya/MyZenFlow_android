@@ -66,10 +66,10 @@ class BreathingViewModel @Inject constructor(
         sessionStartTime = LocalDateTime.now()
         hapticManager.vibrateSessionStart()
 
-        if (_uiState.value.soundEnabled) {
+        if (_uiState.value.soundEnabled && _uiState.value.selectedAmbientSound != BreathingAudioManager.AmbientSound.NONE) {
             audioManager.playAmbientSound(
-                BreathingAudioManager.AmbientSound.OCEAN_WAVES,
-                volume = 0.3f
+                _uiState.value.selectedAmbientSound,
+                volume = _uiState.value.volume
             )
         }
 
@@ -79,7 +79,8 @@ class BreathingViewModel @Inject constructor(
             currentCycle = 0,
             currentPhase = BreathingPhase.INHALE,
             phaseProgress = 0f,
-            totalProgress = 0f
+            totalProgress = 0f,
+            showSessionSummary = false
         )
 
         startExerciseLoop(exercise)
@@ -103,8 +104,8 @@ class BreathingViewModel @Inject constructor(
         val exercise = _uiState.value.selectedExercise ?: return
         if (!_uiState.value.isActive) return
 
-        if (_uiState.value.soundEnabled) {
-            audioManager.resumeAmbientSound(volume = 0.3f)
+        if (_uiState.value.soundEnabled && _uiState.value.selectedAmbientSound != BreathingAudioManager.AmbientSound.NONE) {
+            audioManager.resumeAmbientSound(volume = _uiState.value.volume)
         }
 
         _uiState.value = _uiState.value.copy(
@@ -158,13 +159,51 @@ class BreathingViewModel @Inject constructor(
         if (_uiState.value.isActive) {
             if (newSoundEnabled) {
                 audioManager.playAmbientSound(
-                    BreathingAudioManager.AmbientSound.OCEAN_WAVES,
-                    volume = 0.3f
+                    _uiState.value.selectedAmbientSound,
+                    volume = _uiState.value.volume
                 )
             } else {
                 audioManager.stopAmbientSound()
             }
         }
+    }
+
+    /**
+     * Set ambient sound
+     */
+    fun setAmbientSound(sound: BreathingAudioManager.AmbientSound) {
+        _uiState.value = _uiState.value.copy(
+            selectedAmbientSound = sound
+        )
+
+        if (_uiState.value.isActive && _uiState.value.soundEnabled) {
+            audioManager.stopAmbientSound()
+            if (sound != BreathingAudioManager.AmbientSound.NONE) {
+                audioManager.playAmbientSound(sound, volume = _uiState.value.volume)
+            }
+        }
+    }
+
+    /**
+     * Set volume
+     */
+    fun setVolume(volume: Float) {
+        _uiState.value = _uiState.value.copy(
+            volume = volume
+        )
+
+        if (_uiState.value.isActive && _uiState.value.soundEnabled) {
+            audioManager.setVolume(volume)
+        }
+    }
+
+    /**
+     * Dismiss session summary
+     */
+    fun dismissSessionSummary() {
+        _uiState.value = _uiState.value.copy(
+            showSessionSummary = false
+        )
     }
 
     /**
@@ -387,12 +426,18 @@ class BreathingViewModel @Inject constructor(
         hapticManager.vibrateSessionComplete()
         audioManager.stopAmbientSound()
 
+        val startTime = sessionStartTime ?: LocalDateTime.now()
+        val durationSeconds = (LocalDateTime.now().toEpochSecond(java.time.ZoneOffset.UTC) -
+                              startTime.toEpochSecond(java.time.ZoneOffset.UTC)).toInt()
+
         _uiState.value = _uiState.value.copy(
             isActive = false,
             isPaused = false,
             currentPhase = BreathingPhase.REST,
             phaseProgress = 0f,
-            totalProgress = 1f
+            totalProgress = 1f,
+            showSessionSummary = true,
+            sessionDurationSeconds = durationSeconds
         )
 
         saveSession(completed = true)
@@ -447,5 +492,9 @@ data class BreathingUiState(
     val phaseProgress: Float = 0f,
     val totalProgress: Float = 0f,
     val hapticEnabled: Boolean = true,
-    val soundEnabled: Boolean = true
+    val soundEnabled: Boolean = true,
+    val selectedAmbientSound: BreathingAudioManager.AmbientSound = BreathingAudioManager.AmbientSound.OCEAN_WAVES,
+    val volume: Float = 0.3f,
+    val showSessionSummary: Boolean = false,
+    val sessionDurationSeconds: Int = 0
 )
