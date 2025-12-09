@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.screens.components
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
@@ -67,8 +68,8 @@ fun BreathingCircleCanvas(
                 secondary = Color(0xFFB4A0FF)
             )
             BreathingPhase.REST -> ColorPair(
-                primary = Color(0xFF9E9E9E), // Gray
-                secondary = Color(0xFFBDBDBD)
+                primary = Color(0xFF90A4AE), // Cool Gray
+                secondary = Color(0xFFB0BEC5)
             )
         }
     }
@@ -139,7 +140,7 @@ fun BreathingCircleCanvas(
                     colors = listOf(
                         animatedPrimaryColor.copy(alpha = 0.4f),
                         animatedPrimaryColor.copy(alpha = 0.2f),
-                        animatedPrimaryColor.copy(alpha = 0.0f)
+                        Color.Transparent
                     ),
                     center = Offset(centerX, centerY),
                     radius = innerCircleRadius + 60f
@@ -174,7 +175,7 @@ fun BreathingCircleCanvas(
                 brush = Brush.radialGradient(
                     colors = listOf(
                         Color.White.copy(alpha = 0.3f),
-                        animatedPrimaryColor.copy(alpha = 0.0f)
+                        Color.Transparent
                     ),
                     center = Offset(centerX, centerY),
                     radius = innerCircleRadius * 0.5f
