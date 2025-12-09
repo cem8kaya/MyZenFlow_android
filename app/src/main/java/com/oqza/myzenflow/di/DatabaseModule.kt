@@ -7,7 +7,6 @@ import com.oqza.myzenflow.data.dao.BreathingSessionDao
 import com.oqza.myzenflow.data.dao.FocusSessionDao
 import com.oqza.myzenflow.data.dao.MeditationSessionDao
 import com.oqza.myzenflow.data.database.AppDatabase
-import com.oqza.myzenflow.data.datastore.PreferencesDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -74,16 +73,5 @@ object DatabaseModule {
     @Singleton
     fun provideAchievementDao(database: AppDatabase): AchievementDao {
         return database.achievementDao()
-    }
-
-    /**
-     * Provides PreferencesDataStore
-     */
-    @Provides
-    @Singleton
-    fun providePreferencesDataStore(
-        @ApplicationContext context: Context
-    ): PreferencesDataStore {
-        return PreferencesDataStore(context)
     }
 }
