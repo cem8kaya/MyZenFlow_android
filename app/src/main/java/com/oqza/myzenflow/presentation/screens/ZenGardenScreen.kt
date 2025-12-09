@@ -92,6 +92,33 @@ private fun TreeTab(
     uiState: com.oqza.myzenflow.presentation.viewmodels.ZenGardenUiState,
     particleSystem: ParticleSystem
 ) {
+    // Track previous level for level-up detection
+    var previousLevel by remember { mutableStateOf(uiState.userStats.treeLevel) }
+    var showLevelUpAnimation by remember { mutableStateOf(false) }
+
+    // Detect level change
+    LaunchedEffect(uiState.userStats.treeLevel) {
+        if (uiState.userStats.treeLevel > previousLevel && previousLevel > 0) {
+            showLevelUpAnimation = true
+        }
+        previousLevel = uiState.userStats.treeLevel
+    }
+
+    // Level-up animation
+    LevelUpAnimation(
+        show = showLevelUpAnimation,
+        newLevel = uiState.userStats.treeLevel,
+        onDismiss = { showLevelUpAnimation = false }
+    )
+
+    // Particle burst for level-up
+    LevelUpParticleBurst(
+        particleSystem = particleSystem,
+        width = 800f,
+        height = 1200f,
+        trigger = showLevelUpAnimation
+    )
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
@@ -347,7 +374,7 @@ private fun AchievementsTab(
 }
 
 /**
- * Stats tab - Placeholder (will be implemented with charts)
+ * Stats tab - Shows charts and statistics
  */
 @Composable
 private fun StatsTab(
@@ -366,73 +393,77 @@ private fun StatsTab(
             )
         }
 
-        // Weekly stats
+        // Weekly chart
+        item {
+            WeeklyBarChart(
+                weeklyData = uiState.weeklyData
+            )
+        }
+
+        // Monthly chart
+        item {
+            MonthlyBarChart(
+                monthlyData = uiState.monthlyData
+            )
+        }
+
+        // All-time stats
+        item {
+            AllTimeStatsCard(
+                totalSessions = uiState.userStats.totalSessions,
+                totalMinutes = uiState.userStats.totalMinutes,
+                longestStreak = uiState.userStats.longestStreak,
+                favoriteExercise = uiState.userStats.favoriteBreathingExercise?.name
+            )
+        }
+
+        // Weekly goal progress card
         item {
             Card(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                )
             ) {
                 Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
-                        text = "Bu Hafta",
+                        text = "Haftalık Hedef",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
-                    StatRow("Seanslar", uiState.userStats.sessionsThisWeek.toString())
-                    StatRow("Dakikalar", uiState.userStats.weeklyCompletedMinutes.toString())
-                    StatRow("Hedef", "${uiState.userStats.weeklyGoalMinutes} dakika")
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "${uiState.userStats.weeklyCompletedMinutes} / ${uiState.userStats.weeklyGoalMinutes} dakika",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Text(
+                            text = "${(uiState.userStats.weeklyProgress * 100).toInt()}%",
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
 
                     LinearProgressIndicator(
                         progress = uiState.userStats.weeklyProgress,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(8.dp),
+                        color = MaterialTheme.colorScheme.primary,
+                        trackColor = MaterialTheme.colorScheme.surfaceVariant
                     )
-                }
-            }
-        }
-
-        // Monthly stats
-        item {
-            Card(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Text(
-                        text = "Bu Ay",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                    StatRow("Seanslar", uiState.userStats.sessionsThisMonth.toString())
-                    StatRow("Ortalama Seans", "${uiState.userStats.averageSessionDuration} dk")
-                    StatRow("En Uzun Seri", "${uiState.userStats.longestStreak} gün")
                 }
             }
         }
     }
 }
 
-/**
- * Stat row component
- */
-@Composable
-private fun StatRow(label: String, value: String) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-        )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Bold
-        )
-    }
-}
