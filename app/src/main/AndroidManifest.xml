@@ -38,6 +38,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Broadcast Receiver for Timer Notification Actions -->
+        <receiver
+            android:name=".domain.receivers.TimerActionReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.oqza.myzenflow.ACTION_PAUSE" />
+                <action android:name="com.oqza.myzenflow.ACTION_RESUME" />
+                <action android:name="com.oqza.myzenflow.ACTION_STOP" />
+                <action android:name="com.oqza.myzenflow.ACTION_START_NEXT" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
