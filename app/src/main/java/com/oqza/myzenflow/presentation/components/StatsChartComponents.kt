@@ -357,15 +357,7 @@ fun AllTimeStatsCard(
                 )
                 AllTimeStatItem(
                     label = "Favori Egzersiz",
-                    value = favoriteExercise?.let {
-                        when (it) {
-                            "BOX" -> "Kutu"
-                            "FOUR_SEVEN_EIGHT" -> "4-7-8"
-                            "DEEP" -> "Derin"
-                            "CALM" -> "Sakin"
-                            else -> it
-                        }
-                    } ?: "N/A",
+                    value = favoriteExercise ?: "N/A",
                     icon = "💨"
                 )
             }

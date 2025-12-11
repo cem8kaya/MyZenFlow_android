@@ -93,7 +93,7 @@ private fun TreeTab(
     particleSystem: ParticleSystem
 ) {
     // Track previous level for level-up detection
-    var previousLevel by remember { mutableStateOf(uiState.userStats.treeLevel) }
+    var previousLevel by remember { mutableIntStateOf(uiState.userStats.treeLevel) }
     var showLevelUpAnimation by remember { mutableStateOf(false) }
 
     // Detect level change
@@ -297,7 +297,7 @@ private fun GrowthInfoCard(
             }
 
             LinearProgressIndicator(
-                progress = uiState.userStats.treeGrowthProgress,
+                progress = { uiState.userStats.treeGrowthProgress },
                 modifier = Modifier.fillMaxWidth(),
                 color = MaterialTheme.colorScheme.primary,
                 trackColor = MaterialTheme.colorScheme.surfaceVariant
@@ -413,7 +413,7 @@ private fun StatsTab(
                 totalSessions = uiState.userStats.totalSessions,
                 totalMinutes = uiState.userStats.totalMinutes,
                 longestStreak = uiState.userStats.longestStreak,
-                favoriteExercise = uiState.userStats.favoriteBreathingExercise?.name
+                favoriteExercise = uiState.userStats.favoriteBreathingExercise?.displayName ?: "N/A"
             )
         }
 
@@ -454,7 +454,7 @@ private fun StatsTab(
                     }
 
                     LinearProgressIndicator(
-                        progress = uiState.userStats.weeklyProgress,
+                        progress = { uiState.userStats.weeklyProgress },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(8.dp),
@@ -466,4 +466,3 @@ private fun StatsTab(
         }
     }
 }
-
