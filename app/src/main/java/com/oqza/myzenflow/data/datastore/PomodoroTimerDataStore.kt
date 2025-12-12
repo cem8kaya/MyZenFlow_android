@@ -29,6 +29,7 @@ class PomodoroTimerDataStore(private val context: Context) {
         val sessionType: TimerSessionType = TimerSessionType.WORK,
         val sessionId: String? = null,
         val startTimeMillis: Long = 0L,
+        val targetCompletionTimeMillis: Long = 0L,
         val durationSeconds: Int = 0,
         val completedWorkSessions: Int = 0,
         val totalCycles: Int = 4,
@@ -63,6 +64,7 @@ class PomodoroTimerDataStore(private val context: Context) {
             preferences[SESSION_TYPE] = state.sessionType.name
             preferences[SESSION_ID] = state.sessionId ?: ""
             preferences[START_TIME_MILLIS] = state.startTimeMillis
+            preferences[TARGET_COMPLETION_TIME_MILLIS] = state.targetCompletionTimeMillis
             preferences[DURATION_SECONDS] = state.durationSeconds
             preferences[COMPLETED_WORK_SESSIONS] = state.completedWorkSessions
             preferences[TOTAL_CYCLES] = state.totalCycles
@@ -111,6 +113,7 @@ class PomodoroTimerDataStore(private val context: Context) {
             preferences[TIMER_STATUS] = TimerStatus.IDLE.name
             preferences[SESSION_ID] = ""
             preferences[START_TIME_MILLIS] = 0L
+            preferences[TARGET_COMPLETION_TIME_MILLIS] = 0L
             preferences[DURATION_SECONDS] = 0
             preferences[COMPLETED_WORK_SESSIONS] = 0
             preferences[TASK_NAME] = ""
@@ -137,6 +140,7 @@ class PomodoroTimerDataStore(private val context: Context) {
             },
             sessionId = preferences[SESSION_ID]?.takeIf { it.isNotEmpty() },
             startTimeMillis = preferences[START_TIME_MILLIS] ?: 0L,
+            targetCompletionTimeMillis = preferences[TARGET_COMPLETION_TIME_MILLIS] ?: 0L,
             durationSeconds = preferences[DURATION_SECONDS] ?: 0,
             completedWorkSessions = preferences[COMPLETED_WORK_SESSIONS] ?: 0,
             totalCycles = preferences[TOTAL_CYCLES] ?: 4,
@@ -156,6 +160,7 @@ class PomodoroTimerDataStore(private val context: Context) {
         private val SESSION_TYPE = stringPreferencesKey("session_type")
         private val SESSION_ID = stringPreferencesKey("session_id")
         private val START_TIME_MILLIS = longPreferencesKey("start_time_millis")
+        private val TARGET_COMPLETION_TIME_MILLIS = longPreferencesKey("target_completion_time_millis")
         private val DURATION_SECONDS = intPreferencesKey("duration_seconds")
         private val COMPLETED_WORK_SESSIONS = intPreferencesKey("completed_work_sessions")
         private val TOTAL_CYCLES = intPreferencesKey("total_cycles")
