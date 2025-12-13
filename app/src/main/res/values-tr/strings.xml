@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App & Navigation -->
+    <string name="app_name">MyZenFlow</string>
+    <string name="tab_home">Ana Sayfa</string>
+    <string name="tab_focus">Odaklan</string>
+    <string name="tab_garden">Zen Bahçem</string>
+    <string name="tab_calendar">Takvim</string>
+    <string name="tab_profile">Profil</string>
+    <string name="screen_breathing">Nefes Egzersizi</string>
+    <string name="screen_settings">Ayarlar</string>
+
+    <!-- Home Screen -->
+    <string name="greeting_morning">Günaydın</string>
+    <string name="greeting_afternoon">İyi Günler</string>
+    <string name="greeting_evening">İyi Akşamlar</string>
+    <string name="today_stats">Bugünün İstatistikleri</string>
+    <string name="weekly_streak">Haftalık Seri</string>
+    <string name="current_streak">Mevcut Seri</string>
+    <string name="quick_action_breathing">Nefes</string>
+    <string name="quick_action_breathing_subtitle">Egzersizler</string>
+    <string name="quick_action_focus">Odaklan</string>
+    <string name="quick_action_focus_subtitle">Pomodoro</string>
+    <string name="quick_action_garden">Zen Bahçe</string>
+    <string name="quick_action_garden_subtitle">Huzur Bul</string>
+    <string name="quick_action_progress">İlerleme</string>
+    <string name="quick_action_progress_subtitle">Geçmiş</string>
+    <string name="recent_sessions">Son Seanslar</string>
+    <string name="no_sessions_yet">Henüz seans yok</string>
+    <string name="start_first_session">İlk seansını başlat</string>
+    <string name="sessions_count">%d seans</string>
+    <string name="minutes_count">%d dk</string>
+    <string name="days_count">%d gün</string>
+
+    <!-- Breathing -->
+    <string name="breathing_title">Nefes Egzersizi</string>
+    <string name="breathing_exercise">Nefes</string>
+    <string name="exercise_box">Kutu Nefes</string>
+    <string name="exercise_478">4-7-8 Nefes</string>
+    <string name="exercise_deep">Derin Nefes</string>
+    <string name="exercise_alternate">Alternatif Burun</string>
+    <string name="phase_inhale">Nefes Al</string>
+    <string name="phase_hold">Tut</string>
+    <string name="phase_exhale">Nefes Ver</string>
+    <string name="phase_rest">Dinlen</string>
+    <string name="session_complete">Seans Tamamlandı!</string>
+    <string name="cycles_completed">Tamamlanan Döngüler</string>
+    <string name="cycle_progress">Döngü %d / %d</string>
+    <string name="select_exercise">Bir egzersiz seç</string>
+    <string name="exercise_select">Egzersiz Seç</string>
+    <string name="back">Geri</string>
+    <string name="sound_settings">Ses Ayarları</string>
+
+    <!-- Focus Timer -->
+    <string name="focus_title">Odaklanma Zamanlayıcısı</string>
+    <string name="work_session">Çalışma Seansı</string>
+    <string name="short_break">Kısa Mola</string>
+    <string name="long_break">Uzun Mola</string>
+    <string name="timer_start">Başlat</string>
+    <string name="timer_pause">Duraklat</string>
+    <string name="timer_resume">Devam Et</string>
+    <string name="timer_stop">Durdur</string>
+    <string name="timer_skip">Atla</string>
+    <string name="session_complete_focus">Odaklanma Seansı Tamamlandı!</string>
+    <string name="break_time">Mola Zamanı</string>
+    <string name="back_to_work">İşe Dön</string>
+    <string name="session_number">Seans %d</string>
+    <string name="pomodoro_sessions">Pomodoro Seansları</string>
+
+    <!-- Zen Garden -->
+    <string name="garden_title">Zen Bahçe</string>
+    <string name="tree_level">Ağaç Seviyesi</string>
+    <string name="achievement_locked">Kilitli</string>
+    <string name="achievement_unlocked">Açıldı</string>
+    <string name="stats_weekly">Haftalık</string>
+    <string name="stats_monthly">Aylık</string>
+    <string name="stats_alltime">Tüm Zamanlar</string>
+    <string name="total_minutes">Toplam Dakika</string>
+    <string name="total_sessions">Toplam Seans</string>
+    <string name="achievements">Başarılar</string>
+    <string name="level_up">Seviye Atladın!</string>
+
+    <!-- Calendar -->
+    <string name="calendar_title">Takvim</string>
+    <string name="today">Bugün</string>
+    <string name="this_week">Bu Hafta</string>
+    <string name="this_month">Bu Ay</string>
+    <string name="session_history">Seans Geçmişi</string>
+    <string name="no_sessions_today">Bugün seans yok</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Profil</string>
+    <string name="edit_profile">Profili Düzenle</string>
+    <string name="your_stats">İstatistiklerin</string>
+    <string name="weekly_goal">Haftalık Hedef</string>
+    <string name="weekly_goal_subtitle">Haftalık meditasyon hedefini belirle</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Ayarlar</string>
+    <string name="premium_upgrade">Premium\'a Yükselt</string>
+    <string name="premium_active">Premium Aktif</string>
+    <string name="restore_purchases">Satın Alımları Geri Yükle</string>
+    <string name="language_setting">Dil</string>
+    <string name="language_select">Dil Seçin</string>
+    <string name="dark_mode">Karanlık Mod</string>
+    <string name="dark_mode_subtitle">Karanlık tema kullan</string>
+    <string name="notifications">Bildirimler</string>
+    <string name="notifications_subtitle">Bildirimleri etkinleştir</string>
+    <string name="daily_reminder">Günlük Hatırlatıcı</string>
+    <string name="daily_reminder_subtitle">Günlük meditasyon hatırlatıcısı ayarla</string>
+    <string name="daily_reminder_time">Her gün %s</string>
+    <string name="reminder_time">Hatırlatıcı Zamanı</string>
+    <string name="haptic_feedback">Dokunsal Geri Bildirim</string>
+    <string name="haptic_feedback_subtitle">Titreşim geri bildirimi</string>
+    <string name="sound_settings_title">Ses</string>
+    <string name="sound_settings_subtitle">Ses efektleri</string>
+    <string name="sound_volume">Ses Seviyesi</string>
+    <string name="sound_volume_subtitle">Ses seviyesini ayarla</string>
+    <string name="background_music">Arka Plan Müziği</string>
+    <string name="background_music_subtitle">Meditasyon sırasında müzik çal</string>
+    <string name="about_version">Uygulama Sürümü</string>
+    <string name="privacy_policy">Gizlilik Politikası</string>
+    <string name="terms_service">Kullanım Koşulları</string>
+    <string name="support_email">Destek</string>
+    <string name="rate_app">Uygulamayı Değerlendir</string>
+    <string name="section_premium">Premium</string>
+    <string name="section_general">Genel</string>
+    <string name="section_notifications">Bildirimler</string>
+    <string name="section_sound_haptics">Ses &amp; Dokunsal Geri Bildirim</string>
+    <string name="section_about">Hakkında</string>
+
+    <!-- Premium -->
+    <string name="premium_title">Premium\'un Kilidini Aç</string>
+    <string name="premium_subtitle">Tüm özelliklere sınırsız erişim elde et</string>
+    <string name="feature_all_exercises">Tüm nefes egzersizleri</string>
+    <string name="feature_all_sounds">Premium ortam sesleri</string>
+    <string name="feature_advanced_stats">Gelişmiş istatistikler</string>
+    <string name="feature_premium_themes">Premium temalar</string>
+    <string name="price_onetime">Tek seferlik ödeme</string>
+    <string name="price_lifetime">Ömür boyu erişim</string>
+    <string name="button_unlock">Premium\'un Kilidini Aç</string>
+    <string name="purchase_success">Satın alma başarılı!</string>
+    <string name="purchase_failed">Satın alma başarısız</string>
+    <string name="premium_unlocked">Premium Açıldı</string>
+    <string name="premium_description">Tüm premium özelliklere erişiminiz var</string>
+
+    <!-- Common -->
+    <string name="button_start">Başlat</string>
+    <string name="button_pause">Duraklat</string>
+    <string name="button_stop">Durdur</string>
+    <string name="button_cancel">İptal</string>
+    <string name="button_save">Kaydet</string>
+    <string name="button_close">Kapat</string>
+    <string name="button_done">Tamam</string>
+    <string name="button_retry">Tekrar Dene</string>
+    <string name="button_ok">Tamam</string>
+    <string name="loading">Yükleniyor…</string>
+    <string name="error_generic">Bir şeyler ters gitti</string>
+    <string name="success">Başarılı</string>
+
+    <!-- Motivational Quotes -->
+    <string name="quote_breathe">Huzurla nefes al, stresi bırak</string>
+    <string name="quote_present">Bu anda var ol</string>
+    <string name="quote_calm">İç huzurunu bul</string>
+    <string name="quote_zen">Yolculuk varış noktasıdır</string>
+</resources>

@@ -38,10 +38,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oqza.myzenflow.BuildConfig
+import com.oqza.myzenflow.R
 import com.oqza.myzenflow.data.models.AppLanguage
 import com.oqza.myzenflow.presentation.components.PremiumCard
 import com.oqza.myzenflow.presentation.components.PremiumStatusCard
@@ -82,7 +84,7 @@ fun SettingsScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Ayarlar" else "Settings",
+                        text = stringResource(R.string.settings_title),
                         style = MaterialTheme.typography.headlineSmall
                     )
                 },
@@ -101,7 +103,7 @@ fun SettingsScreen(
                     .padding(paddingValues),
                 contentAlignment = androidx.compose.ui.Alignment.Center
             ) {
-                Text("Loading...")
+                Text(stringResource(R.string.loading))
             }
         } else {
             LazyColumn(
@@ -111,7 +113,7 @@ fun SettingsScreen(
             ) {
                 // SECTION 1: Premium
                 item {
-                    SettingSection(title = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Premium" else "Premium") {
+                    SettingSection(title = stringResource(R.string.section_premium)) {
                         if (!uiState.userPreferences.isPremiumUnlocked) {
                             PremiumCard(
                                 onUpgradeClick = { viewModel.navigateToPremium() }
@@ -126,10 +128,10 @@ fun SettingsScreen(
 
                 // SECTION 2: General
                 item {
-                    SettingSection(title = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Genel" else "General") {
+                    SettingSection(title = stringResource(R.string.section_general)) {
                         Column {
                             SettingItem(
-                                title = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Dil" else "Language",
+                                title = stringResource(R.string.language_setting),
                                 subtitle = uiState.userPreferences.language.displayName,
                                 icon = Icons.Default.Language,
                                 onClick = { viewModel.showLanguageSelector() },
@@ -143,8 +145,8 @@ fun SettingsScreen(
                             )
 
                             SettingToggleItem(
-                                title = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Karanlık Mod" else "Dark Mode",
-                                subtitle = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Karanlık tema kullan" else "Use dark theme",
+                                title = stringResource(R.string.dark_mode),
+                                subtitle = stringResource(R.string.dark_mode_subtitle),
                                 checked = uiState.userPreferences.darkModeEnabled,
                                 onCheckedChange = { viewModel.updateDarkMode(it) },
                                 icon = Icons.Default.Brightness4
@@ -155,28 +157,22 @@ fun SettingsScreen(
 
                 // SECTION 3: Notifications
                 item {
-                    SettingSection(title = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Bildirimler" else "Notifications") {
+                    SettingSection(title = stringResource(R.string.section_notifications)) {
                         Column {
                             SettingToggleItem(
-                                title = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Bildirimler" else "Notifications",
-                                subtitle = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Bildirimleri etkinleştir" else "Enable notifications",
+                                title = stringResource(R.string.notifications),
+                                subtitle = stringResource(R.string.notifications_subtitle),
                                 checked = uiState.userPreferences.notificationsEnabled,
                                 onCheckedChange = { viewModel.updateNotifications(it) },
                                 icon = Icons.Default.Notifications
                             )
 
                             SettingToggleItem(
-                                title = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Günlük Hatırlatıcı" else "Daily Reminder",
+                                title = stringResource(R.string.daily_reminder),
                                 subtitle = if (uiState.userPreferences.dailyReminderEnabled) {
-                                    if (uiState.userPreferences.language == AppLanguage.TURKISH)
-                                        "Her gün ${uiState.userPreferences.dailyReminderTime}"
-                                    else
-                                        "Daily at ${uiState.userPreferences.dailyReminderTime}"
+                                    stringResource(R.string.daily_reminder_time, uiState.userPreferences.dailyReminderTime)
                                 } else {
-                                    if (uiState.userPreferences.language == AppLanguage.TURKISH)
-                                        "Günlük meditasyon hatırlatıcısı"
-                                    else
-                                        "Set your daily meditation reminder"
+                                    stringResource(R.string.daily_reminder_subtitle)
                                 },
                                 checked = uiState.userPreferences.dailyReminderEnabled,
                                 onCheckedChange = { enabled ->
@@ -192,7 +188,7 @@ fun SettingsScreen(
 
                             if (uiState.userPreferences.dailyReminderEnabled && uiState.userPreferences.notificationsEnabled) {
                                 SettingItem(
-                                    title = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Hatırlatıcı Zamanı" else "Reminder Time",
+                                    title = stringResource(R.string.reminder_time),
                                     subtitle = uiState.userPreferences.dailyReminderTime,
                                     icon = Icons.Outlined.AccessTime,
                                     onClick = { viewModel.showTimePicker() }
@@ -204,19 +200,19 @@ fun SettingsScreen(
 
                 // SECTION 4: Sound & Haptics
                 item {
-                    SettingSection(title = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Ses & Dokunsal Geri Bildirim" else "Sound & Haptics") {
+                    SettingSection(title = stringResource(R.string.section_sound_haptics)) {
                         Column {
                             SettingToggleItem(
-                                title = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Dokunsal Geri Bildirim" else "Haptic Feedback",
-                                subtitle = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Titreşim geri bildirimi" else "Vibration feedback",
+                                title = stringResource(R.string.haptic_feedback),
+                                subtitle = stringResource(R.string.haptic_feedback_subtitle),
                                 checked = uiState.userPreferences.hapticFeedbackEnabled,
                                 onCheckedChange = { viewModel.updateHapticFeedback(it) },
                                 icon = Icons.Default.TouchApp
                             )
 
                             SettingToggleItem(
-                                title = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Ses" else "Sound",
-                                subtitle = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Ses efektleri" else "Sound effects",
+                                title = stringResource(R.string.sound_settings_title),
+                                subtitle = stringResource(R.string.sound_settings_subtitle),
                                 checked = uiState.userPreferences.soundEnabled,
                                 onCheckedChange = { viewModel.updateSoundEnabled(it) },
                                 icon = Icons.Default.VolumeUp
@@ -224,8 +220,8 @@ fun SettingsScreen(
 
                             if (uiState.userPreferences.soundEnabled) {
                                 SettingSliderItem(
-                                    title = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Ses Seviyesi" else "Volume",
-                                    subtitle = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Ses seviyesini ayarla" else "Adjust sound volume",
+                                    title = stringResource(R.string.sound_volume),
+                                    subtitle = stringResource(R.string.sound_volume_subtitle),
                                     value = uiState.userPreferences.soundVolume,
                                     onValueChange = { viewModel.updateSoundVolume(it) },
                                     icon = Icons.Default.VolumeUp,
@@ -233,8 +229,8 @@ fun SettingsScreen(
                                 )
 
                                 SettingToggleItem(
-                                    title = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Arka Plan Müziği" else "Background Music",
-                                    subtitle = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Meditasyon sırasında müzik çal" else "Play music during meditation",
+                                    title = stringResource(R.string.background_music),
+                                    subtitle = stringResource(R.string.background_music_subtitle),
                                     checked = uiState.userPreferences.backgroundMusicEnabled,
                                     onCheckedChange = { viewModel.updateBackgroundMusic(it) },
                                     icon = Icons.Default.MusicNote
@@ -246,17 +242,17 @@ fun SettingsScreen(
 
                 // SECTION 5: About
                 item {
-                    SettingSection(title = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Hakkında" else "About") {
+                    SettingSection(title = stringResource(R.string.section_about)) {
                         Column {
                             SettingItem(
-                                title = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Uygulama Sürümü" else "App Version",
+                                title = stringResource(R.string.about_version),
                                 subtitle = BuildConfig.VERSION_NAME,
                                 icon = Icons.Default.Info,
                                 showDivider = true
                             )
 
                             SettingItem(
-                                title = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Gizlilik Politikası" else "Privacy Policy",
+                                title = stringResource(R.string.privacy_policy),
                                 icon = Icons.Default.Policy,
                                 onClick = {
                                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://myzenflow.com/privacy"))
@@ -266,7 +262,7 @@ fun SettingsScreen(
                             )
 
                             SettingItem(
-                                title = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Kullanım Koşulları" else "Terms of Service",
+                                title = stringResource(R.string.terms_service),
                                 icon = Icons.Outlined.Article,
                                 onClick = {
                                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://myzenflow.com/terms"))
@@ -276,7 +272,7 @@ fun SettingsScreen(
                             )
 
                             SettingItem(
-                                title = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Destek" else "Support",
+                                title = stringResource(R.string.support_email),
                                 subtitle = "support@myzenflow.com",
                                 icon = Icons.Default.Email,
                                 onClick = {
@@ -290,7 +286,7 @@ fun SettingsScreen(
                             )
 
                             SettingItem(
-                                title = if (uiState.userPreferences.language == AppLanguage.TURKISH) "Uygulamayı Değerlendir" else "Rate App",
+                                title = stringResource(R.string.rate_app),
                                 icon = Icons.Default.Star,
                                 onClick = {
                                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=${context.packageName}"))
@@ -343,7 +339,7 @@ private fun LanguageSelectorDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = if (currentLanguage == AppLanguage.TURKISH) "Dil Seçin" else "Select Language",
+                text = stringResource(R.string.language_select),
                 style = MaterialTheme.typography.titleLarge
             )
         },
@@ -360,7 +356,7 @@ private fun LanguageSelectorDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text(if (currentLanguage == AppLanguage.TURKISH) "İptal" else "Cancel")
+                Text(stringResource(R.string.button_cancel))
             }
         }
     )
@@ -418,7 +414,7 @@ private fun TimePickerDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Set Reminder Time",
+                text = stringResource(R.string.reminder_time),
                 style = MaterialTheme.typography.titleLarge
             )
         },
@@ -435,12 +431,12 @@ private fun TimePickerDialog(
                     onTimeSelected("$hour:$minute")
                 }
             ) {
-                Text("OK")
+                Text(stringResource(R.string.button_ok))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(R.string.button_cancel))
             }
         }
     )
