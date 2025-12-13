@@ -124,8 +124,8 @@ fun CalendarScreen(
                     )
                 }
 
-                // Empty state (if no sessions this month and no date selected)
-                if (uiState.totalSessionsThisMonth == 0 && uiState.selectedDate == null) {
+                // Empty state (only show when not loading, no sessions, and no date selected)
+                if (!uiState.isLoading && uiState.totalSessionsThisMonth == 0 && uiState.selectedDate == null) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
