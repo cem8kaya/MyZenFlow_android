@@ -4,6 +4,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -13,6 +14,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import com.oqza.myzenflow.data.models.BreathingPhase
+import com.oqza.myzenflow.presentation.theme.breathingPhaseColors
 
 /**
  * iOS-quality breathing circle with Canvas API
@@ -48,31 +50,8 @@ fun BreathingCircleCanvas(
         label = "circle_scale"
     )
 
-    // Phase colors - calm and mystical palette
-    val phaseColors = remember(phase) {
-        when (phase) {
-            BreathingPhase.INHALE -> ColorPair(
-                primary = Color(0xFF4A90E2), // Calm Blue
-                secondary = Color(0xFF50C9E9)
-            )
-            BreathingPhase.HOLD_INHALE -> ColorPair(
-                primary = Color(0xFF7B68EE), // Mystical Violet
-                secondary = Color(0xFF9B88FF)
-            )
-            BreathingPhase.EXHALE -> ColorPair(
-                primary = Color(0xFFB47DED), // Soft Purple
-                secondary = Color(0xFFD4A5FF)
-            )
-            BreathingPhase.HOLD_EXHALE -> ColorPair(
-                primary = Color(0xFF9B88FF), // Light Violet
-                secondary = Color(0xFFB4A0FF)
-            )
-            BreathingPhase.REST -> ColorPair(
-                primary = Color(0xFF90A4AE), // Cool Gray
-                secondary = Color(0xFFB0BEC5)
-            )
-        }
-    }
+    // Phase colors from theme
+    val phaseColors = breathingPhaseColors(phase)
 
     // Animate colors smoothly
     val animatedPrimaryColor by animateColorAsState(
@@ -171,10 +150,11 @@ fun BreathingCircleCanvas(
             )
 
             // Draw subtle inner glow
+            val glowColor = animatedSecondaryColor.copy(alpha = 0.5f)
             drawCircle(
                 brush = Brush.radialGradient(
                     colors = listOf(
-                        Color.White.copy(alpha = 0.3f),
+                        glowColor.copy(alpha = 0.3f),
                         Color.Transparent
                     ),
                     center = Offset(centerX, centerY),
@@ -186,11 +166,3 @@ fun BreathingCircleCanvas(
         }
     }
 }
-
-/**
- * Data class to hold color pair for gradient
- */
-private data class ColorPair(
-    val primary: Color,
-    val secondary: Color
-)

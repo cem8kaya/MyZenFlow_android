@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
+import com.oqza.myzenflow.presentation.theme.*
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -46,11 +47,12 @@ fun TreeVisualization(
         label = "sway_offset"
     )
 
-    // Colors
-    val trunkColor = Color(0xFF8B4513) // Brown
-    val leavesColor = Color(0xFF228B22) // Forest Green
-    val blossomColor = Color(0xFFFFB6C1) // Light Pink
-    val fruitColor = Color(0xFFFF6347) // Tomato
+    // Colors from theme
+    val trunkColor = TreeTrunkColor
+    val leavesColor = treeLeavesColor
+    val blossomColor = TreeBlossomColor
+    val fruitColor = TreeFruitColor
+    val groundColor = treeGroundColor
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -89,7 +91,7 @@ fun TreeVisualization(
 
             // Draw ground line
             drawLine(
-                color = Color(0xFF8B7355),
+                color = groundColor,
                 start = Offset(0f, groundY),
                 end = Offset(size.width, groundY),
                 strokeWidth = 4f
@@ -475,7 +477,7 @@ private fun DrawScope.drawGrandTree(
 
     // Draw glowing aura around grand tree
     drawCircle(
-        color = Color(0xFFFFD700).copy(alpha = 0.2f),
+        color = TreeAuraColor.copy(alpha = 0.2f),
         radius = 60f,
         center = Offset(swayX, groundY - trunkHeight),
         style = Stroke(width = 2f)

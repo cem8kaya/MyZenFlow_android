@@ -1,7 +1,9 @@
 package com.oqza.myzenflow.presentation.screens
 
+import android.app.Activity
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -11,11 +13,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.oqza.myzenflow.presentation.screens.components.*
 import com.oqza.myzenflow.presentation.viewmodels.BreathingViewModel
+import com.oqza.myzenflow.presentation.theme.breathingGradientColors
 
 /**
  * iOS-quality BreathingScreen with smooth animations and polish
@@ -41,12 +47,33 @@ fun BreathingScreen(
     var showExerciseSheet by remember { mutableStateOf(false) }
     var showSoundSheet by remember { mutableStateOf(false) }
 
-    // Gradient background colors
-    val gradientColors = listOf(
-        Color(0xFF1A1A2E), // Deep dark blue
-        Color(0xFF16213E), // Navy
-        Color(0xFF0F3460)  // Deep purple-blue
-    )
+    // Gradient background colors from theme
+    val gradientColors = breathingGradientColors()
+
+    // Status bar handling
+    val view = LocalView.current
+    val darkTheme = isSystemInDarkTheme()
+    val colorScheme = MaterialTheme.colorScheme
+
+    DisposableEffect(Unit) {
+        val window = (view.context as Activity).window
+        val insetsController = WindowCompat.getInsetsController(window, view)
+
+        // Save original status bar color
+        val originalStatusBarColor = window.statusBarColor
+        val originalLightStatusBars = insetsController.isAppearanceLightStatusBars
+
+        // Set transparent status bar for breathing screen
+        window.statusBarColor = Color.Transparent.toArgb()
+        // For dark gradient background, use light icons; for light gradient, use dark icons
+        insetsController.isAppearanceLightStatusBars = !darkTheme
+
+        onDispose {
+            // Restore original status bar color when leaving the screen
+            window.statusBarColor = originalStatusBarColor
+            insetsController.isAppearanceLightStatusBars = originalLightStatusBars
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -93,14 +120,14 @@ fun BreathingScreen(
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = Color.Transparent,
-                        titleContentColor = Color.White,
-                        navigationIconContentColor = Color.White,
-                        actionIconContentColor = Color.White
+                        titleContentColor = MaterialTheme.colorScheme.onSurface,
+                        navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                        actionIconContentColor = MaterialTheme.colorScheme.onSurface
                     )
                 )
             },
             containerColor = Color.Transparent,
-            contentColor = Color.White
+            contentColor = MaterialTheme.colorScheme.onSurface
         ) { paddingValues ->
             Column(
                 modifier = Modifier
@@ -163,7 +190,7 @@ fun BreathingScreen(
                                     text = "Döngü ${uiState.currentCycle} / ${uiState.selectedExercise?.cycles}",
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.White
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
 
                                 Spacer(modifier = Modifier.height(8.dp))
@@ -173,8 +200,8 @@ fun BreathingScreen(
                                     modifier = Modifier
                                         .fillMaxWidth(0.6f)
                                         .height(6.dp),
-                                    color = Color(0xFF4A90E2),
-                                    trackColor = Color.White.copy(alpha = 0.2f)
+                                    color = MaterialTheme.colorScheme.primary,
+                                    trackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
                                 )
                             }
                         }
@@ -188,7 +215,7 @@ fun BreathingScreen(
                                 imageVector = Icons.Default.SelfImprovement,
                                 contentDescription = "Nefes",
                                 modifier = Modifier.size(120.dp),
-                                tint = Color.White.copy(alpha = 0.5f)
+                                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                             )
 
                             Spacer(modifier = Modifier.height(24.dp))
@@ -196,7 +223,7 @@ fun BreathingScreen(
                             Text(
                                 text = "Bir nefes egzersizi seçin",
                                 style = MaterialTheme.typography.headlineSmall,
-                                color = Color.White.copy(alpha = 0.7f)
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                             )
 
                             Spacer(modifier = Modifier.height(16.dp))
@@ -204,8 +231,8 @@ fun BreathingScreen(
                             FilledTonalButton(
                                 onClick = { showExerciseSheet = true },
                                 colors = ButtonDefaults.filledTonalButtonColors(
-                                    containerColor = Color.White.copy(alpha = 0.2f),
-                                    contentColor = Color.White
+                                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+                                    contentColor = MaterialTheme.colorScheme.onSurface
                                 )
                             ) {
                                 Icon(
