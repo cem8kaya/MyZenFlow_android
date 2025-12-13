@@ -48,9 +48,19 @@ class MainActivity : ComponentActivity() {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
 
+                // Check onboarding status and navigate accordingly
+                LaunchedEffect(userPreferences.onboardingCompleted) {
+                    if (!userPreferences.onboardingCompleted && currentRoute != Screen.Onboarding.route) {
+                        navController.navigate(Screen.Onboarding.route) {
+                            popUpTo(Screen.Home.route) { inclusive = true }
+                        }
+                    }
+                }
+
                 // Hide bottom bar on immersive screens
                 val shouldShowBottomBar = currentRoute != Screen.Breathing.route &&
-                        currentRoute != Screen.Focus.route
+                        currentRoute != Screen.Focus.route &&
+                        currentRoute != Screen.Onboarding.route
 
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
@@ -62,7 +72,11 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     NavGraph(
                         navController = navController,
-                        startDestination = Screen.Home.route
+                        startDestination = if (userPreferences.onboardingCompleted) {
+                            Screen.Home.route
+                        } else {
+                            Screen.Onboarding.route
+                        }
                     )
                 }
             }
