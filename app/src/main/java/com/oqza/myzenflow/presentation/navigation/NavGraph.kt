@@ -8,6 +8,7 @@ import com.oqza.myzenflow.presentation.screens.BreathingScreen
 import com.oqza.myzenflow.presentation.screens.CalendarScreen
 import com.oqza.myzenflow.presentation.screens.FocusScreen
 import com.oqza.myzenflow.presentation.screens.HomeScreen
+import com.oqza.myzenflow.presentation.screens.OnboardingScreen
 import com.oqza.myzenflow.presentation.screens.ProfileScreen
 import com.oqza.myzenflow.presentation.screens.SettingsScreen
 import com.oqza.myzenflow.presentation.screens.ZenGardenScreen
@@ -38,7 +39,7 @@ fun NavGraph(
         }
 
         composable(route = Screen.Profile.route) {
-            ProfileScreen()
+            ProfileScreen(navController = navController)
         }
 
         composable(route = Screen.Settings.route) {
@@ -47,6 +48,10 @@ fun NavGraph(
 
         composable(route = Screen.Breathing.route) {
             BreathingScreen()
+        }
+
+        composable(route = Screen.Onboarding.route) {
+            OnboardingScreen(navController = navController)
         }
     }
 }

@@ -6,6 +6,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.oqza.myzenflow.presentation.navigation.bottomNavigationScreens
@@ -18,15 +19,16 @@ fun BottomNavigationBar(navController: NavController) {
     NavigationBar {
         bottomNavigationScreens.forEach { screen ->
             val isSelected = currentRoute == screen.route
+            val title = stringResource(screen.titleResId)
 
             NavigationBarItem(
                 icon = {
                     Icon(
                         imageVector = if (isSelected) screen.selectedIcon else screen.unselectedIcon,
-                        contentDescription = screen.title
+                        contentDescription = title
                     )
                 },
-                label = { Text(text = screen.title) },
+                label = { Text(text = title) },
                 selected = isSelected,
                 onClick = {
                     if (currentRoute != screen.route) {

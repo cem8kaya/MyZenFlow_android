@@ -1,4 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- App & Navigation -->
     <string name="app_name">MyZenFlow</string>
+    <string name="tab_home">Home</string>
+    <string name="tab_focus">Focus</string>
+    <string name="tab_garden">Zen Garden</string>
+    <string name="tab_calendar">Calendar</string>
+    <string name="tab_profile">Profile</string>
+    <string name="screen_breathing">Breathing</string>
+    <string name="screen_settings">Settings</string>
+
+    <!-- Home Screen -->
+    <string name="greeting_morning">Good Morning</string>
+    <string name="greeting_afternoon">Good Afternoon</string>
+    <string name="greeting_evening">Good Evening</string>
+    <string name="today_stats">Today\'s Stats</string>
+    <string name="weekly_streak">Week Streak</string>
+    <string name="current_streak">Current Streak</string>
+    <string name="quick_action_breathing">Breathing</string>
+    <string name="quick_action_breathing_subtitle">Exercises</string>
+    <string name="quick_action_focus">Focus</string>
+    <string name="quick_action_focus_subtitle">Pomodoro</string>
+    <string name="quick_action_garden">Zen Garden</string>
+    <string name="quick_action_garden_subtitle">Find Peace</string>
+    <string name="quick_action_progress">Progress</string>
+    <string name="quick_action_progress_subtitle">History</string>
+    <string name="recent_sessions">Recent Sessions</string>
+    <string name="no_sessions_yet">No sessions yet</string>
+    <string name="start_first_session">Start your first session</string>
+    <string name="sessions_count">%d sessions</string>
+    <string name="minutes_count">%d min</string>
+    <string name="days_count">%d days</string>
+
+    <!-- Breathing -->
+    <string name="breathing_title">Breathing Exercise</string>
+    <string name="breathing_exercise">Breathing</string>
+    <string name="exercise_box">Box Breathing</string>
+    <string name="exercise_478">4-7-8 Breathing</string>
+    <string name="exercise_deep">Deep Breathing</string>
+    <string name="exercise_alternate">Alternate Nostril</string>
+    <string name="phase_inhale">Inhale</string>
+    <string name="phase_hold">Hold</string>
+    <string name="phase_exhale">Exhale</string>
+    <string name="phase_rest">Rest</string>
+    <string name="session_complete">Session Complete!</string>
+    <string name="cycles_completed">Cycles Completed</string>
+    <string name="cycle_progress">Cycle %d / %d</string>
+    <string name="select_exercise">Select an exercise</string>
+    <string name="exercise_select">Select Exercise</string>
+    <string name="back">Back</string>
+    <string name="sound_settings">Sound Settings</string>
+
+    <!-- Focus Timer -->
+    <string name="focus_title">Focus Timer</string>
+    <string name="work_session">Work Session</string>
+    <string name="short_break">Short Break</string>
+    <string name="long_break">Long Break</string>
+    <string name="timer_start">Start</string>
+    <string name="timer_pause">Pause</string>
+    <string name="timer_resume">Resume</string>
+    <string name="timer_stop">Stop</string>
+    <string name="timer_skip">Skip</string>
+    <string name="session_complete_focus">Focus Session Complete!</string>
+    <string name="break_time">Break Time</string>
+    <string name="back_to_work">Back to Work</string>
+    <string name="session_number">Session %d</string>
+    <string name="pomodoro_sessions">Pomodoro Sessions</string>
+
+    <!-- Zen Garden -->
+    <string name="garden_title">Zen Garden</string>
+    <string name="tree_level">Tree Level</string>
+    <string name="achievement_locked">Locked</string>
+    <string name="achievement_unlocked">Unlocked</string>
+    <string name="stats_weekly">Weekly</string>
+    <string name="stats_monthly">Monthly</string>
+    <string name="stats_alltime">All Time</string>
+    <string name="total_minutes">Total Minutes</string>
+    <string name="total_sessions">Total Sessions</string>
+    <string name="achievements">Achievements</string>
+    <string name="level_up">Level Up!</string>
+
+    <!-- Calendar -->
+    <string name="calendar_title">Calendar</string>
+    <string name="today">Today</string>
+    <string name="this_week">This Week</string>
+    <string name="this_month">This Month</string>
+    <string name="session_history">Session History</string>
+    <string name="no_sessions_today">No sessions today</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Profile</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="your_stats">Your Stats</string>
+    <string name="weekly_goal">Weekly Goal</string>
+    <string name="weekly_goal_subtitle">Set your weekly meditation goal</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="premium_upgrade">Upgrade to Premium</string>
+    <string name="premium_active">Premium Active</string>
+    <string name="restore_purchases">Restore Purchases</string>
+    <string name="language_setting">Language</string>
+    <string name="language_select">Select Language</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="dark_mode_subtitle">Use dark theme</string>
+    <string name="notifications">Notifications</string>
+    <string name="notifications_subtitle">Enable notifications</string>
+    <string name="daily_reminder">Daily Reminder</string>
+    <string name="daily_reminder_subtitle">Set your daily meditation reminder</string>
+    <string name="daily_reminder_time">Daily at %s</string>
+    <string name="reminder_time">Reminder Time</string>
+    <string name="haptic_feedback">Haptic Feedback</string>
+    <string name="haptic_feedback_subtitle">Vibration feedback</string>
+    <string name="sound_settings_title">Sound</string>
+    <string name="sound_settings_subtitle">Sound effects</string>
+    <string name="sound_volume">Volume</string>
+    <string name="sound_volume_subtitle">Adjust sound volume</string>
+    <string name="background_music">Background Music</string>
+    <string name="background_music_subtitle">Play music during meditation</string>
+    <string name="about_version">App Version</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="terms_service">Terms of Service</string>
+    <string name="support_email">Support</string>
+    <string name="rate_app">Rate App</string>
+    <string name="section_premium">Premium</string>
+    <string name="section_general">General</string>
+    <string name="section_notifications">Notifications</string>
+    <string name="section_sound_haptics">Sound &amp; Haptics</string>
+    <string name="section_about">About</string>
+
+    <!-- Premium -->
+    <string name="premium_title">Unlock Premium</string>
+    <string name="premium_subtitle">Get unlimited access to all features</string>
+    <string name="feature_all_exercises">All breathing exercises</string>
+    <string name="feature_all_sounds">Premium ambient sounds</string>
+    <string name="feature_advanced_stats">Advanced statistics</string>
+    <string name="feature_premium_themes">Premium themes</string>
+    <string name="price_onetime">One-time payment</string>
+    <string name="price_lifetime">Lifetime access</string>
+    <string name="button_unlock">Unlock Premium</string>
+    <string name="purchase_success">Purchase successful!</string>
+    <string name="purchase_failed">Purchase failed</string>
+    <string name="premium_unlocked">Premium Unlocked</string>
+    <string name="premium_description">You have access to all premium features</string>
+
+    <!-- Common -->
+    <string name="button_start">Start</string>
+    <string name="button_pause">Pause</string>
+    <string name="button_stop">Stop</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_save">Save</string>
+    <string name="button_close">Close</string>
+    <string name="button_done">Done</string>
+    <string name="button_retry">Retry</string>
+    <string name="button_ok">OK</string>
+    <string name="loading">Loading…</string>
+    <string name="error_generic">Something went wrong</string>
+    <string name="success">Success</string>
+
+    <!-- Motivational Quotes -->
+    <string name="quote_breathe">Breathe in peace, breathe out stress</string>
+    <string name="quote_present">Be present in this moment</string>
+    <string name="quote_calm">Find your inner calm</string>
+    <string name="quote_zen">The journey is the destination</string>
 </resources>
