@@ -116,6 +116,20 @@ class PreferencesRepository @Inject constructor(
     }
 
     /**
+     * Update user name
+     */
+    suspend fun updateUserName(name: String) {
+        preferencesDataStore.updateUserName(name)
+    }
+
+    /**
+     * Set install date if not already set
+     */
+    suspend fun setInstallDateIfNeeded() {
+        preferencesDataStore.setInstallDateIfNeeded()
+    }
+
+    /**
      * Clear all preferences
      */
     suspend fun clearAllPreferences() {

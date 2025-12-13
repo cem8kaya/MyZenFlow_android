@@ -19,7 +19,9 @@ data class UserPreferences(
     val darkModeEnabled: Boolean = false,
     val autoStartBreathingExercise: Boolean = false,
     val showSessionReminders: Boolean = true,
-    val onboardingCompleted: Boolean = false
+    val onboardingCompleted: Boolean = false,
+    val userName: String = "",
+    val installDate: Long = System.currentTimeMillis()
 )
 
 enum class AppLanguage(val displayName: String, val code: String) {

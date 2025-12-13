@@ -154,6 +154,26 @@ class PreferencesDataStore(private val context: Context) {
     }
 
     /**
+     * Update user name
+     */
+    suspend fun updateUserName(name: String) {
+        context.dataStore.edit { preferences ->
+            preferences[USER_NAME] = name
+        }
+    }
+
+    /**
+     * Set install date (only if not already set)
+     */
+    suspend fun setInstallDateIfNeeded() {
+        context.dataStore.edit { preferences ->
+            if (!preferences.contains(INSTALL_DATE)) {
+                preferences[INSTALL_DATE] = System.currentTimeMillis()
+            }
+        }
+    }
+
+    /**
      * Clear all preferences (for logout/reset)
      */
     suspend fun clearPreferences() {
@@ -184,7 +204,9 @@ class PreferencesDataStore(private val context: Context) {
             darkModeEnabled = preferences[DARK_MODE_ENABLED] ?: false,
             autoStartBreathingExercise = preferences[AUTO_START_BREATHING] ?: false,
             showSessionReminders = preferences[SHOW_SESSION_REMINDERS] ?: true,
-            onboardingCompleted = preferences[ONBOARDING_COMPLETED] ?: false
+            onboardingCompleted = preferences[ONBOARDING_COMPLETED] ?: false,
+            userName = preferences[USER_NAME] ?: "",
+            installDate = preferences[INSTALL_DATE] ?: System.currentTimeMillis()
         )
     }
 
@@ -208,5 +230,7 @@ class PreferencesDataStore(private val context: Context) {
         private val AUTO_START_BREATHING = booleanPreferencesKey("auto_start_breathing")
         private val SHOW_SESSION_REMINDERS = booleanPreferencesKey("show_session_reminders")
         private val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
+        private val USER_NAME = stringPreferencesKey("user_name")
+        private val INSTALL_DATE = longPreferencesKey("install_date")
     }
 }

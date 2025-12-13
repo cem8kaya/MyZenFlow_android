@@ -72,6 +72,13 @@ sealed class Screen(
         selectedIcon = Icons.Filled.Home, // Placeholder
         unselectedIcon = Icons.Outlined.Home // Placeholder
     )
+
+    object Onboarding : Screen(
+        route = "onboarding",
+        titleResId = R.string.app_name, // Placeholder
+        selectedIcon = Icons.Filled.Home, // Placeholder
+        unselectedIcon = Icons.Outlined.Home // Placeholder
+    )
 }
 
 // List of all bottom navigation screens
