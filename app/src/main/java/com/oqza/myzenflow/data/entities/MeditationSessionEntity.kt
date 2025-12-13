@@ -13,7 +13,15 @@ import java.util.UUID
  * Room entity for meditation sessions
  * Equivalent to iOS SessionData
  */
-@Entity(tableName = "meditation_sessions")
+@Entity(
+    tableName = "meditation_sessions",
+    indices = [
+        androidx.room.Index(value = ["date"]),
+        androidx.room.Index(value = ["completed"]),
+        androidx.room.Index(value = ["type"]),
+        androidx.room.Index(value = ["date", "completed"])
+    ]
+)
 data class MeditationSessionEntity(
     @PrimaryKey
     val id: String = UUID.randomUUID().toString(),

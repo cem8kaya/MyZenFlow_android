@@ -9,7 +9,14 @@ import java.util.UUID
 /**
  * Room entity for focus timer sessions
  */
-@Entity(tableName = "focus_sessions")
+@Entity(
+    tableName = "focus_sessions",
+    indices = [
+        androidx.room.Index(value = ["date"]),
+        androidx.room.Index(value = ["completed"]),
+        androidx.room.Index(value = ["date", "completed"])
+    ]
+)
 data class FocusSessionEntity(
     @PrimaryKey
     val id: String = UUID.randomUUID().toString(),

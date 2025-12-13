@@ -9,7 +9,15 @@ import java.util.UUID
  * Room entity for breathing exercise sessions
  * Stores completed breathing session data
  */
-@Entity(tableName = "breathing_sessions")
+@Entity(
+    tableName = "breathing_sessions",
+    indices = [
+        androidx.room.Index(value = ["date"]),
+        androidx.room.Index(value = ["completed"]),
+        androidx.room.Index(value = ["exerciseId"]),
+        androidx.room.Index(value = ["date", "completed"])
+    ]
+)
 data class BreathingSessionEntity(
     @PrimaryKey
     val id: String = UUID.randomUUID().toString(),
