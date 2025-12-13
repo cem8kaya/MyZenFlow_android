@@ -8,7 +8,13 @@ import java.time.LocalDateTime
 /**
  * Room entity for user achievements
  */
-@Entity(tableName = "achievements")
+@Entity(
+    tableName = "achievements",
+    indices = [
+        androidx.room.Index(value = ["isUnlocked"]),
+        androidx.room.Index(value = ["unlockedAt"])
+    ]
+)
 data class AchievementEntity(
     @PrimaryKey
     val type: AchievementType,

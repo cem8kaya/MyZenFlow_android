@@ -25,7 +25,7 @@ import com.oqza.myzenflow.data.entities.MeditationSessionEntity
         BreathingSessionEntity::class,
         AchievementEntity::class
     ],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -85,6 +85,32 @@ abstract class AppDatabase : RoomDatabase() {
                         progressTarget INTEGER NOT NULL
                     )
                 """.trimIndent())
+            }
+        }
+
+        // Migration from version 3 to 4: Add database indices for performance
+        val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // Add indices to meditation_sessions
+                database.execSQL("CREATE INDEX IF NOT EXISTS index_meditation_sessions_date ON meditation_sessions(date)")
+                database.execSQL("CREATE INDEX IF NOT EXISTS index_meditation_sessions_completed ON meditation_sessions(completed)")
+                database.execSQL("CREATE INDEX IF NOT EXISTS index_meditation_sessions_type ON meditation_sessions(type)")
+                database.execSQL("CREATE INDEX IF NOT EXISTS index_meditation_sessions_date_completed ON meditation_sessions(date, completed)")
+
+                // Add indices to focus_sessions
+                database.execSQL("CREATE INDEX IF NOT EXISTS index_focus_sessions_date ON focus_sessions(date)")
+                database.execSQL("CREATE INDEX IF NOT EXISTS index_focus_sessions_completed ON focus_sessions(completed)")
+                database.execSQL("CREATE INDEX IF NOT EXISTS index_focus_sessions_date_completed ON focus_sessions(date, completed)")
+
+                // Add indices to breathing_sessions
+                database.execSQL("CREATE INDEX IF NOT EXISTS index_breathing_sessions_date ON breathing_sessions(date)")
+                database.execSQL("CREATE INDEX IF NOT EXISTS index_breathing_sessions_completed ON breathing_sessions(completed)")
+                database.execSQL("CREATE INDEX IF NOT EXISTS index_breathing_sessions_exerciseId ON breathing_sessions(exerciseId)")
+                database.execSQL("CREATE INDEX IF NOT EXISTS index_breathing_sessions_date_completed ON breathing_sessions(date, completed)")
+
+                // Add indices to achievements
+                database.execSQL("CREATE INDEX IF NOT EXISTS index_achievements_isUnlocked ON achievements(isUnlocked)")
+                database.execSQL("CREATE INDEX IF NOT EXISTS index_achievements_unlockedAt ON achievements(unlockedAt)")
             }
         }
     }
