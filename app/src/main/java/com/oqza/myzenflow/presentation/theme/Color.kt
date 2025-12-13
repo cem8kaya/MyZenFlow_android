@@ -63,3 +63,47 @@ val ZenOnSurfaceVariantDark = Color(0xFFCAC4D0)
 
 val ZenOutlineDark = Color(0xFF938F99)
 val ZenOutlineVariantDark = Color(0xFF49454F)
+
+// Breathing Screen Gradient Colors - Light Theme
+val BreathingGradient1Light = Color(0xFFE3F2FD) // Light Blue
+val BreathingGradient2Light = Color(0xFFBBDEFB) // Medium Blue
+val BreathingGradient3Light = Color(0xFF90CAF9) // Darker Blue
+
+// Breathing Screen Gradient Colors - Dark Theme
+val BreathingGradient1Dark = Color(0xFF1A1A2E) // Deep dark blue
+val BreathingGradient2Dark = Color(0xFF16213E) // Navy
+val BreathingGradient3Dark = Color(0xFF0F3460) // Deep purple-blue
+
+// Breathing Circle Phase Colors - Light Theme
+val BreathingInhalePrimaryLight = Color(0xFF2196F3) // Blue
+val BreathingInhaleSecondaryLight = Color(0xFF42A5F5)
+val BreathingHoldInhalePrimaryLight = Color(0xFF673AB7) // Deep Purple
+val BreathingHoldInhaleSecondaryLight = Color(0xFF7E57C2)
+val BreathingExhalePrimaryLight = Color(0xFF9C27B0) // Purple
+val BreathingExhaleSecondaryLight = Color(0xFFAB47BC)
+val BreathingHoldExhalePrimaryLight = Color(0xFF7E57C2) // Light Purple
+val BreathingHoldExhaleSecondaryLight = Color(0xFF9575CD)
+val BreathingRestPrimaryLight = Color(0xFF607D8B) // Blue Gray
+val BreathingRestSecondaryLight = Color(0xFF78909C)
+
+// Breathing Circle Phase Colors - Dark Theme
+val BreathingInhalePrimaryDark = Color(0xFF4A90E2) // Calm Blue
+val BreathingInhaleSecondaryDark = Color(0xFF50C9E9)
+val BreathingHoldInhalePrimaryDark = Color(0xFF7B68EE) // Mystical Violet
+val BreathingHoldInhaleSecondaryDark = Color(0xFF9B88FF)
+val BreathingExhalePrimaryDark = Color(0xFFB47DED) // Soft Purple
+val BreathingExhaleSecondaryDark = Color(0xFFD4A5FF)
+val BreathingHoldExhalePrimaryDark = Color(0xFF9B88FF) // Light Violet
+val BreathingHoldExhaleSecondaryDark = Color(0xFFB4A0FF)
+val BreathingRestPrimaryDark = Color(0xFF90A4AE) // Cool Gray
+val BreathingRestSecondaryDark = Color(0xFFB0BEC5)
+
+// Tree Visualization Colors
+val TreeTrunkColor = Color(0xFF8B4513) // Brown
+val TreeLeavesColorLight = Color(0xFF4CAF50) // Green
+val TreeLeavesColorDark = Color(0xFF228B22) // Forest Green
+val TreeBlossomColor = Color(0xFFFFB6C1) // Light Pink
+val TreeFruitColor = Color(0xFFFF6347) // Tomato
+val TreeGroundColorLight = Color(0xFFBCAAA4) // Light Brown
+val TreeGroundColorDark = Color(0xFF8B7355) // Dark Brown
+val TreeAuraColor = Color(0xFFFFD700) // Gold
