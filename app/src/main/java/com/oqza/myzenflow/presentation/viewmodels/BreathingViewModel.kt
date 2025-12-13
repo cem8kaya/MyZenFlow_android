@@ -296,7 +296,7 @@ class BreathingViewModel @Inject constructor(
     }
 
     /**
-     * Execute a single breathing phase
+     * Execute a single breathing phase with timestamp-based timing
      */
     private suspend fun executePhase(
         phase: BreathingPhase,
@@ -317,11 +317,15 @@ class BreathingViewModel @Inject constructor(
         val totalDurationMs = durationSeconds * 1000L
         val startProgressMs = (startProgress * totalDurationMs).toLong()
 
-        var elapsedMs = startProgressMs
+        // Use timestamp-based timing to avoid drift
+        val startTime = System.currentTimeMillis()
 
-        while (elapsedMs < totalDurationMs && currentCoroutineContext().isActive && !_uiState.value.isPaused) {
+        while (currentCoroutineContext().isActive && !_uiState.value.isPaused) {
             delay(updateIntervalMs)
-            elapsedMs += updateIntervalMs
+
+            // Calculate elapsed time based on current timestamp
+            val currentTime = System.currentTimeMillis()
+            val elapsedMs = (currentTime - startTime + startProgressMs).coerceAtMost(totalDurationMs)
 
             val progress = (elapsedMs.toFloat() / totalDurationMs).coerceIn(0f, 1f)
             val totalProgress = calculateTotalProgress(exercise, _uiState.value.currentCycle, phase, progress)
@@ -330,6 +334,11 @@ class BreathingViewModel @Inject constructor(
                 phaseProgress = progress,
                 totalProgress = totalProgress
             )
+
+            // Exit when phase duration is complete
+            if (elapsedMs >= totalDurationMs) {
+                break
+            }
         }
     }
 
