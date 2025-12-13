@@ -1,11 +1,14 @@
 package com.oqza.myzenflow.presentation.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.oqza.myzenflow.data.models.AppLanguage
 import com.oqza.myzenflow.data.models.UserPreferences
 import com.oqza.myzenflow.data.repository.PreferencesRepository
+import com.oqza.myzenflow.utils.LocaleManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,6 +22,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val preferencesRepository: PreferencesRepository
 ) : ViewModel() {
 
@@ -45,11 +49,14 @@ class SettingsViewModel @Inject constructor(
 
     /**
      * Update language preference
+     * This will trigger MainActivity's LaunchedEffect to recreate the activity
      */
     fun updateLanguage(language: AppLanguage) {
         viewModelScope.launch {
             try {
                 preferencesRepository.updateLanguage(language)
+                // LocaleManager.setLocale is called in MainActivity when the preference changes
+                // We just need to update the preference here
                 showMessage("Language updated successfully")
             } catch (e: Exception) {
                 showError("Failed to update language")

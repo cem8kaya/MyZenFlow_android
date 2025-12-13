@@ -15,10 +15,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.oqza.myzenflow.R
 import com.oqza.myzenflow.presentation.screens.components.*
 import com.oqza.myzenflow.presentation.viewmodels.BreathingViewModel
 import com.oqza.myzenflow.presentation.theme.breathingGradientColors
@@ -87,7 +89,7 @@ fun BreathingScreen(
                 TopAppBar(
                     title = {
                         Text(
-                            text = uiState.selectedExercise?.displayName ?: "Nefes Egzersizi",
+                            text = uiState.selectedExercise?.displayName ?: stringResource(R.string.breathing_title),
                             fontWeight = FontWeight.Bold
                         )
                     },
@@ -95,7 +97,7 @@ fun BreathingScreen(
                         IconButton(onClick = onNavigateBack) {
                             Icon(
                                 imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "Geri"
+                                contentDescription = stringResource(R.string.back)
                             )
                         }
                     },
@@ -105,7 +107,7 @@ fun BreathingScreen(
                             IconButton(onClick = { showExerciseSheet = true }) {
                                 Icon(
                                     imageVector = Icons.Default.FitnessCenter,
-                                    contentDescription = "Egzersiz Seç"
+                                    contentDescription = stringResource(R.string.exercise_select)
                                 )
                             }
                         }
@@ -114,7 +116,7 @@ fun BreathingScreen(
                         IconButton(onClick = { showSoundSheet = true }) {
                             Icon(
                                 imageVector = if (uiState.soundEnabled) Icons.Default.VolumeUp else Icons.Default.VolumeOff,
-                                contentDescription = "Ses Ayarları"
+                                contentDescription = stringResource(R.string.sound_settings)
                             )
                         }
                     },
@@ -187,7 +189,7 @@ fun BreathingScreen(
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Text(
-                                    text = "Döngü ${uiState.currentCycle} / ${uiState.selectedExercise?.cycles}",
+                                    text = stringResource(R.string.cycle_progress, uiState.currentCycle, uiState.selectedExercise?.cycles ?: 0),
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.onSurface
@@ -213,7 +215,7 @@ fun BreathingScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.SelfImprovement,
-                                contentDescription = "Nefes",
+                                contentDescription = stringResource(R.string.breathing_exercise),
                                 modifier = Modifier.size(120.dp),
                                 tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                             )
@@ -221,7 +223,7 @@ fun BreathingScreen(
                             Spacer(modifier = Modifier.height(24.dp))
 
                             Text(
-                                text = "Bir nefes egzersizi seçin",
+                                text = stringResource(R.string.select_exercise),
                                 style = MaterialTheme.typography.headlineSmall,
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                             )
@@ -237,10 +239,10 @@ fun BreathingScreen(
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.FitnessCenter,
-                                    contentDescription = "Egzersiz Seç"
+                                    contentDescription = stringResource(R.string.exercise_select)
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text("Egzersiz Seç")
+                                Text(stringResource(R.string.exercise_select))
                             }
                         }
                     }

@@ -32,10 +32,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.oqza.myzenflow.R
 import com.oqza.myzenflow.presentation.components.GreetingHeader
 import com.oqza.myzenflow.presentation.components.QuickAction
 import com.oqza.myzenflow.presentation.components.QuickActionsGrid
@@ -146,8 +148,8 @@ private fun getQuickActions(): List<QuickAction> {
     return listOf(
         QuickAction(
             icon = Icons.Outlined.Air,
-            title = "Nefes",
-            subtitle = "Egzersizler",
+            title = stringResource(R.string.quick_action_breathing),
+            subtitle = stringResource(R.string.quick_action_breathing_subtitle),
             gradientColors = listOf(
                 Color(0xFF6366F1),
                 Color(0xFF8B5CF6)
@@ -156,8 +158,8 @@ private fun getQuickActions(): List<QuickAction> {
         ),
         QuickAction(
             icon = Icons.Outlined.Timer,
-            title = "Odaklan",
-            subtitle = "Pomodoro",
+            title = stringResource(R.string.quick_action_focus),
+            subtitle = stringResource(R.string.quick_action_focus_subtitle),
             gradientColors = listOf(
                 Color(0xFFEC4899),
                 Color(0xFFF43F5E)
@@ -166,8 +168,8 @@ private fun getQuickActions(): List<QuickAction> {
         ),
         QuickAction(
             icon = Icons.Outlined.Park,
-            title = "Zen Bahçe",
-            subtitle = "Huzur Bul",
+            title = stringResource(R.string.quick_action_garden),
+            subtitle = stringResource(R.string.quick_action_garden_subtitle),
             gradientColors = listOf(
                 Color(0xFF10B981),
                 Color(0xFF059669)
@@ -176,8 +178,8 @@ private fun getQuickActions(): List<QuickAction> {
         ),
         QuickAction(
             icon = Icons.Outlined.CalendarMonth,
-            title = "İlerleme",
-            subtitle = "Geçmiş",
+            title = stringResource(R.string.quick_action_progress),
+            subtitle = stringResource(R.string.quick_action_progress_subtitle),
             gradientColors = listOf(
                 Color(0xFFF59E0B),
                 Color(0xFFEF4444)
