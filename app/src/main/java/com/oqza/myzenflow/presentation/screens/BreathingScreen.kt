@@ -1,10 +1,13 @@
 package com.oqza.myzenflow.presentation.screens
 
 import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -14,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -49,6 +54,18 @@ fun BreathingScreen(
     var showExerciseSheet by remember { mutableStateOf(false) }
     var showSoundSheet by remember { mutableStateOf(false) }
 
+    // Exit dialog state
+    var showExitDialog by remember { mutableStateOf(false) }
+
+    // BackHandler for hardware back button
+    BackHandler(enabled = true) {
+        if (uiState.isActive) {
+            showExitDialog = true
+        } else {
+            onNavigateBack()
+        }
+    }
+
     // Gradient background colors from theme
     val gradientColors = breathingGradientColors()
 
@@ -77,12 +94,39 @@ fun BreathingScreen(
         }
     }
 
+    // Swipe gesture detection
+    val density = LocalDensity.current
+    var dragOffset by remember { mutableFloatStateOf(0f) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(gradientColors)
             )
+            .pointerInput(uiState.isActive) {
+                detectVerticalDragGestures(
+                    onDragEnd = {
+                        val dragThreshold = with(density) { 200.dp.toPx() }
+                        if (dragOffset > dragThreshold) {
+                            if (uiState.isActive) {
+                                showExitDialog = true
+                            } else {
+                                onNavigateBack()
+                            }
+                        }
+                        dragOffset = 0f
+                    },
+                    onDragCancel = {
+                        dragOffset = 0f
+                    },
+                    onVerticalDrag = { _, dragAmount ->
+                        if (dragAmount > 0) { // Only track downward swipes
+                            dragOffset += dragAmount
+                        }
+                    }
+                )
+            }
     ) {
         Scaffold(
             topBar = {
@@ -318,5 +362,94 @@ fun BreathingScreen(
                 onDismiss = { viewModel.dismissSessionSummary() }
             )
         }
+
+        // Exit Confirmation Dialog
+        if (showExitDialog) {
+            ExitSessionDialog(
+                onConfirm = {
+                    viewModel.stopExercise()
+                    showExitDialog = false
+                    onNavigateBack()
+                },
+                onDismiss = {
+                    showExitDialog = false
+                }
+            )
+        }
+
+        // Semi-transparent floating back button (visible only when session is NOT active)
+        if (!uiState.isActive) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .systemBarsPadding(),
+                contentAlignment = Alignment.TopStart
+            ) {
+                IconButton(
+                    onClick = onNavigateBack,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .background(
+                            color = Color.Black.copy(alpha = 0.3f),
+                            shape = CircleShape
+                        )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = stringResource(R.string.back),
+                        tint = Color.White
+                    )
+                }
+            }
+        }
     }
+}
+
+/**
+ * Exit session confirmation dialog
+ */
+@Composable
+private fun ExitSessionDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        icon = {
+            Icon(
+                imageVector = Icons.Default.Warning,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error
+            )
+        },
+        title = {
+            Text(
+                text = "Exit Session?",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Text(
+                text = "Are you sure you want to exit? Your current session progress will be lost.",
+                style = MaterialTheme.typography.bodyMedium
+            )
+        },
+        confirmButton = {
+            TextButton(
+                onClick = onConfirm,
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = MaterialTheme.colorScheme.error
+                )
+            ) {
+                Text("Exit")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Continue")
+            }
+        }
+    )
 }
