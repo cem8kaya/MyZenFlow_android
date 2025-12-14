@@ -86,6 +86,6 @@ val bottomNavigationScreens = listOf(
     Screen.Home,
     Screen.Focus,
     Screen.ZenGarden,
-    Screen.Profile,
-    Screen.Settings
+    Screen.Calendar,
+    Screen.Profile
 )
