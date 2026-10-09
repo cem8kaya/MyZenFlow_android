@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.data.repository
 
+import com.oqza.myzenflow.data.models.PracticeGoal
 import com.oqza.myzenflow.data.datastore.PreferencesDataStore
 import com.oqza.myzenflow.data.models.AppLanguage
 import com.oqza.myzenflow.data.models.ThemeMode
@@ -93,6 +94,13 @@ class PreferencesRepository @Inject constructor(
      */
     suspend fun updateThemeMode(mode: ThemeMode) {
         preferencesDataStore.updateThemeMode(mode)
+    }
+
+    /**
+     * Update primary goal
+     */
+    suspend fun updatePrimaryGoal(goal: PracticeGoal) {
+        preferencesDataStore.updatePrimaryGoal(goal)
     }
 
     /**

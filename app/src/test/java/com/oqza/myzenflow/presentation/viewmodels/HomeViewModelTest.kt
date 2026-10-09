@@ -53,6 +53,7 @@ class HomeViewModelTest {
         coEvery { preferencesRepository.userPreferences } returns flowOf(UserPreferences())
         coEvery { sessionRepository.getSessionsForDay(any(), any()) } returns emptyList()
         coEvery { sessionRepository.getRecentSessions(any()) } returns flowOf(emptyList())
+        coEvery { sessionRepository.getAllPracticeSessions() } returns flowOf(emptyList())
     }
 
     @After

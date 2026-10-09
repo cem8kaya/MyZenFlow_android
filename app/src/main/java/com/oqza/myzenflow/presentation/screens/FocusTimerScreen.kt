@@ -1,5 +1,22 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.presentation.theme.ZenTypography
+import com.oqza.myzenflow.presentation.theme.ZenTertiaryDark
+import com.oqza.myzenflow.presentation.theme.ZenSurfaceVariantDark
+import com.oqza.myzenflow.presentation.theme.ZenShapes
+import com.oqza.myzenflow.presentation.theme.ZenSecondaryDark
+import com.oqza.myzenflow.presentation.theme.ZenPrimaryDark
+import com.oqza.myzenflow.presentation.theme.ZenOutlineVariantDark
+import com.oqza.myzenflow.presentation.theme.ZenOnSurfaceVariantDark
+import com.oqza.myzenflow.presentation.theme.ZenOnSurfaceDark
+import com.oqza.myzenflow.presentation.theme.ZenOnBackgroundDark
+import com.oqza.myzenflow.presentation.theme.ZenMidnight
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.clickable
 import com.oqza.myzenflow.presentation.components.ZenButtonStyle
 import com.oqza.myzenflow.presentation.components.ZenButton
 import com.oqza.myzenflow.R
@@ -42,12 +59,32 @@ fun FocusTimerScreen(
     val todaysStats by viewModel.todaysStats.collectAsState()
     val todaysSessions by viewModel.todaysSessions.collectAsState()
     var showSettingsDialog by remember { mutableStateOf(false) }
+    var deepFocus by remember { mutableStateOf(false) }
+    val timerActive = uiState.timerStatus == TimerStatus.RUNNING || uiState.timerStatus == TimerStatus.PAUSED
+
+    // Leave deep focus when the session ends or is stopped
+    LaunchedEffect(timerActive) { if (!timerActive) deepFocus = false }
+
+    // Keep the screen on while the timer runs in deep focus
+    val view = LocalView.current
+    DisposableEffect(deepFocus) {
+        view.keepScreenOn = deepFocus
+        onDispose { view.keepScreenOn = false }
+    }
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.focus_title_bar)) },
                 actions = {
+                    if (timerActive) {
+                        IconButton(onClick = { deepFocus = true }) {
+                            Icon(
+                                Icons.Default.NightsStay,
+                                contentDescription = stringResource(R.string.focus_deep_mode)
+                            )
+                        }
+                    }
                     IconButton(onClick = { showSettingsDialog = true }) {
                         Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.focus_settings))
                     }
@@ -152,6 +189,16 @@ fun FocusTimerScreen(
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
+    }
+
+    if (deepFocus) {
+        DeepFocusOverlay(
+            timeRemaining = uiState.formatTime(),
+            progress = uiState.calculateProgress(),
+            sessionType = uiState.currentSessionType,
+            isRunning = uiState.timerStatus == TimerStatus.RUNNING,
+            onExit = { deepFocus = false }
+        )
     }
 
     // Settings dialog
@@ -784,4 +831,66 @@ fun TimerSettingsDialog(
             }
         }
     )
+}
+
+/**
+ * Distraction-free full-screen timer: near-black background, only the time and progress.
+ * Any tap (or the back button) returns to the normal screen.
+ */
+@Composable
+private fun DeepFocusOverlay(
+    timeRemaining: String,
+    progress: Float,
+    sessionType: TimerSessionType,
+    isRunning: Boolean,
+    onExit: () -> Unit
+) {
+    Dialog(
+        onDismissRequest = onExit,
+        properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)
+    ) {
+        MaterialTheme(
+            colorScheme = darkColorScheme(
+                primary = ZenPrimaryDark,
+                secondary = ZenSecondaryDark,
+                tertiary = ZenTertiaryDark,
+                background = ZenMidnight,
+                surface = ZenMidnight,
+                onBackground = ZenOnBackgroundDark,
+                onSurface = ZenOnSurfaceDark,
+                surfaceVariant = ZenSurfaceVariantDark,
+                onSurfaceVariant = ZenOnSurfaceVariantDark,
+                outlineVariant = ZenOutlineVariantDark
+            ),
+            typography = ZenTypography,
+            shapes = ZenShapes
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(ZenMidnight)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = onExit
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularTimerDisplay(
+                    timeRemaining = timeRemaining,
+                    progress = progress,
+                    sessionType = sessionType,
+                    isRunning = isRunning
+                )
+                Text(
+                    text = stringResource(R.string.focus_deep_exit),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = ZenOnSurfaceVariantDark.copy(alpha = 0.6f),
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 48.dp)
+                )
+            }
+        }
+    }
 }

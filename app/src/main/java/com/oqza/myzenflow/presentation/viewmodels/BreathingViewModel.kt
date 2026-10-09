@@ -36,6 +36,13 @@ class BreathingViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(BreathingUiState())
     val uiState: StateFlow<BreathingUiState> = _uiState.asStateFlow()
 
+    /** Remaining ambient sleep-timer time, or null when no timer runs. */
+    val sleepTimerRemainingMs: StateFlow<Long?> = audioManager.sleepTimerRemainingMs
+
+    init {
+        audioManager.preloadCues()
+    }
+
     private var exerciseJob: Job? = null
     private var sessionStartTime: LocalDateTime? = null
 
@@ -66,11 +73,15 @@ class BreathingViewModel @Inject constructor(
         sessionStartTime = LocalDateTime.now()
         hapticManager.vibrateSessionStart()
 
+        if (_uiState.value.soundEnabled) {
+            audioManager.playCue(BreathingAudioManager.Cue.START, cueVolume())
+        }
         if (_uiState.value.soundEnabled && _uiState.value.selectedAmbientSound != BreathingAudioManager.AmbientSound.NONE) {
             audioManager.playAmbientSound(
                 _uiState.value.selectedAmbientSound,
                 volume = _uiState.value.volume
             )
+            startSleepTimerIfSet()
         }
 
         _uiState.value = _uiState.value.copy(
@@ -183,6 +194,26 @@ class BreathingViewModel @Inject constructor(
             }
         }
     }
+
+    /**
+     * Set the ambient sleep timer in minutes (0 = off).
+     */
+    fun setSleepTimer(minutes: Int) {
+        _uiState.value = _uiState.value.copy(sleepTimerMinutes = minutes)
+        if (_uiState.value.isActive && _uiState.value.soundEnabled) {
+            audioManager.startSleepTimer(minutes)
+        } else if (minutes == 0) {
+            audioManager.cancelSleepTimer()
+        }
+    }
+
+    private fun startSleepTimerIfSet() {
+        val minutes = _uiState.value.sleepTimerMinutes
+        if (minutes > 0) audioManager.startSleepTimer(minutes)
+    }
+
+    /** Cues sit a little above the ambience so they stay audible, but never jump to full volume. */
+    private fun cueVolume(): Float = (_uiState.value.volume * 1.6f).coerceIn(0.2f, 0.8f)
 
     /**
      * Set volume
@@ -312,6 +343,10 @@ class BreathingViewModel @Inject constructor(
         if (_uiState.value.hapticEnabled && startProgress == 0f) {
             hapticManager.vibrateForPhase(phase)
         }
+        // One soft chime per breath, at the start of the inhale
+        if (_uiState.value.soundEnabled && phase == BreathingPhase.INHALE && startProgress == 0f) {
+            audioManager.playCue(BreathingAudioManager.Cue.PHASE, cueVolume())
+        }
 
         val updateIntervalMs = 16L // ~60 FPS
         val totalDurationMs = durationSeconds * 1000L
@@ -434,6 +469,9 @@ class BreathingViewModel @Inject constructor(
     private fun completeExercise() {
         hapticManager.vibrateSessionComplete()
         audioManager.stopAmbientSound()
+        if (_uiState.value.soundEnabled) {
+            audioManager.playCue(BreathingAudioManager.Cue.END, cueVolume())
+        }
 
         val startTime = sessionStartTime ?: LocalDateTime.now()
         val durationSeconds = (LocalDateTime.now().toEpochSecond(java.time.ZoneOffset.UTC) -
@@ -504,6 +542,7 @@ data class BreathingUiState(
     val soundEnabled: Boolean = true,
     val selectedAmbientSound: BreathingAudioManager.AmbientSound = BreathingAudioManager.AmbientSound.OCEAN_WAVES,
     val volume: Float = 0.3f,
+    val sleepTimerMinutes: Int = 0,
     val showSessionSummary: Boolean = false,
     val sessionDurationSeconds: Int = 0
 )

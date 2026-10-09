@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.data.repository
 
+import com.oqza.myzenflow.utils.StreakCalculator
 import com.oqza.myzenflow.data.models.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -26,7 +27,7 @@ class StatsRepository @Inject constructor(
      */
     fun getUserStats(): Flow<UserStats> {
         return combine(
-            sessionRepository.getAllSessions(),
+            sessionRepository.getAllPracticeSessions(),
             focusRepository.getAllSessions(),
             preferencesRepository.userPreferences
         ) { meditationSessions, focusSessions, preferences ->
@@ -94,56 +95,14 @@ class StatsRepository @Inject constructor(
     /**
      * Calculate current meditation streak
      */
-    private fun calculateCurrentStreak(sessions: List<SessionData>): Int {
-        if (sessions.isEmpty()) return 0
-
-        val sortedDates = sessions
-            .map { it.date.toLocalDate() }
-            .distinct()
-            .sortedDescending()
-
-        var streak = 0
-        var currentDate = LocalDate.now()
-
-        for (date in sortedDates) {
-            if (date == currentDate || date == currentDate.minusDays(1)) {
-                streak++
-                currentDate = date.minusDays(1)
-            } else {
-                break
-            }
-        }
-
-        return streak
-    }
+    private fun calculateCurrentStreak(sessions: List<SessionData>): Int =
+        StreakCalculator.current(sessions.map { it.date.toLocalDate() })
 
     /**
-     * Calculate longest meditation streak
+     * Calculate longest meditation streak (one rest day per week is forgiven)
      */
-    private fun calculateLongestStreak(sessions: List<SessionData>): Int {
-        if (sessions.isEmpty()) return 0
-
-        val sortedDates = sessions
-            .map { it.date.toLocalDate() }
-            .distinct()
-            .sorted()
-
-        var longestStreak = 1
-        var currentStreak = 1
-
-        for (i in 1 until sortedDates.size) {
-            val daysDifference = sortedDates[i].toEpochDay() - sortedDates[i - 1].toEpochDay()
-
-            if (daysDifference == 1L) {
-                currentStreak++
-                longestStreak = maxOf(longestStreak, currentStreak)
-            } else {
-                currentStreak = 1
-            }
-        }
-
-        return longestStreak
-    }
+    private fun calculateLongestStreak(sessions: List<SessionData>): Int =
+        StreakCalculator.longest(sessions.map { it.date.toLocalDate() })
 
     /**
      * Calculate minutes meditated this week

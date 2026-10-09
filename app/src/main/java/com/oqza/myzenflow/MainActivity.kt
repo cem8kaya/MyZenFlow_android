@@ -1,5 +1,7 @@
 package com.oqza.myzenflow
 
+import com.oqza.myzenflow.utils.DeepLinks
+import androidx.compose.runtime.mutableStateOf
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -40,9 +42,19 @@ class MainActivity : ComponentActivity() {
     @Volatile
     private var preferencesLoaded = false
 
+    // Destination requested by a shortcut, widget or other launch intent (whitelisted)
+    private val pendingRoute = mutableStateOf<String?>(null)
+
+    override fun onNewIntent(intent: android.content.Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        pendingRoute.value = DeepLinks.routeFrom(intent)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen().setKeepOnScreenCondition { !preferencesLoaded }
         super.onCreate(savedInstanceState)
+        pendingRoute.value = DeepLinks.routeFrom(intent)
         enableEdgeToEdge()
 
         setContent {
@@ -83,6 +95,15 @@ class MainActivity : ComponentActivity() {
                         navController.navigate(Screen.Onboarding.route) {
                             popUpTo(Screen.Home.route) { inclusive = true }
                         }
+                    }
+                }
+
+                // Open a shortcut/widget destination once onboarding is done
+                val requestedRoute = pendingRoute.value
+                LaunchedEffect(requestedRoute, userPreferences.onboardingCompleted) {
+                    if (requestedRoute != null && userPreferences.onboardingCompleted) {
+                        navController.navigate(requestedRoute) { launchSingleTop = true }
+                        pendingRoute.value = null
                     }
                 }
 

@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.viewmodels
 
+import com.oqza.myzenflow.utils.StreakCalculator
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.oqza.myzenflow.data.models.SessionData
@@ -14,8 +15,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
+import java.time.LocalDate
 import javax.inject.Inject
 
 /**
@@ -39,40 +39,41 @@ class HomeViewModel @Inject constructor(
     /**
      * Load all home screen data
      */
-    private fun loadData() {
+    private fun loadData(silent: Boolean = false) {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            // A silent refresh (returning to the screen) keeps the content visible
+            _uiState.value = _uiState.value.copy(isLoading = !silent, error = null)
 
             try {
                 // Load user preferences
                 val preferences = preferencesRepository.userPreferences.first()
 
-                // Load today's stats
-                val todayStart = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS)
-                val todayEnd = todayStart.plusDays(1)
-                val todaySessions = sessionRepository.getSessionsForDay(todayStart, todayEnd)
+                // All practice (meditation, breathing and focus) feeds today's stats, streak and recents
+                val practice = sessionRepository.getAllPracticeSessions().first()
+                val today = LocalDate.now()
+                val todaySessions = practice.filter { it.date.toLocalDate() == today }
 
-                val todaySessionCount = todaySessions.count { it.completed }
-                val todayMinutes = todaySessions
-                    .filter { it.completed }
-                    .sumOf { it.duration } / 60
+                val todaySessionCount = todaySessions.size
+                val todayMinutes = todaySessions.sumOf { it.duration } / 60
 
-                // Calculate weekly streak
-                val streak = calculateWeeklyStreak()
+                // Streak over the full history (one rest day per week is forgiven)
+                val practiceDays = practice.map { it.date.toLocalDate() }
+                val streak = StreakCalculator.current(practiceDays)
+                val streakState = StreakCalculator.state(practiceDays)
 
-                // Get recent sessions
-                val recentSessions = sessionRepository.getRecentSessions(3).first()
+                val recentSessions = practice.take(3)
 
                 // Get random motivational quote
-                val quote = getMotivationalQuote()
+                val quote = _uiState.value.motivationalQuote.ifEmpty { getMotivationalQuote() }
 
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     todaySessionCount = todaySessionCount,
                     todayMinutes = todayMinutes,
                     currentStreak = streak,
+                    streakState = streakState,
                     recentSessions = recentSessions,
-                    userName = null, // Can be extended later
+                    userName = preferences.userName.takeIf { it.isNotBlank() && it != "Zenmaster" }, // "Zenmaster" was the old default
                     motivationalQuote = quote,
                     userPreferences = preferences
                 )
@@ -89,31 +90,7 @@ class HomeViewModel @Inject constructor(
      * Refresh all data
      */
     fun refreshData() {
-        loadData()
-    }
-
-    /**
-     * Calculate weekly streak (consecutive days with at least one session)
-     */
-    private suspend fun calculateWeeklyStreak(): Int {
-        var streak = 0
-        var currentDate = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS)
-
-        // Check last 7 days
-        for (i in 0 until 7) {
-            val dayStart = currentDate.minusDays(i.toLong())
-            val dayEnd = dayStart.plusDays(1)
-            val sessions = sessionRepository.getSessionsForDay(dayStart, dayEnd)
-
-            if (sessions.any { it.completed }) {
-                streak++
-            } else if (i > 0) {
-                // If we find a day without sessions (and it's not today), stop counting
-                break
-            }
-        }
-
-        return streak
+        loadData(silent = true)
     }
 
     /**
@@ -152,6 +129,7 @@ data class HomeUiState(
     val todaySessionCount: Int = 0,
     val todayMinutes: Int = 0,
     val currentStreak: Int = 0,
+    val streakState: StreakCalculator.State = StreakCalculator.State.NONE,
     val recentSessions: List<SessionData> = emptyList(),
     val userName: String? = null,
     val motivationalQuote: String = "",

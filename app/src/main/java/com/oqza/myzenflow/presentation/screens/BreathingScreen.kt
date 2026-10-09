@@ -1,5 +1,7 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.presentation.viewmodels.CheckInViewModel
+import androidx.compose.runtime.DisposableEffect
 import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.*
@@ -49,6 +51,16 @@ fun BreathingScreen(
     viewModel: BreathingViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val sleepTimerRemainingMs by viewModel.sleepTimerRemainingMs.collectAsState()
+    val checkInViewModel: CheckInViewModel = hiltViewModel()
+
+    // Screen stays awake while breathing, so the guide never dims mid-session
+    val view = LocalView.current
+    val keepScreenOn = uiState.isActive && !uiState.isPaused
+    DisposableEffect(keepScreenOn) {
+        view.keepScreenOn = keepScreenOn
+        onDispose { view.keepScreenOn = false }
+    }
 
     // Sheet states
     var showExerciseSheet by remember { mutableStateOf(false) }
@@ -349,6 +361,9 @@ fun BreathingScreen(
                 onToggleSound = { enabled ->
                     viewModel.toggleSound()
                 },
+                sleepTimerMinutes = uiState.sleepTimerMinutes,
+                sleepTimerRemainingMs = sleepTimerRemainingMs,
+                onSleepTimerSelected = { viewModel.setSleepTimer(it) },
                 onDismiss = { showSoundSheet = false }
             )
         }
@@ -359,7 +374,8 @@ fun BreathingScreen(
                 exercise = uiState.selectedExercise!!,
                 cyclesCompleted = uiState.currentCycle,
                 durationSeconds = uiState.sessionDurationSeconds,
-                onDismiss = { viewModel.dismissSessionSummary() }
+                onDismiss = { viewModel.dismissSessionSummary() },
+                onMoodSelected = { checkInViewModel.submitAfterSession(it) }
             )
         }
 
