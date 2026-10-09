@@ -282,7 +282,7 @@ class NotificationHelper @Inject constructor(
     /**
      * Show daily reminder notification
      */
-    fun showDailyReminderNotification() {
+    fun showDailyReminderNotification(userName: String = "", streak: Int = 0) {
         if (!hasNotificationPermission()) return
 
         val intent = Intent(context, MainActivity::class.java)
@@ -293,10 +293,21 @@ class NotificationHelper @Inject constructor(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
+        val title = if (userName.isBlank()) {
+            context.getString(R.string.reminder_title)
+        } else {
+            context.getString(R.string.reminder_title_named, userName)
+        }
+        val body = if (streak >= 2) {
+            context.getString(R.string.reminder_body_streak, streak)
+        } else {
+            context.getString(R.string.reminder_body)
+        }
+
         val notification = NotificationCompat.Builder(context, REMINDER_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle("Günlük Odaklanma Zamanı! 🎯")
-            .setContentText("Bugünkü hedeflerine ulaşmak için odaklanma seansına başla.")
+            .setContentTitle(title)
+            .setContentText(body)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
@@ -305,7 +316,7 @@ class NotificationHelper @Inject constructor(
         try {
             notificationManager.notify(REMINDER_NOTIFICATION_ID, notification)
         } catch (e: SecurityException) {
-            // Handle permission denied
+            // Permission revoked between the check and the call
         }
     }
 

@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.viewmodels
 
+import com.oqza.myzenflow.domain.workers.ReminderScheduler
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,7 +25,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val preferencesRepository: PreferencesRepository
+    private val preferencesRepository: PreferencesRepository,
+    private val reminderScheduler: ReminderScheduler
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -103,6 +105,7 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 preferencesRepository.updateDailyReminder(enabled, time)
+                if (enabled) reminderScheduler.schedule(time, replace = true) else reminderScheduler.cancel()
                 if (enabled) {
                     showMessage("Daily reminder set for $time")
                 } else {

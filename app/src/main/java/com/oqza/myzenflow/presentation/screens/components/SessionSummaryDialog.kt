@@ -1,5 +1,13 @@
 package com.oqza.myzenflow.presentation.screens.components
 
+import com.oqza.myzenflow.presentation.components.MoodPicker
+import com.oqza.myzenflow.data.models.MoodLevel
+import com.oqza.myzenflow.R
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -25,8 +33,10 @@ fun SessionSummaryDialog(
     cyclesCompleted: Int,
     durationSeconds: Int,
     onDismiss: () -> Unit,
+    onMoodSelected: (MoodLevel) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    var selectedMood by remember { mutableStateOf<MoodLevel?>(null) }
     val completionRate = (cyclesCompleted.toFloat() / exercise.cycles * 100).toInt()
 
     AlertDialog(
@@ -35,16 +45,15 @@ fun SessionSummaryDialog(
         icon = {
             Icon(
                 imageVector = Icons.Default.CheckCircle,
-                contentDescription = "Tamamlandı",
+                contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(48.dp)
             )
         },
         title = {
             Text(
-                text = "Tebrikler!",
+                text = stringResource(R.string.summary_title),
                 style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
         },
@@ -55,7 +64,7 @@ fun SessionSummaryDialog(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text(
-                    text = "Nefes egzersizini tamamladınız!",
+                    text = stringResource(R.string.summary_message),
                     style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -69,67 +78,44 @@ fun SessionSummaryDialog(
                     // Exercise name
                     StatisticCard(
                         icon = Icons.Default.FavoriteBorder,
-                        label = "Egzersiz",
+                        label = stringResource(R.string.summary_exercise),
                         value = exercise.displayName
                     )
 
                     // Cycles completed
                     StatisticCard(
                         icon = Icons.Default.Loop,
-                        label = "Döngü",
+                        label = stringResource(R.string.summary_cycles),
                         value = "$cyclesCompleted / ${exercise.cycles}"
                     )
 
                     // Total duration
                     StatisticCard(
                         icon = Icons.Default.Timer,
-                        label = "Süre",
+                        label = stringResource(R.string.summary_duration),
                         value = formatDuration(durationSeconds)
                     )
 
                     // Completion rate
                     StatisticCard(
                         icon = Icons.Default.CheckCircle,
-                        label = "Tamamlanma",
-                        value = "%$completionRate"
+                        label = stringResource(R.string.summary_completion),
+                        value = "$completionRate%"
                     )
                 }
 
-                // Future features (placeholders)
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    // Save to Health (future)
-                    OutlinedButton(
-                        onClick = { /* TODO: Health integration */ },
-                        modifier = Modifier.weight(1f),
-                        enabled = false
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.HealthAndSafety,
-                            contentDescription = "Sağlık",
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text("Kaydet", style = MaterialTheme.typography.labelSmall)
+                // How do you feel now? (stored on this device only)
+                Text(
+                    text = stringResource(R.string.aftersession_mood),
+                    style = MaterialTheme.typography.titleSmall
+                )
+                MoodPicker(
+                    selected = selectedMood,
+                    onSelect = {
+                        selectedMood = it
+                        onMoodSelected(it)
                     }
-
-                    // Share (future)
-                    OutlinedButton(
-                        onClick = { /* TODO: Share */ },
-                        modifier = Modifier.weight(1f),
-                        enabled = false
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Share,
-                            contentDescription = "Paylaş",
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text("Paylaş", style = MaterialTheme.typography.labelSmall)
-                    }
-                }
+                )
             }
         },
         confirmButton = {
@@ -137,7 +123,7 @@ fun SessionSummaryDialog(
                 onClick = onDismiss,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Tamam")
+                Text(stringResource(R.string.summary_ok))
             }
         },
         shape = RoundedCornerShape(24.dp)
@@ -174,7 +160,7 @@ private fun StatisticCard(
             ) {
                 Icon(
                     imageVector = icon,
-                    contentDescription = label,
+                    contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(20.dp)
                 )
@@ -198,12 +184,13 @@ private fun StatisticCard(
 /**
  * Format duration in seconds to readable format
  */
+@Composable
 private fun formatDuration(seconds: Int): String {
     val minutes = seconds / 60
     val secs = seconds % 60
     return if (minutes > 0) {
-        "$minutes dk $secs sn"
+        stringResource(R.string.duration_min_sec, minutes, secs)
     } else {
-        "$secs sn"
+        stringResource(R.string.duration_sec, secs)
     }
 }

@@ -1,5 +1,7 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.utils.StreakCalculator
+import com.oqza.myzenflow.presentation.components.DailyCheckInCard
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.core.MutableTransitionState
@@ -117,6 +119,12 @@ fun HomeScreen(
                                 onStart = { route -> navController?.navigate(route) }
                             )
 
+                            Spacer(modifier = Modifier.height(ZenSpacing.lg))
+
+                            DailyCheckInCard(
+                                modifier = Modifier.padding(horizontal = ZenSpacing.screen)
+                            )
+
                             Spacer(modifier = Modifier.height(ZenSpacing.xl))
 
                             TodayStatsRow(
@@ -124,6 +132,8 @@ fun HomeScreen(
                                 minutes = uiState.todayMinutes,
                                 streak = uiState.currentStreak
                             )
+
+                            StreakMessage(uiState.streakState)
 
                             Spacer(modifier = Modifier.height(ZenSpacing.xxl))
 
@@ -146,6 +156,26 @@ fun HomeScreen(
             }
         }
     }
+}
+
+/**
+ * One supportive line about the streak. Never guilt-tripping: a broken streak is a fresh start.
+ */
+@Composable
+private fun StreakMessage(state: StreakCalculator.State) {
+    val message = when (state) {
+        StreakCalculator.State.NONE -> return
+        StreakCalculator.State.BROKEN -> R.string.streak_broken
+        StreakCalculator.State.AT_RISK -> R.string.streak_at_risk
+        StreakCalculator.State.REST_DAY_USED -> R.string.streak_rest_day
+        StreakCalculator.State.SAFE_TODAY -> R.string.streak_safe
+    }
+    Text(
+        text = stringResource(message),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.padding(horizontal = ZenSpacing.screen, vertical = ZenSpacing.sm)
+    )
 }
 
 /**

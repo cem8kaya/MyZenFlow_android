@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.domain.workers.ReminderScheduler
 import com.oqza.myzenflow.presentation.theme.ZenIndigo
 import android.Manifest
 import android.os.Build
@@ -563,7 +564,8 @@ private fun OnboardingBottomBar(
  */
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
-    private val preferencesRepository: PreferencesRepository
+    private val preferencesRepository: PreferencesRepository,
+    private val reminderScheduler: ReminderScheduler
 ) : ViewModel() {
 
     fun navigateToPage(page: Int, pagerState: androidx.compose.foundation.pager.PagerState) {
@@ -582,6 +584,7 @@ class OnboardingViewModel @Inject constructor(
             preferencesRepository.updateUserName(userName)
             preferencesRepository.updateWeeklyGoal(weeklyGoal)
             preferencesRepository.updateDailyReminder(notificationsEnabled, reminderTime)
+            if (notificationsEnabled) reminderScheduler.schedule(reminderTime, replace = true)
             preferencesRepository.setInstallDateIfNeeded()
             preferencesRepository.completeOnboarding()
         }
