@@ -85,6 +85,7 @@ import com.oqza.myzenflow.presentation.viewmodels.SettingsViewModel
 @Composable
 fun SettingsScreen(
     onNavigateBack: (() -> Unit)? = null,
+    onOpenPaywall: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -121,8 +122,7 @@ fun SettingsScreen(
     // Handle navigation to premium (this would be implemented with actual navigation)
     LaunchedEffect(uiState.navigateToPremium) {
         if (uiState.navigateToPremium) {
-            // TODO: Navigate to paywall screen when implemented
-            // navController.navigate(Screen.Paywall.route)
+            onOpenPaywall()
             viewModel.clearPremiumNavigation()
         }
     }
@@ -174,7 +174,8 @@ fun SettingsScreen(
                                 )
                             } else {
                                 PremiumStatusCard(
-                                    onRestorePurchases = { viewModel.restorePurchases() }
+                                    onRestorePurchases = { viewModel.restorePurchases() },
+                                onManageSubscription = { openSubscriptionManagement(context) }
                                 )
                             }
                         }
@@ -322,25 +323,29 @@ fun SettingsScreen(
                                     showDivider = true
                                 )
 
-                                SettingItem(
-                                    title = stringResource(R.string.privacy_policy),
-                                    icon = Icons.Default.Policy,
-                                    onClick = {
-                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://myzenflow.com/privacy"))
-                                        context.startActivity(intent)
-                                    },
-                                    showDivider = true
-                                )
+                                if (BuildConfig.PRIVACY_POLICY_URL.isNotBlank()) {
+                                    SettingItem(
+                                        title = stringResource(R.string.privacy_policy),
+                                        icon = Icons.Default.Policy,
+                                        onClick = {
+                                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.PRIVACY_POLICY_URL))
+                                            context.startActivity(intent)
+                                        },
+                                        showDivider = true
+                                    )
+                                }
 
-                                SettingItem(
-                                    title = stringResource(R.string.terms_service),
-                                    icon = Icons.Outlined.Article,
-                                    onClick = {
-                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://myzenflow.com/terms"))
-                                        context.startActivity(intent)
-                                    },
-                                    showDivider = true
-                                )
+                                if (BuildConfig.TERMS_URL.isNotBlank()) {
+                                    SettingItem(
+                                        title = stringResource(R.string.terms_service),
+                                        icon = Icons.Outlined.Article,
+                                        onClick = {
+                                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.TERMS_URL))
+                                            context.startActivity(intent)
+                                        },
+                                        showDivider = true
+                                    )
+                                }
 
                                 SettingItem(
                                     title = stringResource(R.string.support_email),

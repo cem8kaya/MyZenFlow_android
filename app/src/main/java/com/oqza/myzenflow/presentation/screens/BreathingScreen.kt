@@ -49,6 +49,7 @@ import com.oqza.myzenflow.presentation.theme.breathingGradientColors
 @Composable
 fun BreathingScreen(
     onNavigateBack: () -> Unit = {},
+    onOpenPaywall: () -> Unit = {},
     viewModel: BreathingViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -342,7 +343,8 @@ fun BreathingScreen(
                 onExerciseSelected = { exercise ->
                     viewModel.selectExercise(exercise)
                 },
-                onDismiss = { showExerciseSheet = false }
+                onDismiss = { showExerciseSheet = false },
+                onLockedClick = onOpenPaywall
             )
         }
 
@@ -364,7 +366,8 @@ fun BreathingScreen(
                 sleepTimerMinutes = uiState.sleepTimerMinutes,
                 sleepTimerRemainingMs = sleepTimerRemainingMs,
                 onSleepTimerSelected = { viewModel.setSleepTimer(it) },
-                onDismiss = { showSoundSheet = false }
+                onDismiss = { showSoundSheet = false },
+                onLockedClick = onOpenPaywall
             )
         }
 

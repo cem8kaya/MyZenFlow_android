@@ -107,7 +107,7 @@
     <string name="feature_all_exercises">All breathing exercises</string>
     <string name="feature_all_sounds">Premium ambient sounds</string>
     <string name="feature_advanced_stats">Advanced statistics</string>
-    <string name="feature_premium_themes">Premium themes</string>
+    <string name="feature_premium_themes">Supports ZenFlow\'s ongoing development</string>
     <string name="button_unlock">Unlock Premium</string>
     <string name="premium_description">You have access to all premium features</string>
 
@@ -378,4 +378,34 @@
     <string name="time_yesterday">Yesterday</string>
     <string name="phase_ready">Ready</string>
     <string name="language_system">System default</string>
+    <string name="paywall_title">Go deeper with Premium</string>
+    <string name="paywall_subtitle">Everything in ZenFlow, no limits.</string>
+    <string name="plan_monthly">Monthly</string>
+    <string name="plan_yearly">Yearly</string>
+    <string name="plan_lifetime">Lifetime</string>
+    <string name="plan_per_month">%1$s / month</string>
+    <string name="plan_per_year">%1$s / year</string>
+    <string name="plan_one_time">%1$s, one time</string>
+    <string name="plan_equivalent_month">about %1$s per month</string>
+    <string name="plan_best_value">Best value</string>
+    <string name="plan_save_percent">Save %1$d%%</string>
+    <string name="plan_trial_days">%1$d-day free trial, then</string>
+    <string name="paywall_cta">Continue</string>
+    <string name="paywall_cta_trial">Start free trial</string>
+    <string name="paywall_terms_subscription">Subscriptions renew automatically until you cancel them in Google Play. You can cancel at any time; you keep access until the end of the period you paid for.</string>
+    <string name="paywall_terms_lifetime">One-time purchase. No renewal, no further charges.</string>
+    <string name="paywall_manage">Manage subscription</string>
+    <string name="paywall_load_error">Prices could not be loaded. Check your connection and try again.</string>
+    <string name="paywall_retry">Try again</string>
+    <string name="paywall_success">Premium unlocked. Thank you!</string>
+    <string name="paywall_pending">Your payment is pending. Premium unlocks when it completes.</string>
+    <string name="paywall_failed">Something went wrong with the purchase. Please try again.</string>
+    <string name="paywall_close">Close</string>
+    <string name="paywall_restored">Purchases restored</string>
+    <string name="paywall_restore_none">No purchases found for this Google account</string>
+    <string name="paywall_restore_failed">Could not reach Google Play. Try again later.</string>
+    <string name="locked_feature_desc">Premium feature</string>
+    <string name="locked_stats_title">Advanced statistics</string>
+    <string name="locked_stats_message">Monthly trends and all-time insights are part of Premium.</string>
+    <string name="locked_unlock">See Premium</string>
 </resources>

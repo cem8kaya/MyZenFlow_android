@@ -107,7 +107,7 @@
     <string name="feature_all_exercises">Tüm nefes egzersizleri</string>
     <string name="feature_all_sounds">Premium ortam sesleri</string>
     <string name="feature_advanced_stats">Gelişmiş istatistikler</string>
-    <string name="feature_premium_themes">Premium temalar</string>
+    <string name="feature_premium_themes">ZenFlow\'un gelişimine destek olur</string>
     <string name="button_unlock">Premium\'un Kilidini Aç</string>
     <string name="premium_description">Tüm premium özelliklere erişiminiz var</string>
 
@@ -378,4 +378,34 @@
     <string name="time_yesterday">Dün</string>
     <string name="phase_ready">Hazır</string>
     <string name="language_system">Sistem varsayılanı</string>
+    <string name="paywall_title">Premium ile pratiğini derinleştir</string>
+    <string name="paywall_subtitle">ZenFlow\'daki her şey, sınırsız.</string>
+    <string name="plan_monthly">Aylık</string>
+    <string name="plan_yearly">Yıllık</string>
+    <string name="plan_lifetime">Ömür boyu</string>
+    <string name="plan_per_month">%1$s / ay</string>
+    <string name="plan_per_year">%1$s / yıl</string>
+    <string name="plan_one_time">%1$s, tek seferlik</string>
+    <string name="plan_equivalent_month">aylık yaklaşık %1$s</string>
+    <string name="plan_best_value">En avantajlı</string>
+    <string name="plan_save_percent">%%%1$d tasarruf</string>
+    <string name="plan_trial_days">%1$d gün ücretsiz deneme, sonra</string>
+    <string name="paywall_cta">Devam et</string>
+    <string name="paywall_cta_trial">Ücretsiz denemeyi başlat</string>
+    <string name="paywall_terms_subscription">Abonelikler, Google Play\'de iptal edene kadar otomatik yenilenir. İstediğin zaman iptal edebilirsin; ödediğin dönemin sonuna kadar erişimin sürer.</string>
+    <string name="paywall_terms_lifetime">Tek seferlik satın alma. Yenileme veya ek ücret yok.</string>
+    <string name="paywall_manage">Aboneliği yönet</string>
+    <string name="paywall_load_error">Fiyatlar yüklenemedi. Bağlantını kontrol edip tekrar dene.</string>
+    <string name="paywall_retry">Tekrar dene</string>
+    <string name="paywall_success">Premium açıldı. Teşekkürler!</string>
+    <string name="paywall_pending">Ödemen beklemede. Tamamlandığında Premium açılır.</string>
+    <string name="paywall_failed">Satın alma sırasında bir sorun oluştu. Lütfen tekrar dene.</string>
+    <string name="paywall_close">Kapat</string>
+    <string name="paywall_restored">Satın alımlar geri yüklendi</string>
+    <string name="paywall_restore_none">Bu Google hesabında satın alım bulunamadı</string>
+    <string name="paywall_restore_failed">Google Play\'e ulaşılamadı. Daha sonra tekrar dene.</string>
+    <string name="locked_feature_desc">Premium özellik</string>
+    <string name="locked_stats_title">Gelişmiş istatistikler</string>
+    <string name="locked_stats_message">Aylık eğilimler ve tüm zamanların içgörüleri Premium\'a dahildir.</string>
+    <string name="locked_unlock">Premium\'u gör</string>
 </resources>

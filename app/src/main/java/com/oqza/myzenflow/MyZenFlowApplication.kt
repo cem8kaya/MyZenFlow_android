@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.oqza.myzenflow.data.repository.PreferencesRepository
+import com.oqza.myzenflow.domain.billing.BillingManager
 import com.oqza.myzenflow.data.repository.SessionRepository
 import com.oqza.myzenflow.domain.workers.ReminderScheduler
 import com.oqza.myzenflow.utils.AppShortcuts
@@ -31,6 +32,9 @@ class MyZenFlowApplication : Application(), Configuration.Provider {
     lateinit var reminderScheduler: dagger.Lazy<ReminderScheduler> // lazy: WorkManager must not start before workerFactory is injected
 
     @Inject
+    lateinit var billingManager: dagger.Lazy<BillingManager>
+
+    @Inject
     lateinit var sessionRepository: dagger.Lazy<SessionRepository>
 
     private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -49,6 +53,11 @@ class MyZenFlowApplication : Application(), Configuration.Provider {
                     .distinctUntilChanged()
                     .collect { ZenWidgetProvider.refresh(this@MyZenFlowApplication) }
             }
+        }
+
+        // Sync Premium with Google Play (catches refunds, cancellations and restored backups)
+        if (BuildConfig.PREMIUM_ENABLED) {
+            appScope.launch { runCatching { billingManager.get().refreshEntitlements() } }
         }
 
         appScope.launch {

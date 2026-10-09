@@ -149,7 +149,7 @@ fun ProfileScreen(
 
                     // Premium Card (if not premium)
                     if (BuildConfig.PREMIUM_ENABLED && !uiState.isPremium) {
-                        PremiumCard()
+                        PremiumCard(onUnlock = { navController?.navigateTo(Screen.Paywall.route) })
                         Spacer(modifier = Modifier.height(24.dp))
                     }
                 }
@@ -454,7 +454,7 @@ private fun QuickLinkItem(
  * Premium upgrade card
  */
 @Composable
-private fun PremiumCard() {
+private fun PremiumCard(onUnlock: () -> Unit) {
     ZenGradientCard(
         colors = listOf(ZenIndigo, Color(0xFF6B58B5), Color(0xFF9A5C8F)),
         modifier = Modifier.fillMaxWidth(),
@@ -492,7 +492,7 @@ private fun PremiumCard() {
 
             ZenButton(
                 text = stringResource(R.string.button_unlock),
-                onClick = { /* TODO: Navigate to premium screen */ },
+                onClick = onUnlock,
                 modifier = Modifier.fillMaxWidth()
             )
         }

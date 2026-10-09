@@ -1,5 +1,8 @@
 package com.oqza.myzenflow.presentation.screens.components
 
+import androidx.compose.material.icons.filled.Lock
+import com.oqza.myzenflow.presentation.theme.LocalPremiumUnlocked
+import com.oqza.myzenflow.domain.billing.PremiumPolicy
 import androidx.compose.ui.semantics.Role
 import androidx.compose.foundation.selection.selectable
 import com.oqza.myzenflow.R
@@ -34,8 +37,10 @@ fun ExerciseSelectionSheet(
     selectedExercise: BreathingExerciseType?,
     onExerciseSelected: (BreathingExerciseType) -> Unit,
     onDismiss: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onLockedClick: () -> Unit = {}
 ) {
+    val premiumUnlocked = LocalPremiumUnlocked.current
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         modifier = modifier,
@@ -73,9 +78,15 @@ fun ExerciseSelectionSheet(
                     ExerciseItem(
                         exercise = exercise,
                         isSelected = selectedExercise?.id == exercise.id,
+                        isLocked = !premiumUnlocked && PremiumPolicy.requiresPremium(exercise),
                         onClick = {
-                            onExerciseSelected(exercise)
-                            onDismiss()
+                            if (!premiumUnlocked && PremiumPolicy.requiresPremium(exercise)) {
+                                onDismiss()
+                                onLockedClick()
+                            } else {
+                                onExerciseSelected(exercise)
+                                onDismiss()
+                            }
                         }
                     )
 
@@ -98,7 +109,8 @@ private fun ExerciseItem(
     exercise: BreathingExerciseType,
     isSelected: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isLocked: Boolean = false
 ) {
     Card(
         modifier = modifier
@@ -168,10 +180,21 @@ private fun ExerciseItem(
 
                     // Duration badge
                     BadgeChip(
-                        text = "${exercise.totalDurationSeconds / 60} dk",
+                        text = stringResource(R.string.minutes_count, exercise.totalDurationSeconds / 60),
                         isSelected = isSelected
                     )
                 }
+            }
+
+            if (isLocked) {
+                Icon(
+                    imageVector = Icons.Default.Lock,
+                    contentDescription = stringResource(R.string.locked_feature_desc),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .size(24.dp)
+                )
             }
 
             // Selection indicator

@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.viewmodels
 
+import com.oqza.myzenflow.domain.billing.BillingManager
 import com.oqza.myzenflow.R
 import com.oqza.myzenflow.domain.workers.ReminderScheduler
 import android.content.Context
@@ -27,7 +28,8 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val preferencesRepository: PreferencesRepository,
-    private val reminderScheduler: ReminderScheduler
+    private val reminderScheduler: ReminderScheduler,
+    private val billingManager: BillingManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -217,22 +219,20 @@ class SettingsViewModel @Inject constructor(
     }
 
     /**
-     * Restore purchases (check with billing client)
+     * Restore purchases: asks Google Play what this account owns and updates the premium flag.
      */
     fun restorePurchases() {
         viewModelScope.launch {
-            try {
-                // TODO: Integrate with BillingClient when ready
-                // For now, just check current status from preferences
-                val isPremium = _uiState.value.userPreferences.isPremiumUnlocked
-                if (isPremium) {
-                    showMessage(context.getString(R.string.msg_premium_active))
-                } else {
-                    showMessage(context.getString(R.string.msg_no_purchases))
-                }
-            } catch (e: Exception) {
-                showError(context.getString(R.string.msg_update_failed))
-            }
+            val owned = billingManager.refreshEntitlements()
+            showMessage(
+                context.getString(
+                    when (owned) {
+                        true -> R.string.paywall_restored
+                        false -> R.string.paywall_restore_none
+                        null -> R.string.paywall_restore_failed
+                    }
+                )
+            )
         }
     }
 
