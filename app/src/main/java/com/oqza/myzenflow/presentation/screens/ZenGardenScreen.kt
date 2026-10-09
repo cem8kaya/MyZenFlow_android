@@ -1,5 +1,8 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.presentation.theme.LocalPremiumUnlocked
+import com.oqza.myzenflow.presentation.components.ZenButtonStyle
+import com.oqza.myzenflow.presentation.components.ZenButton
 import com.oqza.myzenflow.utils.pluralString
 import com.oqza.myzenflow.presentation.components.ZenReadableWidth
 import com.oqza.myzenflow.presentation.theme.zenTabScreenInsets
@@ -33,6 +36,7 @@ import com.oqza.myzenflow.presentation.viewmodels.ZenGardenViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ZenGardenScreen(
+    onOpenPaywall: () -> Unit = {},
     viewModel: ZenGardenViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -88,7 +92,7 @@ fun ZenGardenScreen(
                         particleSystem = particleSystem
                     )
                     ZenGardenTab.ACHIEVEMENTS -> AchievementsTab(uiState = uiState)
-                    ZenGardenTab.STATS -> StatsTab(uiState = uiState)
+                    ZenGardenTab.STATS -> StatsTab(uiState = uiState, onOpenPaywall = onOpenPaywall)
                 }
             }
         }
@@ -384,8 +388,10 @@ private fun AchievementsTab(
  */
 @Composable
 private fun StatsTab(
-    uiState: com.oqza.myzenflow.presentation.viewmodels.ZenGardenUiState
+    uiState: com.oqza.myzenflow.presentation.viewmodels.ZenGardenUiState,
+    onOpenPaywall: () -> Unit
 ) {
+    val premiumUnlocked = LocalPremiumUnlocked.current
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
@@ -405,21 +411,25 @@ private fun StatsTab(
             )
         }
 
-        // Monthly chart
-        item {
-            MonthlyBarChart(
-                monthlyData = uiState.monthlyData
-            )
-        }
+        if (premiumUnlocked) {
+            // Monthly chart
+            item {
+                MonthlyBarChart(
+                    monthlyData = uiState.monthlyData
+                )
+            }
 
-        // All-time stats
-        item {
-            AllTimeStatsCard(
-                totalSessions = uiState.userStats.totalSessions,
-                totalMinutes = uiState.userStats.totalMinutes,
-                longestStreak = uiState.userStats.longestStreak,
-                favoriteExercise = uiState.userStats.favoriteBreathingExercise?.displayName ?: "N/A"
-            )
+            // All-time stats
+            item {
+                AllTimeStatsCard(
+                    totalSessions = uiState.userStats.totalSessions,
+                    totalMinutes = uiState.userStats.totalMinutes,
+                    longestStreak = uiState.userStats.longestStreak,
+                    favoriteExercise = uiState.userStats.favoriteBreathingExercise?.displayName ?: "N/A"
+                )
+            }
+        } else {
+            item { LockedStatsCard(onUnlock = onOpenPaywall) }
         }
 
         // Weekly goal progress card
@@ -467,5 +477,39 @@ private fun StatsTab(
                 }
             }
         }
+    }
+}
+
+/**
+ * Shown instead of the premium statistics (monthly trend and all-time insights).
+ */
+@Composable
+private fun LockedStatsCard(onUnlock: () -> Unit) {
+    ZenCard(modifier = Modifier.fillMaxWidth()) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                imageVector = Icons.Default.Lock,
+                contentDescription = stringResource(R.string.locked_feature_desc),
+                tint = MaterialTheme.colorScheme.primary
+            )
+            Column(modifier = Modifier.padding(start = 12.dp)) {
+                Text(
+                    text = stringResource(R.string.locked_stats_title),
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    text = stringResource(R.string.locked_stats_message),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+        ZenButton(
+            text = stringResource(R.string.locked_unlock),
+            style = ZenButtonStyle.Secondary,
+            onClick = onUnlock,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }

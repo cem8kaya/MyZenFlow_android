@@ -1,5 +1,7 @@
 package com.oqza.myzenflow.presentation.screens.components
 
+import com.oqza.myzenflow.presentation.theme.LocalPremiumUnlocked
+import com.oqza.myzenflow.domain.billing.PremiumPolicy
 import com.oqza.myzenflow.presentation.components.ZenChip
 import com.oqza.myzenflow.R
 import androidx.compose.ui.res.stringResource
@@ -37,8 +39,10 @@ fun SoundControlsSheet(
     sleepTimerRemainingMs: Long?,
     onSleepTimerSelected: (Int) -> Unit,
     onDismiss: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onLockedClick: () -> Unit = {}
 ) {
+    val premiumUnlocked = LocalPremiumUnlocked.current
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         modifier = modifier,
@@ -104,10 +108,16 @@ fun SoundControlsSheet(
                         sound = sound,
                         isSelected = currentSound == sound,
                         isEnabled = soundEnabled,
+                        isLocked = !premiumUnlocked && PremiumPolicy.requiresPremium(sound),
                         onClick = {
                             if (soundEnabled) {
-                                onSoundSelected(sound)
-                                onDismiss()
+                                if (!premiumUnlocked && PremiumPolicy.requiresPremium(sound)) {
+                                    onDismiss()
+                                    onLockedClick()
+                                } else {
+                                    onSoundSelected(sound)
+                                    onDismiss()
+                                }
                             }
                         }
                     )
@@ -244,7 +254,8 @@ private fun SoundItem(
     isSelected: Boolean,
     isEnabled: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isLocked: Boolean = false
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -309,6 +320,15 @@ private fun SoundItem(
                             )
                     )
                 }
+            }
+
+            if (isLocked) {
+                Icon(
+                    imageVector = Icons.Default.Lock,
+                    contentDescription = stringResource(R.string.locked_feature_desc),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(24.dp)
+                )
             }
 
             if (isSelected && isEnabled) {

@@ -1,5 +1,6 @@
 package com.oqza.myzenflow
 
+import com.oqza.myzenflow.presentation.theme.LocalPremiumUnlocked
 import com.oqza.myzenflow.presentation.theme.LocalBottomInsetHandled
 import com.oqza.myzenflow.presentation.components.ZenNavigationRail
 import androidx.compose.runtime.CompositionLocalProvider
@@ -138,7 +139,13 @@ class MainActivity : ComponentActivity() {
                 // Wide windows (tablet, foldable, landscape) get a navigation rail instead of the bottom bar
                 val useRail = calculateWindowSizeClass(this@MainActivity).widthSizeClass != WindowWidthSizeClass.Compact
 
-                CompositionLocalProvider(LocalBottomInsetHandled provides !useRail) {
+                // Premium content is open when premium is off in this build or the user owns it
+                val premiumUnlocked = !BuildConfig.PREMIUM_ENABLED || userPreferences.isPremiumUnlocked
+
+                CompositionLocalProvider(
+                    LocalBottomInsetHandled provides !useRail,
+                    LocalPremiumUnlocked provides premiumUnlocked
+                ) {
                     if (useRail) {
                         Row(modifier = Modifier.fillMaxSize()) {
                             AnimatedVisibility(

@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.navigation
 
+import com.oqza.myzenflow.presentation.screens.PaywallScreen
 import com.oqza.myzenflow.presentation.screens.WeeklySummaryScreen
 import com.oqza.myzenflow.presentation.theme.ZenMotion
 import com.oqza.myzenflow.presentation.theme.LocalReducedMotion
@@ -75,7 +76,7 @@ fun NavGraph(
         }
 
         composable(route = Screen.ZenGarden.route) {
-            ZenGardenScreen()
+            ZenGardenScreen(onOpenPaywall = { navController.navigateTo(Screen.Paywall.route) })
         }
 
         composable(route = Screen.Calendar.route) {
@@ -89,11 +90,21 @@ fun NavGraph(
         }
 
         composable(route = Screen.Settings.route) {
-            SettingsScreen(onNavigateBack = { navController.goBackOrHome() })
+            SettingsScreen(
+                onNavigateBack = { navController.goBackOrHome() },
+                onOpenPaywall = { navController.navigateTo(Screen.Paywall.route) }
+            )
         }
 
         composable(route = Screen.Breathing.route) {
-            BreathingScreen(onNavigateBack = { navController.goBackOrHome() })
+            BreathingScreen(
+                onNavigateBack = { navController.goBackOrHome() },
+                onOpenPaywall = { navController.navigateTo(Screen.Paywall.route) }
+            )
+        }
+
+        composable(route = Screen.Paywall.route) {
+            PaywallScreen(navController = navController)
         }
 
         composable(route = Screen.WeeklySummary.route) {

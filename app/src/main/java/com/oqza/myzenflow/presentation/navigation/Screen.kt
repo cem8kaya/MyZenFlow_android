@@ -82,6 +82,13 @@ sealed class Screen(
         unselectedIcon = Icons.Outlined.Home // Placeholder, not a bottom tab
     )
 
+    object Paywall : Screen(
+        route = "paywall",
+        titleResId = R.string.paywall_title,
+        selectedIcon = Icons.Filled.Home, // Placeholder, not a bottom tab
+        unselectedIcon = Icons.Outlined.Home // Placeholder, not a bottom tab
+    )
+
     object Onboarding : Screen(
         route = "onboarding",
         titleResId = R.string.app_name, // Placeholder
@@ -105,7 +112,8 @@ val bottomNavigationScreens = listOf(
  */
 private val immersiveRoutes = setOf(
     Screen.Breathing.route,
-    Screen.Onboarding.route
+    Screen.Onboarding.route,
+    Screen.Paywall.route
 )
 
 fun shouldShowBottomBar(route: String?): Boolean = route != null && route !in immersiveRoutes

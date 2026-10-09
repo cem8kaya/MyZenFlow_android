@@ -18,9 +18,20 @@ android {
         versionCode = (project.findProperty("versionCode") as String?)?.toIntOrNull() ?: 1
         versionName = (project.findProperty("versionName") as String?) ?: "1.0.0"
 
-        // Premium (paywall, upgrade cards, restore purchases) stays hidden until Play Billing is
-        // implemented. Showing upgrade buttons that do nothing misleads users and fails Play review.
-        buildConfigField("boolean", "PREMIUM_ENABLED", "false")
+        // Premium (paywall, upgrade cards, locked content) stays off until the Play Console products
+        // exist and billing was tested end to end. Dead upgrade buttons would mislead users.
+        // Turn on for testing with -Pzenflow.premiumEnabled=true (needs the Play products to exist).
+        buildConfigField("boolean", "PREMIUM_ENABLED", "${project.findProperty("zenflow.premiumEnabled") ?: "false"}")
+
+        // Google Play product ids. Create products with exactly these ids in Play Console
+        // (see docs/store/play_console_setup.md), or override with -Pzenflow.sku.* properties.
+        buildConfigField("String", "SKU_MONTHLY", "\"${project.findProperty("zenflow.sku.monthly") ?: "zenflow_premium_monthly"}\"")
+        buildConfigField("String", "SKU_YEARLY", "\"${project.findProperty("zenflow.sku.yearly") ?: "zenflow_premium_yearly"}\"")
+        buildConfigField("String", "SKU_LIFETIME", "\"${project.findProperty("zenflow.sku.lifetime") ?: "zenflow_premium_lifetime"}\"")
+
+        // Public legal pages. Required by Google Play for apps with purchases; make sure they exist.
+        buildConfigField("String", "PRIVACY_POLICY_URL", "\"${project.findProperty("zenflow.privacyUrl") ?: "https://myzenflow.com/privacy"}\"")
+        buildConfigField("String", "TERMS_URL", "\"${project.findProperty("zenflow.termsUrl") ?: "https://myzenflow.com/terms"}\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -109,6 +120,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.0")
     implementation("androidx.activity:activity-compose:1.9.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
+    // Google Play Billing (subscriptions and one-time purchase). Keep on a version Play still accepts.
+    implementation("com.android.billingclient:billing-ktx:8.0.0")
     // Installs the baseline profile (src/main/baseline-prof.txt) for faster startup and scrolling
     implementation("androidx.profileinstaller:profileinstaller:1.3.1")
 
