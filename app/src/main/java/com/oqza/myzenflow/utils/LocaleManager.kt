@@ -36,8 +36,13 @@ object LocaleManager {
      * Get locale from AppLanguage
      */
     fun getLocale(language: AppLanguage): Locale {
-        return Locale(language.code)
+        // SYSTEM: the device language (never the app's own, possibly overridden, default locale)
+        if (language == AppLanguage.SYSTEM) return systemLocale()
+        return Locale.forLanguageTag(language.code)
     }
+
+    private fun systemLocale(): Locale =
+        android.content.res.Resources.getSystem().configuration.locales[0]
 
     /**
      * Set app locale and recreate activity
@@ -50,8 +55,12 @@ object LocaleManager {
     fun setLocale(context: Context, language: AppLanguage) {
         val locale = getLocale(language)
 
-        // Set using AppCompatDelegate (persists across app restarts)
-        val localeList = LocaleListCompat.create(locale)
+        // Set using AppCompatDelegate (persists across app restarts). SYSTEM clears the override.
+        val localeList = if (language == AppLanguage.SYSTEM) {
+            LocaleListCompat.getEmptyLocaleList()
+        } else {
+            LocaleListCompat.create(locale)
+        }
         AppCompatDelegate.setApplicationLocales(localeList)
 
         // Update configuration for immediate effect
@@ -108,13 +117,13 @@ object LocaleManager {
      * Get AppLanguage from locale
      */
     fun getAppLanguage(locale: Locale): AppLanguage {
-        return AppLanguage.fromCode(locale.language)
+        return AppLanguage.fromCode(locale.toLanguageTag())
     }
 
     /**
      * Check if a locale matches a language
      */
     fun isLanguage(locale: Locale, language: AppLanguage): Boolean {
-        return locale.language == language.code
+        return language != AppLanguage.SYSTEM && locale.language == language.code.substringBefore('-')
     }
 }

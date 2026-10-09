@@ -1,6 +1,5 @@
 package com.oqza.myzenflow.presentation.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
@@ -21,7 +20,7 @@ data class ColorPair(
 @Composable
 @ReadOnlyComposable
 fun breathingGradientColors(): List<Color> {
-    val darkTheme = isSystemInDarkTheme()
+    val darkTheme = isZenDarkTheme()
     return if (darkTheme) {
         listOf(
             BreathingGradient1Dark,
@@ -43,7 +42,7 @@ fun breathingGradientColors(): List<Color> {
 @Composable
 @ReadOnlyComposable
 fun breathingPhaseColors(phase: BreathingPhase): ColorPair {
-    val darkTheme = isSystemInDarkTheme()
+    val darkTheme = isZenDarkTheme()
 
     return if (darkTheme) {
         when (phase) {
@@ -100,7 +99,7 @@ fun breathingPhaseColors(phase: BreathingPhase): ColorPair {
 val treeLeavesColor: Color
     @Composable
     @ReadOnlyComposable
-    get() = if (isSystemInDarkTheme()) TreeLeavesColorDark else TreeLeavesColorLight
+    get() = if (isZenDarkTheme()) TreeLeavesColorDark else TreeLeavesColorLight
 
 /**
  * Get tree ground color based on theme
@@ -108,4 +107,4 @@ val treeLeavesColor: Color
 val treeGroundColor: Color
     @Composable
     @ReadOnlyComposable
-    get() = if (isSystemInDarkTheme()) TreeGroundColorDark else TreeGroundColorLight
+    get() = if (isZenDarkTheme()) TreeGroundColorDark else TreeGroundColorLight

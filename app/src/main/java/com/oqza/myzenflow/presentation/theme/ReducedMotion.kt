@@ -45,3 +45,20 @@ fun rememberReducedMotion(): Boolean {
 
 private fun readReduced(resolver: android.content.ContentResolver): Boolean =
     Settings.Global.getFloat(resolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f) == 0f
+
+/**
+ * Whether the app is currently drawn with its dark theme. This follows the in-app theme choice
+ * (System / Light / Dark), unlike isSystemInDarkTheme() which only knows the device setting.
+ */
+val LocalDarkTheme = staticCompositionLocalOf { false }
+
+@Composable
+@androidx.compose.runtime.ReadOnlyComposable
+fun isZenDarkTheme(): Boolean = LocalDarkTheme.current
+
+/** Readable text colour on the breathing screen's gradient (white on dark, deep navy on light). */
+@Composable
+@androidx.compose.runtime.ReadOnlyComposable
+fun breathingContentColor(): androidx.compose.ui.graphics.Color =
+    if (isZenDarkTheme()) androidx.compose.ui.graphics.Color.White
+    else androidx.compose.ui.graphics.Color(0xFF10233F)

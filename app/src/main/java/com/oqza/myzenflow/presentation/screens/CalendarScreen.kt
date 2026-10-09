@@ -1,5 +1,13 @@
 package com.oqza.myzenflow.presentation.screens
 
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import com.oqza.myzenflow.utils.pluralString
+import com.oqza.myzenflow.presentation.components.ZenReadableWidth
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.Role
 import com.oqza.myzenflow.presentation.viewmodels.CombinedSession
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.Lifecycle
@@ -67,96 +75,98 @@ fun CalendarScreen(
         else context.getString(R.string.hours_minutes_short, minutes / 60, minutes % 60)
     }
 
-    Scaffold(
-        contentWindowInsets = zenTabScreenInsets(),
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.calendar_title)) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = MaterialTheme.colorScheme.onBackground
-                ),
-                actions = {
-                    // Today button
-                    IconButton(onClick = { viewModel.goToToday() }) {
-                        Icon(
-                            Icons.Default.Today,
-                            contentDescription = stringResource(R.string.cal_go_today)
-                        )
-                    }
-                }
-            )
-        }
-    ) { paddingValues ->
-        if (uiState.isLoading) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(ZenSpacing.screen),
-                verticalArrangement = Arrangement.spacedBy(ZenSpacing.md)
-            ) {
-                ZenSkeleton(modifier = Modifier.fillMaxWidth(), height = 40.dp)
-                ZenSkeleton(modifier = Modifier.fillMaxWidth(), height = 80.dp)
-                ZenSkeleton(modifier = Modifier.fillMaxWidth(), height = 280.dp)
-            }
-        } else {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                // Month navigation header
-                MonthNavigationHeader(
-                    monthDisplayName = viewModel.getMonthDisplayName(),
-                    onPreviousMonth = { viewModel.getPreviousMonth() },
-                    onNextMonth = { viewModel.getNextMonth() }
-                )
-
-                // Month summary card
-                MonthSummaryCard(
-                    totalSessions = uiState.totalSessionsThisMonth,
-                    totalMinutes = uiState.totalMinutesThisMonth
-                )
-
-                // Weekday headers
-                WeekdayHeaders(weekdayNames = viewModel.getWeekdayNames())
-
-                // Calendar grid
-                CalendarGrid(
-                    monthDays = uiState.monthDays,
-                    onDayClick = { day ->
-                        if (day.sessionCount > 0) {
-                            viewModel.selectDate(day.date)
+    ZenReadableWidth {
+        Scaffold(
+            contentWindowInsets = zenTabScreenInsets(),
+            topBar = {
+                TopAppBar(
+                    title = { Text(stringResource(R.string.calendar_title)) },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                        titleContentColor = MaterialTheme.colorScheme.onBackground
+                    ),
+                    actions = {
+                        // Today button
+                        IconButton(onClick = { viewModel.goToToday() }) {
+                            Icon(
+                                Icons.Default.Today,
+                                contentDescription = stringResource(R.string.cal_go_today)
+                            )
                         }
                     }
                 )
-
-                // Session details panel (if date selected)
-                AnimatedVisibility(
-                    visible = uiState.selectedDate != null,
-                    enter = slideInVertically { it } + fadeIn(),
-                    exit = slideOutVertically { it } + fadeOut()
+            }
+        ) { paddingValues ->
+            if (uiState.isLoading) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .padding(ZenSpacing.screen),
+                    verticalArrangement = Arrangement.spacedBy(ZenSpacing.md)
                 ) {
-                    SessionDetailsPanel(
-                        selectedDate = uiState.selectedDate,
-                        sessions = uiState.sessionsForSelectedDate,
-                        onClose = { viewModel.clearSelection() },
-                        onViewInZenGarden = onNavigateToZenGarden,
-                        formatTime = { viewModel.formatTime(it) },
-                        formatDuration = formatDuration
-                    )
+                    ZenSkeleton(modifier = Modifier.fillMaxWidth(), height = 40.dp)
+                    ZenSkeleton(modifier = Modifier.fillMaxWidth(), height = 80.dp)
+                    ZenSkeleton(modifier = Modifier.fillMaxWidth(), height = 280.dp)
                 }
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                ) {
+                    // Month navigation header
+                    MonthNavigationHeader(
+                        monthDisplayName = viewModel.getMonthDisplayName(),
+                        onPreviousMonth = { viewModel.getPreviousMonth() },
+                        onNextMonth = { viewModel.getNextMonth() }
+                    )
 
-                // Empty state (only show when not loading, no sessions, and no date selected)
-                if (!uiState.isLoading && uiState.totalSessionsThisMonth == 0 && uiState.selectedDate == null) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
-                        contentAlignment = Alignment.Center
+                    // Month summary card
+                    MonthSummaryCard(
+                        totalSessions = uiState.totalSessionsThisMonth,
+                        totalMinutes = uiState.totalMinutesThisMonth
+                    )
+
+                    // Weekday headers
+                    WeekdayHeaders(weekdayNames = viewModel.getWeekdayNames())
+
+                    // Calendar grid
+                    CalendarGrid(
+                        monthDays = uiState.monthDays,
+                        onDayClick = { day ->
+                            if (day.sessionCount > 0) {
+                                viewModel.selectDate(day.date)
+                            }
+                        }
+                    )
+
+                    // Session details panel (if date selected)
+                    AnimatedVisibility(
+                        visible = uiState.selectedDate != null,
+                        enter = slideInVertically { it } + fadeIn(),
+                        exit = slideOutVertically { it } + fadeOut()
                     ) {
-                        EmptyStateMessage()
+                        SessionDetailsPanel(
+                            selectedDate = uiState.selectedDate,
+                            sessions = uiState.sessionsForSelectedDate,
+                            onClose = { viewModel.clearSelection() },
+                            onViewInZenGarden = onNavigateToZenGarden,
+                            formatTime = { viewModel.formatTime(it) },
+                            formatDuration = formatDuration
+                        )
+                    }
+
+                    // Empty state (only show when not loading, no sessions, and no date selected)
+                    if (!uiState.isLoading && uiState.totalSessionsThisMonth == 0 && uiState.selectedDate == null) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            EmptyStateMessage()
+                        }
                     }
                 }
             }
@@ -182,7 +192,7 @@ private fun MonthNavigationHeader(
     ) {
         IconButton(onClick = onPreviousMonth) {
             Icon(
-                Icons.Default.ChevronLeft,
+                Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                 contentDescription = stringResource(R.string.cal_prev_month),
                 tint = MaterialTheme.colorScheme.primary
             )
@@ -197,7 +207,7 @@ private fun MonthNavigationHeader(
 
         IconButton(onClick = onNextMonth) {
             Icon(
-                Icons.Default.ChevronRight,
+                Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = stringResource(R.string.cal_next_month),
                 tint = MaterialTheme.colorScheme.primary
             )
@@ -345,6 +355,10 @@ private fun DayCell(
         }
     }
 
+    val dayDescription = day.date.format(
+        java.time.format.DateTimeFormatter.ofLocalizedDate(java.time.format.FormatStyle.LONG)
+    ) + if (day.sessionCount > 0) ", " + pluralString(R.plurals.sessions_count, day.sessionCount, day.sessionCount) else ""
+
     Box(
         modifier = Modifier
             .aspectRatio(1f)
@@ -357,7 +371,8 @@ private fun DayCell(
                 color = if (day.isToday) MaterialTheme.colorScheme.primary else Color.Transparent,
                 shape = RoundedCornerShape(8.dp)
             )
-            .clickable(enabled = day.isCurrentMonth) { onClick() },
+            .semantics { contentDescription = dayDescription; selected = day.isSelected }
+            .clickable(enabled = day.isCurrentMonth, role = Role.Button) { onClick() },
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -453,7 +468,11 @@ private fun SessionDetailsPanel(
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = stringResource(R.string.cal_day_summary, sessions.size, sessions.sumOf { it.durationSeconds } / 60),
+                        text = stringResource(
+                            R.string.cal_day_summary,
+                            pluralString(R.plurals.sessions_count, sessions.size, sessions.size),
+                            stringResource(R.string.minutes_count, sessions.sumOf { it.durationSeconds } / 60)
+                        ),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )

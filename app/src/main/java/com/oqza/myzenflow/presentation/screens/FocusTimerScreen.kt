@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.presentation.components.ZenReadableWidth
 import com.oqza.myzenflow.presentation.components.rememberNotificationPermissionRequester
 import com.oqza.myzenflow.presentation.theme.zenTabScreenInsets
 import com.oqza.myzenflow.presentation.theme.ZenTypography
@@ -76,125 +77,127 @@ fun FocusTimerScreen(
         onDispose { view.keepScreenOn = false }
     }
 
-    Scaffold(
-        contentWindowInsets = zenTabScreenInsets(),
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.focus_title_bar)) },
-                actions = {
-                    if (timerActive) {
-                        IconButton(onClick = { deepFocus = true }) {
-                            Icon(
-                                Icons.Default.NightsStay,
-                                contentDescription = stringResource(R.string.focus_deep_mode)
-                            )
+    ZenReadableWidth {
+        Scaffold(
+            contentWindowInsets = zenTabScreenInsets(),
+            topBar = {
+                TopAppBar(
+                    title = { Text(stringResource(R.string.focus_title_bar)) },
+                    actions = {
+                        if (timerActive) {
+                            IconButton(onClick = { deepFocus = true }) {
+                                Icon(
+                                    Icons.Default.NightsStay,
+                                    contentDescription = stringResource(R.string.focus_deep_mode)
+                                )
+                            }
                         }
-                    }
-                    IconButton(onClick = { showSettingsDialog = true }) {
-                        Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.focus_settings))
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = MaterialTheme.colorScheme.onBackground
-                )
-            )
-        }
-    ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            // Mode selection (only when idle)
-            if (uiState.timerStatus == TimerStatus.IDLE) {
-                item {
-                    ModeSelectionSection(
-                        selectedMode = uiState.selectedMode,
-                        onModeSelected = { viewModel.selectMode(it) }
-                    )
-                }
-            }
-
-            // Session type indicator
-            item {
-                SessionTypeCard(
-                    sessionType = uiState.currentSessionType,
-                    cycleInfo = "${uiState.completedWorkSessions}/${uiState.totalCycles * 4}"
-                )
-            }
-
-            // Circular timer display
-            item {
-                CircularTimerDisplay(
-                    timeRemaining = uiState.formatTime(),
-                    progress = uiState.calculateProgress(),
-                    sessionType = uiState.currentSessionType,
-                    isRunning = uiState.timerStatus == TimerStatus.RUNNING
-                )
-            }
-
-            // Task name input (only when idle)
-            if (uiState.timerStatus == TimerStatus.IDLE) {
-                item {
-                    TaskNameInput(
-                        taskName = uiState.taskName,
-                        onTaskNameChanged = { viewModel.setTaskName(it) }
-                    )
-                }
-            }
-
-            // Control buttons
-            item {
-                TimerControlButtons(
-                    timerStatus = uiState.timerStatus,
-                    onStart = {
-                        requestNotificationPermission()
-                        viewModel.startTimer()
+                        IconButton(onClick = { showSettingsDialog = true }) {
+                            Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.focus_settings))
+                        }
                     },
-                    onPause = { viewModel.pauseTimer() },
-                    onResume = { viewModel.resumeTimer() },
-                    onStop = { viewModel.stopTimer() },
-                    onSkip = { viewModel.skipToNextSession() }
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                        titleContentColor = MaterialTheme.colorScheme.onBackground
+                    )
                 )
             }
+        ) { paddingValues ->
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(horizontal = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                // Mode selection (only when idle)
+                if (uiState.timerStatus == TimerStatus.IDLE) {
+                    item {
+                        ModeSelectionSection(
+                            selectedMode = uiState.selectedMode,
+                            onModeSelected = { viewModel.selectMode(it) }
+                        )
+                    }
+                }
 
-            // Settings row
-            item {
-                SettingsRow(
-                    hapticEnabled = uiState.hapticEnabled,
-                    soundEnabled = uiState.soundEnabled,
-                    onToggleHaptic = { viewModel.toggleHaptic() },
-                    onToggleSound = { viewModel.toggleSound() }
-                )
-            }
-
-            // Stats card
-            item {
-                TodaysStatsCard(stats = todaysStats)
-            }
-
-            // Session history
-            if (todaysSessions.isNotEmpty()) {
+                // Session type indicator
                 item {
-                    Text(
-                        text = stringResource(R.string.focus_todays_sessions),
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(top = 8.dp)
+                    SessionTypeCard(
+                        sessionType = uiState.currentSessionType,
+                        cycleInfo = "${uiState.completedWorkSessions}/${uiState.totalCycles * 4}"
                     )
                 }
 
-                items(todaysSessions) { session ->
-                    SessionHistoryItem(session = session)
+                // Circular timer display
+                item {
+                    CircularTimerDisplay(
+                        timeRemaining = uiState.formatTime(),
+                        progress = uiState.calculateProgress(),
+                        sessionType = uiState.currentSessionType,
+                        isRunning = uiState.timerStatus == TimerStatus.RUNNING
+                    )
                 }
-            }
 
-            // Bottom spacing
-            item {
-                Spacer(modifier = Modifier.height(16.dp))
+                // Task name input (only when idle)
+                if (uiState.timerStatus == TimerStatus.IDLE) {
+                    item {
+                        TaskNameInput(
+                            taskName = uiState.taskName,
+                            onTaskNameChanged = { viewModel.setTaskName(it) }
+                        )
+                    }
+                }
+
+                // Control buttons
+                item {
+                    TimerControlButtons(
+                        timerStatus = uiState.timerStatus,
+                        onStart = {
+                            requestNotificationPermission()
+                            viewModel.startTimer()
+                        },
+                        onPause = { viewModel.pauseTimer() },
+                        onResume = { viewModel.resumeTimer() },
+                        onStop = { viewModel.stopTimer() },
+                        onSkip = { viewModel.skipToNextSession() }
+                    )
+                }
+
+                // Settings row
+                item {
+                    SettingsRow(
+                        hapticEnabled = uiState.hapticEnabled,
+                        soundEnabled = uiState.soundEnabled,
+                        onToggleHaptic = { viewModel.toggleHaptic() },
+                        onToggleSound = { viewModel.toggleSound() }
+                    )
+                }
+
+                // Stats card
+                item {
+                    TodaysStatsCard(stats = todaysStats)
+                }
+
+                // Session history
+                if (todaysSessions.isNotEmpty()) {
+                    item {
+                        Text(
+                            text = stringResource(R.string.focus_todays_sessions),
+                            style = MaterialTheme.typography.titleLarge,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
+
+                    items(todaysSessions) { session ->
+                        SessionHistoryItem(session = session)
+                    }
+                }
+
+                // Bottom spacing
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
             }
         }
     }

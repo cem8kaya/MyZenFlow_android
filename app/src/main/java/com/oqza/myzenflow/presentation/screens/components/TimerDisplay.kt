@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.screens.components
 
+import com.oqza.myzenflow.presentation.theme.breathingContentColor
 import com.oqza.myzenflow.R
 import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.AnimatedContent
@@ -76,13 +77,13 @@ fun TimerDisplay(
                 text = formatTime(seconds),
                 style = MaterialTheme.typography.displaySmall,
                 fontWeight = FontWeight.Bold,
-                color = Color.White
+                color = breathingContentColor()
             )
 
             Text(
                 text = stringResource(R.string.timer_remaining),
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color.White.copy(alpha = 0.7f)
+                color = breathingContentColor().copy(alpha = 0.8f)
             )
         }
     }

@@ -1,5 +1,8 @@
 package com.oqza.myzenflow.presentation.screens
 
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import com.oqza.myzenflow.utils.pluralString
+import com.oqza.myzenflow.presentation.components.ZenReadableWidth
 import com.oqza.myzenflow.BuildConfig
 import com.oqza.myzenflow.presentation.navigation.navigateTo
 import com.oqza.myzenflow.presentation.theme.zenTabScreenInsets
@@ -60,113 +63,115 @@ fun ProfileScreen(
     var showEditNameDialog by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
 
-    Scaffold(
-        contentWindowInsets = zenTabScreenInsets(),
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        stringResource(R.string.profile_title),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
+    ZenReadableWidth {
+        Scaffold(
+            contentWindowInsets = zenTabScreenInsets(),
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            stringResource(R.string.profile_title),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.background
                     )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background
                 )
-            )
-        }
-    ) { padding ->
-        if (uiState.isLoading) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-                    .padding(ZenSpacing.screen),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                ZenSkeleton(modifier = Modifier.size(100.dp), height = 100.dp)
-                Spacer(modifier = Modifier.height(ZenSpacing.lg))
-                ZenSkeleton(modifier = Modifier.fillMaxWidth(0.5f), height = 28.dp)
-                Spacer(modifier = Modifier.height(ZenSpacing.xl))
-                ZenSkeleton(modifier = Modifier.fillMaxWidth(), height = 110.dp)
             }
-        } else {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-                    .verticalScroll(scrollState)
-                    .padding(horizontal = ZenSpacing.screen)
-            ) {
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // Avatar and Name Section
-                ProfileHeaderSection(
-                    userName = uiState.userName,
-                    memberSince = uiState.memberSince,
-                    onEditClick = { showEditNameDialog = true }
-                )
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                // Stats Section
-                Text(
-                    text = stringResource(R.string.your_stats),
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-
-                StatsGrid(
-                    totalSessions = uiState.stats.totalSessions,
-                    totalMinutes = uiState.stats.totalMinutes,
-                    currentStreak = uiState.stats.currentStreak,
-                    longestStreak = uiState.stats.longestStreak,
-                    favoriteExercise = viewModel.getFavoriteExerciseName(uiState.stats.favoriteBreathingExercise)
-                )
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                // Quick Links Section
-                Text(
-                    text = stringResource(R.string.profile_quick_links),
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-
-                QuickLinksSection(
-                    onAchievementsClick = { navController?.navigateTo(Screen.ZenGarden.route) },
-                    onHistoryClick = { navController?.navigateTo(Screen.Calendar.route) },
-                    onWeeklyClick = { navController?.navigateTo(Screen.WeeklySummary.route) },
-                    onSettingsClick = { navController?.navigateTo(Screen.Settings.route) }
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // Premium Card (if not premium)
-                if (BuildConfig.PREMIUM_ENABLED && !uiState.isPremium) {
-                    PremiumCard()
+        ) { padding ->
+            if (uiState.isLoading) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding)
+                        .padding(ZenSpacing.screen),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    ZenSkeleton(modifier = Modifier.size(100.dp), height = 100.dp)
+                    Spacer(modifier = Modifier.height(ZenSpacing.lg))
+                    ZenSkeleton(modifier = Modifier.fillMaxWidth(0.5f), height = 28.dp)
+                    Spacer(modifier = Modifier.height(ZenSpacing.xl))
+                    ZenSkeleton(modifier = Modifier.fillMaxWidth(), height = 110.dp)
+                }
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding)
+                        .verticalScroll(scrollState)
+                        .padding(horizontal = ZenSpacing.screen)
+                ) {
                     Spacer(modifier = Modifier.height(24.dp))
+
+                    // Avatar and Name Section
+                    ProfileHeaderSection(
+                        userName = uiState.userName,
+                        memberSince = uiState.memberSince,
+                        onEditClick = { showEditNameDialog = true }
+                    )
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    // Stats Section
+                    Text(
+                        text = stringResource(R.string.your_stats),
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+
+                    StatsGrid(
+                        totalSessions = uiState.stats.totalSessions,
+                        totalMinutes = uiState.stats.totalMinutes,
+                        currentStreak = uiState.stats.currentStreak,
+                        longestStreak = uiState.stats.longestStreak,
+                        favoriteExercise = viewModel.getFavoriteExerciseName(uiState.stats.favoriteBreathingExercise)
+                    )
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    // Quick Links Section
+                    Text(
+                        text = stringResource(R.string.profile_quick_links),
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+
+                    QuickLinksSection(
+                        onAchievementsClick = { navController?.navigateTo(Screen.ZenGarden.route) },
+                        onHistoryClick = { navController?.navigateTo(Screen.Calendar.route) },
+                        onWeeklyClick = { navController?.navigateTo(Screen.WeeklySummary.route) },
+                        onSettingsClick = { navController?.navigateTo(Screen.Settings.route) }
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Premium Card (if not premium)
+                    if (BuildConfig.PREMIUM_ENABLED && !uiState.isPremium) {
+                        PremiumCard()
+                        Spacer(modifier = Modifier.height(24.dp))
+                    }
                 }
             }
-        }
 
-        // Edit Name Dialog
-        if (showEditNameDialog) {
-            EditNameDialog(
-                currentName = uiState.userName,
-                onDismiss = { showEditNameDialog = false },
-                onSave = { newName ->
-                    viewModel.updateUserName(newName)
-                    showEditNameDialog = false
+            // Edit Name Dialog
+            if (showEditNameDialog) {
+                EditNameDialog(
+                    currentName = uiState.userName,
+                    onDismiss = { showEditNameDialog = false },
+                    onSave = { newName ->
+                        viewModel.updateUserName(newName)
+                        showEditNameDialog = false
+                    }
+                )
+            }
+
+            // Error Snackbar
+            uiState.error?.let { error ->
+                LaunchedEffect(error) {
+                    viewModel.clearError()
                 }
-            )
-        }
-
-        // Error Snackbar
-        uiState.error?.let { error ->
-            LaunchedEffect(error) {
-                viewModel.clearError()
             }
         }
     }
@@ -221,7 +226,7 @@ private fun ProfileHeaderSection(
 
             IconButton(
                 onClick = onEditClick,
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier.size(48.dp) // minimum touch target
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Edit,
@@ -285,14 +290,14 @@ private fun StatsGrid(
             ProfileStatCard(
                 icon = Icons.Outlined.LocalFireDepartment,
                 label = stringResource(R.string.current_streak),
-                value = "$currentStreak ${stringResource(R.string.days_count, currentStreak).substringAfter(" ")}",
+                value = pluralString(R.plurals.days_count, currentStreak, currentStreak),
                 modifier = Modifier.weight(1f)
             )
 
             ProfileStatCard(
                 icon = Icons.Outlined.EmojiEvents,
                 label = stringResource(R.string.profile_longest_streak),
-                value = "$longestStreak ${stringResource(R.string.days_count, longestStreak).substringAfter(" ")}",
+                value = pluralString(R.plurals.days_count, longestStreak, longestStreak),
                 modifier = Modifier.weight(1f)
             )
         }
@@ -437,7 +442,7 @@ private fun QuickLinkItem(
             }
 
             Icon(
-                imageVector = Icons.Filled.ChevronRight,
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )

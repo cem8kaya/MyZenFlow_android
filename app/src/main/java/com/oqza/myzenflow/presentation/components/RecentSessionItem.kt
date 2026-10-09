@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.components
 
+import com.oqza.myzenflow.utils.pluralString
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -202,10 +203,10 @@ private fun formatTimestamp(dateTime: java.time.LocalDateTime): String {
 
     return when {
         minutesAgo < 1 -> stringResource(R.string.time_just_now)
-        minutesAgo < 60 -> stringResource(R.string.time_minutes_ago, minutesAgo.toInt())
-        hoursAgo < 24 && daysAgo == 0L -> stringResource(R.string.time_hours_ago, hoursAgo.toInt())
+        minutesAgo < 60 -> pluralString(R.plurals.time_minutes_ago, minutesAgo.toInt(), minutesAgo.toInt())
+        hoursAgo < 24 && daysAgo == 0L -> pluralString(R.plurals.time_hours_ago, hoursAgo.toInt(), hoursAgo.toInt())
         daysAgo == 1L -> stringResource(R.string.time_yesterday)
-        daysAgo < 7 -> stringResource(R.string.time_days_ago, daysAgo.toInt())
+        daysAgo < 7 -> pluralString(R.plurals.time_days_ago, daysAgo.toInt(), daysAgo.toInt())
         else -> dateTime.format(DateTimeFormatter.ofPattern("d MMM", java.util.Locale.getDefault()))
     }
 }

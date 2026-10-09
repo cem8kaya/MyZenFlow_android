@@ -103,6 +103,10 @@ fun MyZenFlowTheme(
         typography = ZenTypography,
         shapes = ZenShapes
     ) {
-        CompositionLocalProvider(LocalReducedMotion provides reducedMotion, content = content)
+        CompositionLocalProvider(
+            LocalReducedMotion provides reducedMotion,
+            LocalDarkTheme provides darkTheme,
+            content = content
+        )
     }
 }

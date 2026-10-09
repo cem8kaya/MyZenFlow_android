@@ -1,5 +1,7 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.utils.pluralString
+import com.oqza.myzenflow.presentation.components.ZenReadableWidth
 import com.oqza.myzenflow.presentation.theme.zenTabScreenInsets
 import com.oqza.myzenflow.presentation.theme.LocalReducedMotion
 import com.oqza.myzenflow.presentation.theme.ZenDawnGold
@@ -36,56 +38,58 @@ fun ZenGardenScreen(
     val uiState by viewModel.uiState.collectAsState()
     val particleSystem = rememberParticleSystem()
 
-    Scaffold(
-        contentWindowInsets = zenTabScreenInsets(),
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.garden_title)) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = MaterialTheme.colorScheme.onBackground
-                )
-            )
-        }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            // Tab row
-            TabRow(
-                selectedTabIndex = uiState.selectedTab.ordinal,
-                containerColor = MaterialTheme.colorScheme.background
-            ) {
-                Tab(
-                    selected = uiState.selectedTab == ZenGardenTab.TREE,
-                    onClick = { viewModel.selectTab(ZenGardenTab.TREE) },
-                    text = { Text(stringResource(R.string.garden_tab_tree)) },
-                    icon = { Icon(Icons.Default.Park, contentDescription = null) }
-                )
-                Tab(
-                    selected = uiState.selectedTab == ZenGardenTab.ACHIEVEMENTS,
-                    onClick = { viewModel.selectTab(ZenGardenTab.ACHIEVEMENTS) },
-                    text = { Text(stringResource(R.string.garden_tab_achievements)) },
-                    icon = { Icon(Icons.Default.EmojiEvents, contentDescription = null) }
-                )
-                Tab(
-                    selected = uiState.selectedTab == ZenGardenTab.STATS,
-                    onClick = { viewModel.selectTab(ZenGardenTab.STATS) },
-                    text = { Text(stringResource(R.string.garden_tab_stats)) },
-                    icon = { Icon(Icons.Default.Analytics, contentDescription = null) }
+    ZenReadableWidth {
+        Scaffold(
+            contentWindowInsets = zenTabScreenInsets(),
+            topBar = {
+                TopAppBar(
+                    title = { Text(stringResource(R.string.garden_title)) },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                        titleContentColor = MaterialTheme.colorScheme.onBackground
+                    )
                 )
             }
+        ) { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ) {
+                // Tab row
+                TabRow(
+                    selectedTabIndex = uiState.selectedTab.ordinal,
+                    containerColor = MaterialTheme.colorScheme.background
+                ) {
+                    Tab(
+                        selected = uiState.selectedTab == ZenGardenTab.TREE,
+                        onClick = { viewModel.selectTab(ZenGardenTab.TREE) },
+                        text = { Text(stringResource(R.string.garden_tab_tree)) },
+                        icon = { Icon(Icons.Default.Park, contentDescription = null) }
+                    )
+                    Tab(
+                        selected = uiState.selectedTab == ZenGardenTab.ACHIEVEMENTS,
+                        onClick = { viewModel.selectTab(ZenGardenTab.ACHIEVEMENTS) },
+                        text = { Text(stringResource(R.string.garden_tab_achievements)) },
+                        icon = { Icon(Icons.Default.EmojiEvents, contentDescription = null) }
+                    )
+                    Tab(
+                        selected = uiState.selectedTab == ZenGardenTab.STATS,
+                        onClick = { viewModel.selectTab(ZenGardenTab.STATS) },
+                        text = { Text(stringResource(R.string.garden_tab_stats)) },
+                        icon = { Icon(Icons.Default.Analytics, contentDescription = null) }
+                    )
+                }
 
-            // Content based on selected tab
-            when (uiState.selectedTab) {
-                ZenGardenTab.TREE -> TreeTab(
-                    uiState = uiState,
-                    particleSystem = particleSystem
-                )
-                ZenGardenTab.ACHIEVEMENTS -> AchievementsTab(uiState = uiState)
-                ZenGardenTab.STATS -> StatsTab(uiState = uiState)
+                // Content based on selected tab
+                when (uiState.selectedTab) {
+                    ZenGardenTab.TREE -> TreeTab(
+                        uiState = uiState,
+                        particleSystem = particleSystem
+                    )
+                    ZenGardenTab.ACHIEVEMENTS -> AchievementsTab(uiState = uiState)
+                    ZenGardenTab.STATS -> StatsTab(uiState = uiState)
+                }
             }
         }
     }
@@ -203,7 +207,7 @@ private fun StatsCardsRow(
         item {
             StatCard(
                 title = stringResource(R.string.garden_stat_streak),
-                value = stringResource(R.string.days_short, uiState.userStats.currentStreak),
+                value = pluralString(R.plurals.days_count, uiState.userStats.currentStreak, uiState.userStats.currentStreak),
                 icon = Icons.Default.Whatshot,
                 color = MaterialTheme.colorScheme.tertiary
             )
@@ -232,7 +236,7 @@ private fun StatCard(
     ZenCard(
         modifier = Modifier
             .width(140.dp)
-            .height(100.dp),
+            .heightIn(min = 100.dp),
         containerColor = color.copy(alpha = 0.1f),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp)
     ) {

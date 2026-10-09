@@ -1,5 +1,7 @@
 package com.oqza.myzenflow.presentation.components
 
+import androidx.compose.ui.semantics.Role
+import androidx.compose.foundation.selection.toggleable
 import com.oqza.myzenflow.presentation.theme.ZenSpacing
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.heading
@@ -99,7 +101,7 @@ fun SettingItem(
             .fillMaxWidth()
             .then(
                 if (onClick != null && enabled) {
-                    Modifier.clickable { onClick() }
+                    Modifier.clickable(role = Role.Button) { onClick() }
                 } else {
                     Modifier
                 }
@@ -208,11 +210,17 @@ fun SettingToggleItem(
         icon = icon,
         enabled = enabled,
         showDivider = showDivider,
-        modifier = modifier,
+        // The whole row toggles (big touch target) and TalkBack reads it as one switch
+        modifier = modifier.toggleable(
+            value = checked,
+            enabled = enabled,
+            role = Role.Switch,
+            onValueChange = onCheckedChange
+        ),
         trailing = {
             Switch(
                 checked = checked,
-                onCheckedChange = if (enabled) onCheckedChange else null,
+                onCheckedChange = null,
                 enabled = enabled,
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = MaterialTheme.colorScheme.primary,

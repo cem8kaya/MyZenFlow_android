@@ -208,7 +208,7 @@ class PreferencesDataStore(private val context: Context) {
     private fun mapPreferences(preferences: Preferences): UserPreferences {
         return UserPreferences(
             language = AppLanguage.fromCode(
-                preferences[LANGUAGE] ?: AppLanguage.ENGLISH.code
+                preferences[LANGUAGE] ?: AppLanguage.SYSTEM.code
             ),
             hapticFeedbackEnabled = preferences[HAPTIC_FEEDBACK] ?: true,
             notificationsEnabled = preferences[NOTIFICATIONS_ENABLED] ?: true,

@@ -1,5 +1,7 @@
 package com.oqza.myzenflow.presentation.screens
 
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import com.oqza.myzenflow.presentation.theme.isZenDarkTheme
 import com.oqza.myzenflow.presentation.viewmodels.CheckInViewModel
 import androidx.compose.runtime.DisposableEffect
 import android.app.Activity
@@ -7,7 +9,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -82,7 +83,7 @@ fun BreathingScreen(
     val gradientColors = breathingGradientColors()
 
     // Status bar handling
-    val darkTheme = isSystemInDarkTheme()
+    val darkTheme = isZenDarkTheme()
     val colorScheme = MaterialTheme.colorScheme
 
     DisposableEffect(Unit) {
@@ -151,7 +152,7 @@ fun BreathingScreen(
                     navigationIcon = {
                         IconButton(onClick = onNavigateBack) {
                             Icon(
-                                imageVector = Icons.Default.ArrowBack,
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = stringResource(R.string.back)
                             )
                         }
