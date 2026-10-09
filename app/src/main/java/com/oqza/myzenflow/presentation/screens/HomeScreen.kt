@@ -1,5 +1,7 @@
 package com.oqza.myzenflow.presentation.screens
 
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import com.oqza.myzenflow.presentation.components.ZenReadableWidth
 import com.oqza.myzenflow.presentation.navigation.navigateTo
 import com.oqza.myzenflow.presentation.theme.zenTabScreenInsets
 import com.oqza.myzenflow.data.models.PracticeGoal
@@ -7,7 +9,6 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.Lifecycle
 import com.oqza.myzenflow.presentation.components.ZenCard
 import androidx.compose.material3.Icon
-import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material.icons.outlined.AutoAwesome
 import com.oqza.myzenflow.utils.StreakCalculator
 import com.oqza.myzenflow.presentation.components.DailyCheckInCard
@@ -96,82 +97,84 @@ fun HomeScreen(
     }
 
     ZenBackdrop(modifier = Modifier.fillMaxSize(), timeOfDay = timeOfDay) {
-        Scaffold(
-            contentWindowInsets = zenTabScreenInsets(),
-            containerColor = Color.Transparent,
-            snackbarHost = { SnackbarHost(snackbarHostState) }
-        ) { paddingValues ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                if (uiState.isLoading) {
-                    HomeSkeleton()
-                } else {
-                    AnimatedVisibility(
-                        visibleState = remember {
-                            MutableTransitionState(false).apply { targetState = true }
-                        },
-                        enter = fadeIn(tween(ZenMotion.MEDIUM)) +
-                            slideInVertically(tween(ZenMotion.MEDIUM)) { it / 20 }
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .verticalScroll(scrollState)
+        ZenReadableWidth {
+            Scaffold(
+                contentWindowInsets = zenTabScreenInsets(),
+                containerColor = Color.Transparent,
+                snackbarHost = { SnackbarHost(snackbarHostState) }
+            ) { paddingValues ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                ) {
+                    if (uiState.isLoading) {
+                        HomeSkeleton()
+                    } else {
+                        AnimatedVisibility(
+                            visibleState = remember {
+                                MutableTransitionState(false).apply { targetState = true }
+                            },
+                            enter = fadeIn(tween(ZenMotion.MEDIUM)) +
+                                slideInVertically(tween(ZenMotion.MEDIUM)) { it / 20 }
                         ) {
-                            GreetingHeader(
-                                userName = uiState.userName,
-                                motivationalQuote = uiState.motivationalQuote,
-                                timeOfDay = timeOfDay
-                            )
-
-                            RecommendationCard(
-                                timeOfDay = timeOfDay,
-                                goal = uiState.userPreferences.primaryGoal,
-                                isFirstSession = uiState.recentSessions.isEmpty(),
-                                onStart = { route -> navController?.navigateTo(route) }
-                            )
-
-                            Spacer(modifier = Modifier.height(ZenSpacing.lg))
-
-                            DailyCheckInCard(
-                                modifier = Modifier.padding(horizontal = ZenSpacing.screen)
-                            )
-
-                            Spacer(modifier = Modifier.height(ZenSpacing.xl))
-
-                            TodayStatsRow(
-                                sessionCount = uiState.todaySessionCount,
-                                minutes = uiState.todayMinutes,
-                                streak = uiState.currentStreak
-                            )
-
-                            StreakMessage(uiState.streakState)
-
-                            Spacer(modifier = Modifier.height(ZenSpacing.xxl))
-
-                            QuickActionsGrid(
-                                actions = getQuickActions(),
-                                onActionClick = { route -> navController?.navigateTo(route) }
-                            )
-
-                            if (uiState.recentSessions.isNotEmpty()) {
-                                Spacer(modifier = Modifier.height(ZenSpacing.xxl))
-                                WeeklySummaryEntry(
-                                    onClick = { navController?.navigateTo(Screen.WeeklySummary.route) }
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .verticalScroll(scrollState)
+                            ) {
+                                GreetingHeader(
+                                    userName = uiState.userName,
+                                    motivationalQuote = uiState.motivationalQuote,
+                                    timeOfDay = timeOfDay
                                 )
+
+                                RecommendationCard(
+                                    timeOfDay = timeOfDay,
+                                    goal = uiState.userPreferences.primaryGoal,
+                                    isFirstSession = uiState.recentSessions.isEmpty(),
+                                    onStart = { route -> navController?.navigateTo(route) }
+                                )
+
+                                Spacer(modifier = Modifier.height(ZenSpacing.lg))
+
+                                DailyCheckInCard(
+                                    modifier = Modifier.padding(horizontal = ZenSpacing.screen)
+                                )
+
+                                Spacer(modifier = Modifier.height(ZenSpacing.xl))
+
+                                TodayStatsRow(
+                                    sessionCount = uiState.todaySessionCount,
+                                    minutes = uiState.todayMinutes,
+                                    streak = uiState.currentStreak
+                                )
+
+                                StreakMessage(uiState.streakState)
+
+                                Spacer(modifier = Modifier.height(ZenSpacing.xxl))
+
+                                QuickActionsGrid(
+                                    actions = getQuickActions(),
+                                    onActionClick = { route -> navController?.navigateTo(route) }
+                                )
+
+                                if (uiState.recentSessions.isNotEmpty()) {
+                                    Spacer(modifier = Modifier.height(ZenSpacing.xxl))
+                                    WeeklySummaryEntry(
+                                        onClick = { navController?.navigateTo(Screen.WeeklySummary.route) }
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.height(ZenSpacing.xxl))
+
+                                RecentSessionsSection(
+                                    sessions = uiState.recentSessions,
+                                    onStartClick = { navController?.navigateTo(Screen.Breathing.route) }
+                                )
+
+                                Spacer(modifier = Modifier.height(ZenSpacing.xxl))
                             }
-
-                            Spacer(modifier = Modifier.height(ZenSpacing.xxl))
-
-                            RecentSessionsSection(
-                                sessions = uiState.recentSessions,
-                                onStartClick = { navController?.navigateTo(Screen.Breathing.route) }
-                            )
-
-                            Spacer(modifier = Modifier.height(ZenSpacing.xxl))
                         }
                     }
                 }
@@ -210,7 +213,7 @@ private fun WeeklySummaryEntry(onClick: () -> Unit) {
                 )
             }
             Icon(
-                imageVector = Icons.Outlined.ChevronRight,
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )

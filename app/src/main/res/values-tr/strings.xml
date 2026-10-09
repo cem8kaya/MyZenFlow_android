@@ -14,7 +14,6 @@
     <string name="greeting_morning">Günaydın</string>
     <string name="greeting_afternoon">İyi Günler</string>
     <string name="greeting_evening">İyi Akşamlar</string>
-    <string name="today_stats">Bugünün İstatistikleri</string>
     <string name="weekly_streak">Haftalık Seri</string>
     <string name="current_streak">Mevcut Seri</string>
     <string name="quick_action_breathing">Nefes</string>
@@ -28,23 +27,14 @@
     <string name="recent_sessions">Son Seanslar</string>
     <string name="no_sessions_yet">Henüz seans yok</string>
     <string name="start_first_session">İlk seansını başlat</string>
-    <string name="sessions_count">%d seans</string>
     <string name="minutes_count">%d dk</string>
-    <string name="days_count">%d gün</string>
 
     <!-- Breathing -->
     <string name="breathing_title">Nefes Egzersizi</string>
     <string name="breathing_exercise">Nefes</string>
-    <string name="exercise_box">Kutu Nefes</string>
-    <string name="exercise_478">4-7-8 Nefes</string>
-    <string name="exercise_deep">Derin Nefes</string>
-    <string name="exercise_alternate">Alternatif Burun</string>
     <string name="phase_inhale">Nefes Al</string>
     <string name="phase_hold">Tut</string>
     <string name="phase_exhale">Nefes Ver</string>
-    <string name="phase_rest">Dinlen</string>
-    <string name="session_complete">Seans Tamamlandı!</string>
-    <string name="cycles_completed">Tamamlanan Döngüler</string>
     <string name="cycle_progress" formatted="false">Döngü %d / %d</string>
     <string name="select_exercise">Bir egzersiz seç</string>
     <string name="exercise_select">Egzersiz Seç</string>
@@ -56,44 +46,23 @@
     <string name="work_session">Çalışma Seansı</string>
     <string name="short_break">Kısa Mola</string>
     <string name="long_break">Uzun Mola</string>
-    <string name="timer_start">Başlat</string>
     <string name="timer_pause">Duraklat</string>
     <string name="timer_resume">Devam Et</string>
     <string name="timer_stop">Durdur</string>
-    <string name="timer_skip">Atla</string>
-    <string name="session_complete_focus">Odaklanma Seansı Tamamlandı!</string>
-    <string name="break_time">Mola Zamanı</string>
-    <string name="back_to_work">İşe Dön</string>
-    <string name="session_number">Seans %d</string>
-    <string name="pomodoro_sessions">Pomodoro Seansları</string>
 
     <!-- Zen Garden -->
     <string name="garden_title">Zen Bahçe</string>
-    <string name="tree_level">Ağaç Seviyesi</string>
-    <string name="achievement_locked">Kilitli</string>
-    <string name="achievement_unlocked">Açıldı</string>
-    <string name="stats_weekly">Haftalık</string>
-    <string name="stats_monthly">Aylık</string>
-    <string name="stats_alltime">Tüm Zamanlar</string>
     <string name="total_minutes">Toplam Dakika</string>
     <string name="total_sessions">Toplam Seans</string>
-    <string name="achievements">Başarılar</string>
-    <string name="level_up">Seviye Atladın!</string>
 
     <!-- Calendar -->
     <string name="calendar_title">Takvim</string>
-    <string name="today">Bugün</string>
-    <string name="this_week">Bu Hafta</string>
-    <string name="this_month">Bu Ay</string>
-    <string name="session_history">Seans Geçmişi</string>
-    <string name="no_sessions_today">Bugün seans yok</string>
 
     <!-- Profile -->
     <string name="profile_title">Profil</string>
     <string name="edit_profile">Profili Düzenle</string>
     <string name="your_stats">İstatistiklerin</string>
     <string name="weekly_goal">Haftalık Hedef</string>
-    <string name="weekly_goal_subtitle">Haftalık meditasyon hedefini belirle</string>
 
     <!-- Settings -->
     <string name="settings_title">Ayarlar</string>
@@ -135,38 +104,20 @@
 
     <!-- Premium -->
     <string name="premium_title">Premium\'un Kilidini Aç</string>
-    <string name="premium_subtitle">Tüm özelliklere sınırsız erişim elde et</string>
     <string name="feature_all_exercises">Tüm nefes egzersizleri</string>
     <string name="feature_all_sounds">Premium ortam sesleri</string>
     <string name="feature_advanced_stats">Gelişmiş istatistikler</string>
     <string name="feature_premium_themes">Premium temalar</string>
-    <string name="price_onetime">Tek seferlik ödeme</string>
-    <string name="price_lifetime">Ömür boyu erişim</string>
     <string name="button_unlock">Premium\'un Kilidini Aç</string>
-    <string name="purchase_success">Satın alma başarılı!</string>
-    <string name="purchase_failed">Satın alma başarısız</string>
-    <string name="premium_unlocked">Premium Açıldı</string>
     <string name="premium_description">Tüm premium özelliklere erişiminiz var</string>
 
     <!-- Common -->
     <string name="button_start">Başlat</string>
-    <string name="button_pause">Duraklat</string>
-    <string name="button_stop">Durdur</string>
     <string name="button_cancel">İptal</string>
     <string name="button_save">Kaydet</string>
-    <string name="button_close">Kapat</string>
-    <string name="button_done">Tamam</string>
-    <string name="button_retry">Tekrar Dene</string>
     <string name="button_ok">Tamam</string>
-    <string name="loading">Yükleniyor…</string>
-    <string name="error_generic">Bir şeyler ters gitti</string>
-    <string name="success">Başarılı</string>
 
     <!-- Motivational Quotes -->
-    <string name="quote_breathe">Huzurla nefes al, stresi bırak</string>
-    <string name="quote_present">Bu anda var ol</string>
-    <string name="quote_calm">İç huzurunu bul</string>
-    <string name="quote_zen">Yolculuk varış noktasıdır</string>
     <string name="greeting_night">İyi Geceler</string>
     <string name="quick_actions_title">Hızlı Erişim</string>
     <string name="stat_sessions">Seans</string>
@@ -209,7 +160,6 @@
     <string name="garden_stats_title">İstatistikler</string>
     <string name="garden_weekly_goal">Haftalık Hedef</string>
     <string name="garden_goal_progress">%1$d / %2$d dakika</string>
-    <string name="days_short">%d gün</string>
     <string name="chart_this_week">Bu Hafta</string>
     <string name="chart_this_month">Bu Ay</string>
     <string name="chart_all_time">Tüm Zamanlar</string>
@@ -232,7 +182,7 @@
     <string name="cal_next_month">Sonraki ay</string>
     <string name="cal_sessions">Oturum</string>
     <string name="cal_minutes">Dakika</string>
-    <string name="cal_day_summary">%1$d oturum • %2$d dakika</string>
+    <string name="cal_day_summary">%1$s • %2$s</string>
     <string name="cal_close">Kapat</string>
     <string name="cal_view_in_garden">Zen Bahçesi\'nde Gör</string>
     <string name="cal_empty_title">Bu ay henüz oturum yok</string>
@@ -314,7 +264,6 @@
     <string name="checkin_done_mid">Not aldım. Kısa bir seans gününü hafifletebilir.</string>
     <string name="checkin_done_high">Harika. Bu hissi koruyalım.</string>
     <string name="aftersession_mood">Şimdi nasıl hissediyorsun?</string>
-    <string name="summary_done_desc">Tamamlandı</string>
     <string name="summary_title">Tebrikler!</string>
     <string name="summary_message">Nefes egzersizini tamamladınız!</string>
     <string name="summary_exercise">Egzersiz</string>
@@ -358,7 +307,6 @@
     <string name="session_type_focus">Odaklanma</string>
     <string name="widget_description">Serin ve bugünkü dakikaların tek bakışta</string>
     <string name="widget_start">Nefes al</string>
-    <string name="widget_streak_value">🔥 %1$d gün</string>
     <string name="widget_minutes_value">⏱ Bugün %1$d dk</string>
     <string name="shortcut_breathing_short">Nefes al</string>
     <string name="shortcut_breathing_long">Nefes egzersizi başlat</string>
@@ -395,7 +343,6 @@
     <string name="focus_stat_done">Tamamlanan</string>
     <string name="focus_stat_focus">Odaklanma</string>
     <string name="focus_stat_streak">Seri</string>
-    <string name="chart_average">Ortalama</string>
     <string name="ach_locked">Kilitli</string>
     <string name="msg_language_updated">Dil güncellendi</string>
     <string name="msg_notifications_on">Bildirimler açıldı</string>
@@ -405,7 +352,6 @@
     <string name="msg_premium_active">Premium zaten aktif</string>
     <string name="msg_no_purchases">Geri yüklenecek satın alım yok</string>
     <string name="msg_update_failed">Değişiklik kaydedilemedi. Lütfen tekrar deneyin.</string>
-    <string name="msg_load_failed">Veriler yüklenemedi</string>
     <string name="onb_logo_desc">ZenFlow logosu</string>
     <string name="onb_notif_icon_desc">Bildirimler</string>
     <string name="tree_0">Tohum</string>
@@ -429,8 +375,7 @@
     <string name="cal_type_breathing">Nefes</string>
     <string name="cal_default_focus_title">Odak seansı</string>
     <string name="time_just_now">Az önce</string>
-    <string name="time_minutes_ago">%1$d dakika önce</string>
-    <string name="time_hours_ago">%1$d saat önce</string>
     <string name="time_yesterday">Dün</string>
-    <string name="time_days_ago">%1$d gün önce</string>
+    <string name="phase_ready">Hazır</string>
+    <string name="language_system">Sistem varsayılanı</string>
 </resources>

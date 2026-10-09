@@ -57,7 +57,7 @@ class ZenWidgetProvider : AppWidgetProvider() {
         val minutesToday = practice.filter { it.date.toLocalDate() == today }.sumOf { it.duration } / 60
 
         return RemoteViews(context.packageName, R.layout.widget_zenflow).apply {
-            setTextViewText(R.id.widget_streak, context.getString(R.string.widget_streak_value, streak))
+            setTextViewText(R.id.widget_streak, context.resources.getQuantityString(R.plurals.widget_streak_value, streak, streak))
             setTextViewText(R.id.widget_minutes, context.getString(R.string.widget_minutes_value, minutesToday))
             setOnClickPendingIntent(R.id.widget_root, activity(context, DeepLinks.ROUTE_WEEKLY, 1))
             setOnClickPendingIntent(R.id.widget_start, activity(context, DeepLinks.ROUTE_BREATHING, 2))

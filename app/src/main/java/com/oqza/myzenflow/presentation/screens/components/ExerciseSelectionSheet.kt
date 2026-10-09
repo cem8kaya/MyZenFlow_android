@@ -1,5 +1,7 @@
 package com.oqza.myzenflow.presentation.screens.components
 
+import androidx.compose.ui.semantics.Role
+import androidx.compose.foundation.selection.selectable
 import com.oqza.myzenflow.R
 import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.background
@@ -101,7 +103,7 @@ private fun ExerciseItem(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick),
+            .selectable(selected = isSelected, role = Role.RadioButton, onClick = onClick),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = if (isSelected)

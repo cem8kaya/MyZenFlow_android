@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.presentation.components.ZenReadableWidth
 import com.oqza.myzenflow.presentation.theme.zenTabScreenInsets
 import android.content.Intent
 import androidx.compose.foundation.background
@@ -69,75 +70,77 @@ fun WeeklySummaryScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    Scaffold(
-        contentWindowInsets = zenTabScreenInsets(),
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.weekly_title)) },
-                navigationIcon = {
-                    IconButton(onClick = { navController?.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = MaterialTheme.colorScheme.onBackground
-                )
-            )
-        }
-    ) { padding ->
-        val summary = state.summary
-        if (state.isLoading || summary == null) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-                    .padding(ZenSpacing.screen),
-                verticalArrangement = Arrangement.spacedBy(ZenSpacing.md)
-            ) {
-                ZenSkeleton(modifier = Modifier.fillMaxWidth(), height = 160.dp)
-                ZenSkeleton(modifier = Modifier.fillMaxWidth(), height = 140.dp)
-            }
-        } else if (!summary.hasActivity) {
-            Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                ZenEmptyState(
-                    icon = Icons.Outlined.AutoAwesome,
-                    title = stringResource(R.string.weekly_empty_title),
-                    message = stringResource(R.string.weekly_empty_message)
-                )
-            }
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding),
-                contentPadding = androidx.compose.foundation.layout.PaddingValues(ZenSpacing.screen),
-                verticalArrangement = Arrangement.spacedBy(ZenSpacing.md)
-            ) {
-                item { GoalCard(summary) }
-                item { DailyBarsCard(summary) }
-                item { NumbersRow(summary, state.streak) }
-                summary.topType?.let { item { TopTypeCard(it) } }
-                item { MoodCard(summary) }
-                item {
-                    val shareText = stringResource(
-                        R.string.weekly_share_text, summary.totalMinutes, summary.sessionCount, summary.activeDays
-                    )
-                    val chooserTitle = stringResource(R.string.weekly_share)
-                    ZenButton(
-                        text = chooserTitle,
-                        icon = Icons.Default.Share,
-                        style = ZenButtonStyle.Secondary,
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = {
-                            // User-initiated share of a short text summary; nothing leaves the device otherwise
-                            val send = Intent(Intent.ACTION_SEND).apply {
-                                type = "text/plain"
-                                putExtra(Intent.EXTRA_TEXT, shareText)
-                            }
-                            context.startActivity(Intent.createChooser(send, chooserTitle))
+    ZenReadableWidth {
+        Scaffold(
+            contentWindowInsets = zenTabScreenInsets(),
+            topBar = {
+                TopAppBar(
+                    title = { Text(stringResource(R.string.weekly_title)) },
+                    navigationIcon = {
+                        IconButton(onClick = { navController?.popBackStack() }) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                         }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                        titleContentColor = MaterialTheme.colorScheme.onBackground
                     )
+                )
+            }
+        ) { padding ->
+            val summary = state.summary
+            if (state.isLoading || summary == null) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding)
+                        .padding(ZenSpacing.screen),
+                    verticalArrangement = Arrangement.spacedBy(ZenSpacing.md)
+                ) {
+                    ZenSkeleton(modifier = Modifier.fillMaxWidth(), height = 160.dp)
+                    ZenSkeleton(modifier = Modifier.fillMaxWidth(), height = 140.dp)
+                }
+            } else if (!summary.hasActivity) {
+                Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
+                    ZenEmptyState(
+                        icon = Icons.Outlined.AutoAwesome,
+                        title = stringResource(R.string.weekly_empty_title),
+                        message = stringResource(R.string.weekly_empty_message)
+                    )
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    contentPadding = androidx.compose.foundation.layout.PaddingValues(ZenSpacing.screen),
+                    verticalArrangement = Arrangement.spacedBy(ZenSpacing.md)
+                ) {
+                    item { GoalCard(summary) }
+                    item { DailyBarsCard(summary) }
+                    item { NumbersRow(summary, state.streak) }
+                    summary.topType?.let { item { TopTypeCard(it) } }
+                    item { MoodCard(summary) }
+                    item {
+                        val shareText = stringResource(
+                            R.string.weekly_share_text, summary.totalMinutes, summary.sessionCount, summary.activeDays
+                        )
+                        val chooserTitle = stringResource(R.string.weekly_share)
+                        ZenButton(
+                            text = chooserTitle,
+                            icon = Icons.Default.Share,
+                            style = ZenButtonStyle.Secondary,
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                // User-initiated share of a short text summary; nothing leaves the device otherwise
+                                val send = Intent(Intent.ACTION_SEND).apply {
+                                    type = "text/plain"
+                                    putExtra(Intent.EXTRA_TEXT, shareText)
+                                }
+                                context.startActivity(Intent.createChooser(send, chooserTitle))
+                            }
+                        )
+                    }
                 }
             }
         }

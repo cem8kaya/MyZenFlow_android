@@ -1,5 +1,15 @@
 package com.oqza.myzenflow
 
+import com.oqza.myzenflow.presentation.theme.LocalBottomInsetHandled
+import com.oqza.myzenflow.presentation.components.ZenNavigationRail
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Row
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideInHorizontally
 import com.oqza.myzenflow.presentation.theme.ZenMotion
 import com.oqza.myzenflow.presentation.navigation.shouldShowBottomBar
 import androidx.compose.animation.slideOutVertically
@@ -59,6 +69,7 @@ class MainActivity : ComponentActivity() {
         pendingRoute.value = DeepLinks.routeFrom(intent)
     }
 
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen().setKeepOnScreenCondition { !preferencesLoaded }
         super.onCreate(savedInstanceState)
@@ -124,31 +135,57 @@ class MainActivity : ComponentActivity() {
                 }
                 val shouldShowBottomBar = shouldShowBottomBar(currentRoute ?: startRoute)
 
-                // Screens own their system-bar insets; the outer scaffold only reserves
-                // space for the bottom navigation bar.
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    contentWindowInsets = WindowInsets(0, 0, 0, 0),
-                    bottomBar = {
-                        // Slides in/out instead of popping, and the content padding follows the animation
-                        AnimatedVisibility(
-                            visible = shouldShowBottomBar,
-                            enter = slideInVertically(tween(ZenMotion.MEDIUM, easing = ZenMotion.Standard)) { it } +
-                                fadeIn(tween(ZenMotion.MEDIUM)),
-                            exit = slideOutVertically(tween(ZenMotion.MEDIUM, easing = ZenMotion.Standard)) { it } +
-                                fadeOut(tween(ZenMotion.SHORT))
-                        ) {
-                            BottomNavigationBar(navController = navController)
+                // Wide windows (tablet, foldable, landscape) get a navigation rail instead of the bottom bar
+                val useRail = calculateWindowSizeClass(this@MainActivity).widthSizeClass != WindowWidthSizeClass.Compact
+
+                CompositionLocalProvider(LocalBottomInsetHandled provides !useRail) {
+                    if (useRail) {
+                        Row(modifier = Modifier.fillMaxSize()) {
+                            AnimatedVisibility(
+                                visible = shouldShowBottomBar,
+                                enter = slideInHorizontally(tween(ZenMotion.MEDIUM, easing = ZenMotion.Standard)) { -it } +
+                                    fadeIn(tween(ZenMotion.MEDIUM)),
+                                exit = slideOutHorizontally(tween(ZenMotion.MEDIUM, easing = ZenMotion.Standard)) { -it } +
+                                    fadeOut(tween(ZenMotion.SHORT))
+                            ) {
+                                ZenNavigationRail(navController = navController)
+                            }
+                            NavGraph(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxHeight(),
+                                navController = navController,
+                                startDestination = startRoute
+                            )
+                        }
+                    } else {
+                        // Screens own their system-bar insets; the outer scaffold only reserves
+                        // space for the bottom navigation bar.
+                        Scaffold(
+                            modifier = Modifier.fillMaxSize(),
+                            contentWindowInsets = WindowInsets(0, 0, 0, 0),
+                            bottomBar = {
+                                // Slides in/out instead of popping, and the content padding follows the animation
+                                AnimatedVisibility(
+                                    visible = shouldShowBottomBar,
+                                    enter = slideInVertically(tween(ZenMotion.MEDIUM, easing = ZenMotion.Standard)) { it } +
+                                        fadeIn(tween(ZenMotion.MEDIUM)),
+                                    exit = slideOutVertically(tween(ZenMotion.MEDIUM, easing = ZenMotion.Standard)) { it } +
+                                        fadeOut(tween(ZenMotion.SHORT))
+                                ) {
+                                    BottomNavigationBar(navController = navController)
+                                }
+                            }
+                        ) { innerPadding ->
+                            NavGraph(
+                                modifier = Modifier.padding(
+                                    PaddingValues(bottom = innerPadding.calculateBottomPadding())
+                                ),
+                                navController = navController,
+                                startDestination = startRoute
+                            )
                         }
                     }
-                ) { innerPadding ->
-                    NavGraph(
-                        modifier = Modifier.padding(
-                            PaddingValues(bottom = innerPadding.calculateBottomPadding())
-                        ),
-                        navController = navController,
-                        startDestination = startRoute
-                    )
                 }
             }
         }

@@ -1,11 +1,13 @@
 package com.oqza.myzenflow.presentation.components
 
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -42,19 +44,20 @@ fun QuickActionCard(
     ZenGradientCard(
         colors = gradientColors,
         onClick = onClick,
-        modifier = modifier.aspectRatio(1.05f),
+        modifier = modifier.heightIn(min = 144.dp),
         contentPadding = PaddingValues(ZenSpacing.lg)
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(ZenSpacing.lg)
+        ) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                modifier = Modifier
-                    .size(36.dp)
-                    .align(Alignment.TopStart),
+                modifier = Modifier.size(36.dp),
                 tint = Color.White
             )
-            Column(modifier = Modifier.align(Alignment.BottomStart)) {
+            Column {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
@@ -103,7 +106,10 @@ fun QuickActionsGrid(
             verticalArrangement = Arrangement.spacedBy(ZenSpacing.md)
         ) {
             actions.chunked(2).forEach { rowActions ->
-                Row(horizontalArrangement = Arrangement.spacedBy(ZenSpacing.md)) {
+                Row(
+                    modifier = Modifier.height(IntrinsicSize.Min), // equal card heights, even with large fonts
+                    horizontalArrangement = Arrangement.spacedBy(ZenSpacing.md)
+                ) {
                     rowActions.forEach { action ->
                         QuickActionCard(
                             icon = action.icon,
@@ -111,7 +117,7 @@ fun QuickActionsGrid(
                             subtitle = action.subtitle,
                             gradientColors = action.gradientColors,
                             onClick = { onActionClick(action.route) },
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f).fillMaxHeight()
                         )
                     }
                     if (rowActions.size == 1) {

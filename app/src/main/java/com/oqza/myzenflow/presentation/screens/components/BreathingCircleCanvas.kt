@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.screens.components
 
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
@@ -92,6 +93,8 @@ fun BreathingCircleCanvas(
         modifier = modifier
             .size(320.dp)
             .aspectRatio(1f)
+            // Purely visual: the phase text next to it is announced instead
+            .clearAndSetSemantics { }
     ) {
         Canvas(
             modifier = Modifier.fillMaxSize()

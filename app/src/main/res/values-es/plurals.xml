@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="sessions_count">
+        <item quantity="one">%d sesión</item>
+        <item quantity="other">%d sesiones</item>
+    </plurals>
+    <plurals name="days_count">
+        <item quantity="one">%d día</item>
+        <item quantity="other">%d días</item>
+    </plurals>
+    <plurals name="time_minutes_ago">
+        <item quantity="one">hace %1$d min</item>
+        <item quantity="other">hace %1$d min</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="one">hace %1$d hora</item>
+        <item quantity="other">hace %1$d horas</item>
+    </plurals>
+    <plurals name="time_days_ago">
+        <item quantity="one">hace %1$d día</item>
+        <item quantity="other">hace %1$d días</item>
+    </plurals>
+    <plurals name="widget_streak_value">
+        <item quantity="one">🔥 %1$d día</item>
+        <item quantity="other">🔥 %1$d días</item>
+    </plurals>
+</resources>

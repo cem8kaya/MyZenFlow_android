@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.components
 
+import com.oqza.myzenflow.utils.pluralString
 import com.oqza.myzenflow.presentation.theme.LocalReducedMotion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.contentDescription
@@ -83,7 +84,7 @@ fun WeeklyBarChart(
                 ) {
                     ChartSummaryItem(
                         label = stringResource(R.string.chart_total),
-                        value = stringResource(R.string.sessions_count, weeklyData.sumOf { it.sessions }),
+                        value = pluralString(R.plurals.sessions_count, weeklyData.sumOf { it.sessions }, weeklyData.sumOf { it.sessions }),
                         color = MaterialTheme.colorScheme.primary
                     )
                     ChartSummaryItem(
@@ -152,7 +153,7 @@ fun MonthlyBarChart(
                 ) {
                     ChartSummaryItem(
                         label = stringResource(R.string.chart_total),
-                        value = stringResource(R.string.sessions_count, monthlyData.sumOf { it.sessions }),
+                        value = pluralString(R.plurals.sessions_count, monthlyData.sumOf { it.sessions }, monthlyData.sumOf { it.sessions }),
                         color = MaterialTheme.colorScheme.primary
                     )
                     ChartSummaryItem(
@@ -375,7 +376,7 @@ fun AllTimeStatsCard(
             ) {
                 AllTimeStatItem(
                     label = stringResource(R.string.chart_longest_streak),
-                    value = stringResource(R.string.days_short, longestStreak),
+                    value = pluralString(R.plurals.days_count, longestStreak, longestStreak),
                     icon = "🔥"
                 )
                 AllTimeStatItem(

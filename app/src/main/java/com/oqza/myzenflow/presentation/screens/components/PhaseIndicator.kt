@@ -1,5 +1,11 @@
 package com.oqza.myzenflow.presentation.screens.components
 
+import com.oqza.myzenflow.presentation.theme.breathingContentColor
+import com.oqza.myzenflow.R
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
@@ -46,7 +52,8 @@ fun PhaseIndicator(
             )
         },
         label = "phase_indicator",
-        modifier = modifier
+        // Polite live region: TalkBack announces each new phase ("Inhale", "Hold", ...)
+        modifier = modifier.semantics { liveRegion = LiveRegionMode.Polite }
     ) { targetPhase ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -56,9 +63,9 @@ fun PhaseIndicator(
             // Phase icon
             Icon(
                 imageVector = getPhaseIcon(targetPhase),
-                contentDescription = getPhaseText(targetPhase),
+                contentDescription = null, // the text below carries the meaning
                 modifier = Modifier.size(48.dp),
-                tint = Color(0xFF4A90E2)
+                tint = breathingContentColor()
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -68,7 +75,7 @@ fun PhaseIndicator(
                 text = getPhaseText(targetPhase),
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
-                color = if (isActive) Color.White else Color.White.copy(alpha = 0.6f)
+                color = breathingContentColor().copy(alpha = if (isActive) 1f else 0.75f)
             )
         }
     }
@@ -88,14 +95,14 @@ private fun getPhaseIcon(phase: BreathingPhase): ImageVector {
 }
 
 /**
- * Get text for breathing phase
+ * Localized text for a breathing phase
  */
-private fun getPhaseText(phase: BreathingPhase): String {
-    return when (phase) {
-        BreathingPhase.INHALE -> "Nefes Al"
-        BreathingPhase.HOLD_INHALE -> "Tut"
-        BreathingPhase.EXHALE -> "Nefes Ver"
-        BreathingPhase.HOLD_EXHALE -> "Tut"
-        BreathingPhase.REST -> "Hazır"
+@Composable
+private fun getPhaseText(phase: BreathingPhase): String = stringResource(
+    when (phase) {
+        BreathingPhase.INHALE -> R.string.phase_inhale
+        BreathingPhase.HOLD_INHALE, BreathingPhase.HOLD_EXHALE -> R.string.phase_hold
+        BreathingPhase.EXHALE -> R.string.phase_exhale
+        BreathingPhase.REST -> R.string.phase_ready
     }
-}
+)

@@ -1,8 +1,16 @@
 package com.oqza.myzenflow.presentation.screens
 
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.ui.semantics.Role
+import androidx.compose.foundation.selection.selectable
+import com.oqza.myzenflow.presentation.components.ZenReadableWidth
+import com.oqza.myzenflow.presentation.theme.ZenSpacing
+import com.oqza.myzenflow.presentation.components.ZenSkeleton
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.outlined.ChevronRight
 import com.oqza.myzenflow.presentation.components.rememberNotificationPermissionRequester
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
@@ -119,249 +127,245 @@ fun SettingsScreen(
         }
     }
 
-    Scaffold(
-        contentWindowInsets = zenTabScreenInsets(),
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.settings_title),
-                        style = MaterialTheme.typography.headlineSmall
+    ZenReadableWidth {
+        Scaffold(
+            contentWindowInsets = zenTabScreenInsets(),
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = stringResource(R.string.settings_title),
+                            style = MaterialTheme.typography.headlineSmall
+                        )
+                    },
+                    navigationIcon = {
+                        if (onNavigateBack != null) {
+                            IconButton(onClick = onNavigateBack) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = stringResource(R.string.back)
+                                )
+                            }
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                        titleContentColor = MaterialTheme.colorScheme.onSurface
                     )
-                },
-                navigationIcon = {
-                    if (onNavigateBack != null) {
-                        IconButton(onClick = onNavigateBack) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = stringResource(R.string.back)
-                            )
-                        }
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
                 )
-            )
-        },
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
-    ) { paddingValues ->
-        if (uiState.isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(stringResource(R.string.loading))
-            }
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                // SECTION 1: Premium
-                item {
-                    SettingSection(title = stringResource(R.string.section_premium)) {
-                        if (!uiState.userPreferences.isPremiumUnlocked) {
-                            PremiumCard(
-                                onUpgradeClick = { viewModel.navigateToPremium() }
-                            )
-                        } else {
-                            PremiumStatusCard(
-                                onRestorePurchases = { viewModel.restorePurchases() }
-                            )
+            },
+            snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+        ) { paddingValues ->
+            if (uiState.isLoading) {
+                SettingsSkeleton(modifier = Modifier.padding(paddingValues))
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    contentPadding = PaddingValues(bottom = ZenSpacing.xl)
+                ) {
+                    // SECTION 1: Premium (hidden until billing exists, see BuildConfig.PREMIUM_ENABLED)
+                    if (BuildConfig.PREMIUM_ENABLED) item {
+                        SettingSection(title = stringResource(R.string.section_premium)) {
+                            if (!uiState.userPreferences.isPremiumUnlocked) {
+                                PremiumCard(
+                                    onUpgradeClick = { viewModel.navigateToPremium() }
+                                )
+                            } else {
+                                PremiumStatusCard(
+                                    onRestorePurchases = { viewModel.restorePurchases() }
+                                )
+                            }
                         }
                     }
-                }
 
-                // SECTION 2: General
-                item {
-                    SettingSection(title = stringResource(R.string.section_general)) {
-                        Column {
-                            SettingItem(
-                                title = stringResource(R.string.language_setting),
-                                subtitle = uiState.userPreferences.language.displayName,
-                                icon = Icons.Default.Language,
-                                onClick = { viewModel.showLanguageSelector() },
-                                trailing = {
-                                    Icon(
-                                        imageVector = Icons.Outlined.ChevronRight,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    // SECTION 2: General
+                    item {
+                        SettingSection(title = stringResource(R.string.section_general)) {
+                            Column {
+                                SettingItem(
+                                    title = stringResource(R.string.language_setting),
+                                    subtitle = languageLabel(uiState.userPreferences.language),
+                                    icon = Icons.Default.Language,
+                                    onClick = { viewModel.showLanguageSelector() },
+                                    trailing = {
+                                        Icon(
+                                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                )
+
+                                SettingThemeModeItem(
+                                    title = stringResource(R.string.theme_setting),
+                                    selected = uiState.userPreferences.themeMode,
+                                    labels = mapOf(
+                                        ThemeMode.SYSTEM to stringResource(R.string.theme_system),
+                                        ThemeMode.LIGHT to stringResource(R.string.theme_light),
+                                        ThemeMode.DARK to stringResource(R.string.theme_dark)
+                                    ),
+                                    onSelected = { viewModel.updateThemeMode(it) }
+                                )
+
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                    SettingToggleItem(
+                                        title = stringResource(R.string.dynamic_color),
+                                        subtitle = stringResource(R.string.dynamic_color_subtitle),
+                                        checked = uiState.userPreferences.dynamicColorEnabled,
+                                        onCheckedChange = { viewModel.updateDynamicColor(it) },
+                                        icon = Icons.Default.Brightness4
                                     )
                                 }
-                            )
-
-                            SettingThemeModeItem(
-                                title = stringResource(R.string.theme_setting),
-                                selected = uiState.userPreferences.themeMode,
-                                labels = mapOf(
-                                    ThemeMode.SYSTEM to stringResource(R.string.theme_system),
-                                    ThemeMode.LIGHT to stringResource(R.string.theme_light),
-                                    ThemeMode.DARK to stringResource(R.string.theme_dark)
-                                ),
-                                onSelected = { viewModel.updateThemeMode(it) }
-                            )
-
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                                SettingToggleItem(
-                                    title = stringResource(R.string.dynamic_color),
-                                    subtitle = stringResource(R.string.dynamic_color_subtitle),
-                                    checked = uiState.userPreferences.dynamicColorEnabled,
-                                    onCheckedChange = { viewModel.updateDynamicColor(it) },
-                                    icon = Icons.Default.Brightness4
-                                )
                             }
                         }
                     }
-                }
 
-                // SECTION 3: Notifications
-                item {
-                    SettingSection(title = stringResource(R.string.section_notifications)) {
-                        Column {
-                            SettingToggleItem(
-                                title = stringResource(R.string.notifications),
-                                subtitle = stringResource(R.string.notifications_subtitle),
-                                checked = uiState.userPreferences.notificationsEnabled,
-                                onCheckedChange = {
-                                    viewModel.updateNotifications(it)
-                                    if (it) requestNotificationPermission()
-                                },
-                                icon = Icons.Default.Notifications
-                            )
+                    // SECTION 3: Notifications
+                    item {
+                        SettingSection(title = stringResource(R.string.section_notifications)) {
+                            Column {
+                                SettingToggleItem(
+                                    title = stringResource(R.string.notifications),
+                                    subtitle = stringResource(R.string.notifications_subtitle),
+                                    checked = uiState.userPreferences.notificationsEnabled,
+                                    onCheckedChange = {
+                                        viewModel.updateNotifications(it)
+                                        if (it) requestNotificationPermission()
+                                    },
+                                    icon = Icons.Default.Notifications
+                                )
 
-                            SettingToggleItem(
-                                title = stringResource(R.string.daily_reminder),
-                                subtitle = if (uiState.userPreferences.dailyReminderEnabled) {
-                                    stringResource(R.string.daily_reminder_time, uiState.userPreferences.dailyReminderTime)
-                                } else {
-                                    stringResource(R.string.daily_reminder_subtitle)
-                                },
-                                checked = uiState.userPreferences.dailyReminderEnabled,
-                                onCheckedChange = { enabled ->
-                                    if (enabled) {
-                                        requestNotificationPermission()
-                                        viewModel.showTimePicker()
+                                SettingToggleItem(
+                                    title = stringResource(R.string.daily_reminder),
+                                    subtitle = if (uiState.userPreferences.dailyReminderEnabled) {
+                                        stringResource(R.string.daily_reminder_time, uiState.userPreferences.dailyReminderTime)
                                     } else {
-                                        viewModel.updateDailyReminder(false)
-                                    }
-                                },
-                                icon = Icons.Outlined.AccessTime,
-                                enabled = uiState.userPreferences.notificationsEnabled
-                            )
-
-                            if (uiState.userPreferences.dailyReminderEnabled && uiState.userPreferences.notificationsEnabled) {
-                                SettingItem(
-                                    title = stringResource(R.string.reminder_time),
-                                    subtitle = uiState.userPreferences.dailyReminderTime,
+                                        stringResource(R.string.daily_reminder_subtitle)
+                                    },
+                                    checked = uiState.userPreferences.dailyReminderEnabled,
+                                    onCheckedChange = { enabled ->
+                                        if (enabled) {
+                                            requestNotificationPermission()
+                                            viewModel.showTimePicker()
+                                        } else {
+                                            viewModel.updateDailyReminder(false)
+                                        }
+                                    },
                                     icon = Icons.Outlined.AccessTime,
-                                    onClick = { viewModel.showTimePicker() }
+                                    enabled = uiState.userPreferences.notificationsEnabled
                                 )
+
+                                if (uiState.userPreferences.dailyReminderEnabled && uiState.userPreferences.notificationsEnabled) {
+                                    SettingItem(
+                                        title = stringResource(R.string.reminder_time),
+                                        subtitle = uiState.userPreferences.dailyReminderTime,
+                                        icon = Icons.Outlined.AccessTime,
+                                        onClick = { viewModel.showTimePicker() }
+                                    )
+                                }
                             }
                         }
                     }
-                }
 
-                // SECTION 4: Sound & Haptics
-                item {
-                    SettingSection(title = stringResource(R.string.section_sound_haptics)) {
-                        Column {
-                            SettingToggleItem(
-                                title = stringResource(R.string.haptic_feedback),
-                                subtitle = stringResource(R.string.haptic_feedback_subtitle),
-                                checked = uiState.userPreferences.hapticFeedbackEnabled,
-                                onCheckedChange = { viewModel.updateHapticFeedback(it) },
-                                icon = Icons.Default.TouchApp
-                            )
-
-                            SettingToggleItem(
-                                title = stringResource(R.string.sound_settings_title),
-                                subtitle = stringResource(R.string.sound_settings_subtitle),
-                                checked = uiState.userPreferences.soundEnabled,
-                                onCheckedChange = { viewModel.updateSoundEnabled(it) },
-                                icon = Icons.Default.VolumeUp
-                            )
-
-                            if (uiState.userPreferences.soundEnabled) {
-                                SettingSliderItem(
-                                    title = stringResource(R.string.sound_volume),
-                                    subtitle = stringResource(R.string.sound_volume_subtitle),
-                                    value = uiState.userPreferences.soundVolume,
-                                    onValueChange = { viewModel.updateSoundVolume(it) },
-                                    icon = Icons.Default.VolumeUp,
-                                    valueLabel = "${(uiState.userPreferences.soundVolume * 100).toInt()}%"
+                    // SECTION 4: Sound & Haptics
+                    item {
+                        SettingSection(title = stringResource(R.string.section_sound_haptics)) {
+                            Column {
+                                SettingToggleItem(
+                                    title = stringResource(R.string.haptic_feedback),
+                                    subtitle = stringResource(R.string.haptic_feedback_subtitle),
+                                    checked = uiState.userPreferences.hapticFeedbackEnabled,
+                                    onCheckedChange = { viewModel.updateHapticFeedback(it) },
+                                    icon = Icons.Default.TouchApp
                                 )
 
                                 SettingToggleItem(
-                                    title = stringResource(R.string.background_music),
-                                    subtitle = stringResource(R.string.background_music_subtitle),
-                                    checked = uiState.userPreferences.backgroundMusicEnabled,
-                                    onCheckedChange = { viewModel.updateBackgroundMusic(it) },
-                                    icon = Icons.Default.MusicNote
+                                    title = stringResource(R.string.sound_settings_title),
+                                    subtitle = stringResource(R.string.sound_settings_subtitle),
+                                    checked = uiState.userPreferences.soundEnabled,
+                                    onCheckedChange = { viewModel.updateSoundEnabled(it) },
+                                    icon = Icons.Default.VolumeUp
                                 )
+
+                                if (uiState.userPreferences.soundEnabled) {
+                                    SettingSliderItem(
+                                        title = stringResource(R.string.sound_volume),
+                                        subtitle = stringResource(R.string.sound_volume_subtitle),
+                                        value = uiState.userPreferences.soundVolume,
+                                        onValueChange = { viewModel.updateSoundVolume(it) },
+                                        icon = Icons.Default.VolumeUp,
+                                        valueLabel = "${(uiState.userPreferences.soundVolume * 100).toInt()}%"
+                                    )
+
+                                    SettingToggleItem(
+                                        title = stringResource(R.string.background_music),
+                                        subtitle = stringResource(R.string.background_music_subtitle),
+                                        checked = uiState.userPreferences.backgroundMusicEnabled,
+                                        onCheckedChange = { viewModel.updateBackgroundMusic(it) },
+                                        icon = Icons.Default.MusicNote
+                                    )
+                                }
                             }
                         }
                     }
-                }
 
-                // SECTION 5: About
-                item {
-                    SettingSection(title = stringResource(R.string.section_about)) {
-                        Column {
-                            SettingItem(
-                                title = stringResource(R.string.about_version),
-                                subtitle = BuildConfig.VERSION_NAME,
-                                icon = Icons.Default.Info,
-                                showDivider = true
-                            )
+                    // SECTION 5: About
+                    item {
+                        SettingSection(title = stringResource(R.string.section_about)) {
+                            Column {
+                                SettingItem(
+                                    title = stringResource(R.string.about_version),
+                                    subtitle = BuildConfig.VERSION_NAME,
+                                    icon = Icons.Default.Info,
+                                    showDivider = true
+                                )
 
-                            SettingItem(
-                                title = stringResource(R.string.privacy_policy),
-                                icon = Icons.Default.Policy,
-                                onClick = {
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://myzenflow.com/privacy"))
-                                    context.startActivity(intent)
-                                },
-                                showDivider = true
-                            )
+                                SettingItem(
+                                    title = stringResource(R.string.privacy_policy),
+                                    icon = Icons.Default.Policy,
+                                    onClick = {
+                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://myzenflow.com/privacy"))
+                                        context.startActivity(intent)
+                                    },
+                                    showDivider = true
+                                )
 
-                            SettingItem(
-                                title = stringResource(R.string.terms_service),
-                                icon = Icons.Outlined.Article,
-                                onClick = {
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://myzenflow.com/terms"))
-                                    context.startActivity(intent)
-                                },
-                                showDivider = true
-                            )
+                                SettingItem(
+                                    title = stringResource(R.string.terms_service),
+                                    icon = Icons.Outlined.Article,
+                                    onClick = {
+                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://myzenflow.com/terms"))
+                                        context.startActivity(intent)
+                                    },
+                                    showDivider = true
+                                )
 
-                            SettingItem(
-                                title = stringResource(R.string.support_email),
-                                subtitle = "support@myzenflow.com",
-                                icon = Icons.Default.Email,
-                                onClick = {
-                                    val intent = Intent(Intent.ACTION_SENDTO).apply {
-                                        data = Uri.parse("mailto:support@myzenflow.com")
-                                        putExtra(Intent.EXTRA_SUBJECT, "ZenFlow Support")
-                                    }
-                                    context.startActivity(intent)
-                                },
-                                showDivider = true
-                            )
+                                SettingItem(
+                                    title = stringResource(R.string.support_email),
+                                    subtitle = "support@myzenflow.com",
+                                    icon = Icons.Default.Email,
+                                    onClick = {
+                                        val intent = Intent(Intent.ACTION_SENDTO).apply {
+                                            data = Uri.parse("mailto:support@myzenflow.com")
+                                            putExtra(Intent.EXTRA_SUBJECT, "ZenFlow Support")
+                                        }
+                                        context.startActivity(intent)
+                                    },
+                                    showDivider = true
+                                )
 
-                            SettingItem(
-                                title = stringResource(R.string.rate_app),
-                                icon = Icons.Default.Star,
-                                onClick = {
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=${context.packageName}"))
-                                    context.startActivity(intent)
-                                },
-                                showDivider = false
-                            )
+                                SettingItem(
+                                    title = stringResource(R.string.rate_app),
+                                    icon = Icons.Default.Star,
+                                    onClick = {
+                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=${context.packageName}"))
+                                        context.startActivity(intent)
+                                    },
+                                    showDivider = false
+                                )
+                            }
                         }
                     }
                 }
@@ -442,17 +446,17 @@ private fun LanguageOption(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .clickable { onClick() },
+            .selectable(selected = isSelected, role = Role.RadioButton, onClick = onClick)
+            .padding(vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         RadioButton(
             selected = isSelected,
-            onClick = onClick
+            onClick = null // the whole row is the radio button
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = language.displayName,
+            text = languageLabel(language),
             style = MaterialTheme.typography.bodyLarge
         )
     }
@@ -509,3 +513,29 @@ private fun TimePickerDialog(
         }
     )
 }
+
+/**
+ * Loading placeholder shaped like the settings list (three sections of rows).
+ */
+@Composable
+private fun SettingsSkeleton(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = ZenSpacing.screen, vertical = ZenSpacing.md),
+        verticalArrangement = Arrangement.spacedBy(ZenSpacing.sm)
+    ) {
+        repeat(3) {
+            ZenSkeleton(modifier = Modifier.width(120.dp), height = 14.dp)
+            Spacer(Modifier.height(ZenSpacing.xs))
+            ZenSkeleton(modifier = Modifier.fillMaxWidth(), height = 64.dp)
+            ZenSkeleton(modifier = Modifier.fillMaxWidth(), height = 64.dp)
+            Spacer(Modifier.height(ZenSpacing.md))
+        }
+    }
+}
+
+/** Native language name; "System default" for the follow-the-device option. */
+@Composable
+private fun languageLabel(language: AppLanguage): String =
+    if (language == AppLanguage.SYSTEM) stringResource(R.string.language_system) else language.displayName

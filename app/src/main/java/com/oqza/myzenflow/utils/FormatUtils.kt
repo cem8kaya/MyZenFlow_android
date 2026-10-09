@@ -263,7 +263,7 @@ object FormatUtils {
         count: Int,
         context: Context
     ): String {
-        return context.getString(R.string.sessions_count, count)
+        return context.resources.getQuantityString(R.plurals.sessions_count, count, count)
     }
 
     /**
@@ -277,7 +277,7 @@ object FormatUtils {
         days: Int,
         context: Context
     ): String {
-        return context.getString(R.string.days_count, days)
+        return context.resources.getQuantityString(R.plurals.days_count, days, days)
     }
 
     /**
