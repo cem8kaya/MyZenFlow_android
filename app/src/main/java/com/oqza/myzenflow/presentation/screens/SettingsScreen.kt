@@ -1,5 +1,12 @@
 package com.oqza.myzenflow.presentation.screens
 
+import androidx.compose.material.icons.outlined.ChevronRight
+import com.oqza.myzenflow.presentation.components.rememberNotificationPermissionRequester
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material3.SnackbarResult
+import android.provider.Settings
+import com.oqza.myzenflow.presentation.theme.zenTabScreenInsets
 import android.content.Intent
 import android.os.Build
 import android.net.Uri
@@ -72,6 +79,25 @@ fun SettingsScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    val blockedMessage = stringResource(R.string.notif_blocked)
+    val openSettingsLabel = stringResource(R.string.notif_open_settings)
+
+    // Reminders and timer alerts need the notification permission on Android 13+
+    val requestNotificationPermission = rememberNotificationPermissionRequester(onDenied = {
+        scope.launch {
+            val result = snackbarHostState.showSnackbar(
+                message = blockedMessage,
+                actionLabel = openSettingsLabel
+            )
+            if (result == SnackbarResult.ActionPerformed) {
+                context.startActivity(
+                    Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                        .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                )
+            }
+        }
+    })
 
     // Show snackbar messages
     LaunchedEffect(uiState.snackbarMessage) {
@@ -91,6 +117,7 @@ fun SettingsScreen(
     }
 
     Scaffold(
+        contentWindowInsets = zenTabScreenInsets(),
         topBar = {
             TopAppBar(
                 title = {
@@ -148,7 +175,7 @@ fun SettingsScreen(
                                 onClick = { viewModel.showLanguageSelector() },
                                 trailing = {
                                     Icon(
-                                        imageVector = Icons.Outlined.AccessTime,
+                                        imageVector = Icons.Outlined.ChevronRight,
                                         contentDescription = null,
                                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
@@ -187,7 +214,10 @@ fun SettingsScreen(
                                 title = stringResource(R.string.notifications),
                                 subtitle = stringResource(R.string.notifications_subtitle),
                                 checked = uiState.userPreferences.notificationsEnabled,
-                                onCheckedChange = { viewModel.updateNotifications(it) },
+                                onCheckedChange = {
+                                    viewModel.updateNotifications(it)
+                                    if (it) requestNotificationPermission()
+                                },
                                 icon = Icons.Default.Notifications
                             )
 
@@ -201,6 +231,7 @@ fun SettingsScreen(
                                 checked = uiState.userPreferences.dailyReminderEnabled,
                                 onCheckedChange = { enabled ->
                                     if (enabled) {
+                                        requestNotificationPermission()
                                         viewModel.showTimePicker()
                                     } else {
                                         viewModel.updateDailyReminder(false)

@@ -1,5 +1,8 @@
 package com.oqza.myzenflow.presentation.components
 
+import com.oqza.myzenflow.presentation.theme.ZenDawnGold
+import com.oqza.myzenflow.R
+import androidx.compose.ui.res.stringResource
 import com.oqza.myzenflow.presentation.theme.LocalReducedMotion
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
@@ -117,10 +120,10 @@ private fun LevelUpContent(newLevel: Int) {
 
         // Level Up text
         Text(
-            text = "Seviye Atladın!",
+            text = stringResource(R.string.levelup_title),
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFFFFD700), // Gold
+            color = ZenDawnGold,
             fontSize = 32.sp
         )
 
@@ -138,11 +141,11 @@ private fun LevelUpContent(newLevel: Int) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = getTreeEmoji(newLevel),
+                    text = treeEmoji(newLevel),
                     fontSize = 32.sp
                 )
                 Text(
-                    text = "Seviye $newLevel",
+                    text = stringResource(R.string.levelup_level, newLevel),
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
@@ -152,59 +155,17 @@ private fun LevelUpContent(newLevel: Int) {
 
         // Achievement name
         Text(
-            text = getTreeLevelName(newLevel),
+            text = treeLevelName(newLevel),
             style = MaterialTheme.typography.titleLarge,
             color = Color.White.copy(alpha = 0.9f)
         )
 
         // Encouragement message
         Text(
-            text = getEncouragementMessage(newLevel),
+            text = treeEncouragement(newLevel),
             style = MaterialTheme.typography.bodyLarge,
             color = Color.White.copy(alpha = 0.7f)
         )
-    }
-}
-
-/**
- * Get tree emoji for level
- */
-private fun getTreeEmoji(level: Int): String {
-    return when (level) {
-        1 -> "🌿"
-        2 -> "🌳"
-        3 -> "🌲"
-        4 -> "🎋"
-        5 -> "🌴"
-        else -> "🌱"
-    }
-}
-
-/**
- * Get tree level name
- */
-private fun getTreeLevelName(level: Int): String {
-    return when (level) {
-        1 -> "Fidan"
-        2 -> "Genç Ağaç"
-        3 -> "Olgun Ağaç"
-        4 -> "Muhteşem Ağaç"
-        5 -> "Zen Ağacı"
-        else -> "Tohum"
-    }
-}
-
-/**
- * Get encouragement message based on level
- */
-private fun getEncouragementMessage(level: Int): String {
-    return when (level) {
-        1 -> "Harika bir başlangıç! İlk adımı attın."
-        2 -> "Büyüme devam ediyor! Çok iyisin."
-        3 -> "Muhteşem ilerleme! Alışkanlık haline geldi."
-        4 -> "İnanılmaz! Gerçek bir usta oluyorsun."
-        5 -> "Maksimum seviye! Zen ustasısın!"
-        else -> "Devam et!"
     }
 }
 

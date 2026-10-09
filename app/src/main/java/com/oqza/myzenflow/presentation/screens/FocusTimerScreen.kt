@@ -1,5 +1,7 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.presentation.components.rememberNotificationPermissionRequester
+import com.oqza.myzenflow.presentation.theme.zenTabScreenInsets
 import com.oqza.myzenflow.presentation.theme.ZenTypography
 import com.oqza.myzenflow.presentation.theme.ZenTertiaryDark
 import com.oqza.myzenflow.presentation.theme.ZenSurfaceVariantDark
@@ -60,6 +62,8 @@ fun FocusTimerScreen(
     val todaysSessions by viewModel.todaysSessions.collectAsState()
     var showSettingsDialog by remember { mutableStateOf(false) }
     var deepFocus by remember { mutableStateOf(false) }
+    // Timer alerts and the ongoing timer notification need this permission on Android 13+
+    val requestNotificationPermission = rememberNotificationPermissionRequester()
     val timerActive = uiState.timerStatus == TimerStatus.RUNNING || uiState.timerStatus == TimerStatus.PAUSED
 
     // Leave deep focus when the session ends or is stopped
@@ -73,6 +77,7 @@ fun FocusTimerScreen(
     }
 
     Scaffold(
+        contentWindowInsets = zenTabScreenInsets(),
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.focus_title_bar)) },
@@ -146,7 +151,10 @@ fun FocusTimerScreen(
             item {
                 TimerControlButtons(
                     timerStatus = uiState.timerStatus,
-                    onStart = { viewModel.startTimer() },
+                    onStart = {
+                        requestNotificationPermission()
+                        viewModel.startTimer()
+                    },
                     onPause = { viewModel.pauseTimer() },
                     onResume = { viewModel.resumeTimer() },
                     onStop = { viewModel.stopTimer() },
@@ -611,17 +619,17 @@ fun TodaysStatsCard(stats: PomodoroViewModel.TodaysStats) {
             ) {
                 StatItem(
                     icon = Icons.Default.CheckCircle,
-                    label = "Tamamlanan",
+                    label = stringResource(R.string.focus_stat_done),
                     value = "${stats.completedWorkSessions}"
                 )
                 StatItem(
                     icon = Icons.Default.Timer,
-                    label = "Odaklanma",
-                    value = "${stats.totalFocusMinutes} dk"
+                    label = stringResource(R.string.focus_stat_focus),
+                    value = stringResource(R.string.minutes_count, stats.totalFocusMinutes)
                 )
                 StatItem(
                     icon = Icons.Default.LocalFireDepartment,
-                    label = "Seri",
+                    label = stringResource(R.string.focus_stat_streak),
                     value = "${stats.currentStreak}"
                 )
             }

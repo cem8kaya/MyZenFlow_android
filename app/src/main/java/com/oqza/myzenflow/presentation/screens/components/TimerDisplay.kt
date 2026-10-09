@@ -1,5 +1,7 @@
 package com.oqza.myzenflow.presentation.screens.components
 
+import com.oqza.myzenflow.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.*
 import androidx.compose.animation.slideInVertically
@@ -78,7 +80,7 @@ fun TimerDisplay(
             )
 
             Text(
-                text = "kalan süre",
+                text = stringResource(R.string.timer_remaining),
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.White.copy(alpha = 0.7f)
             )

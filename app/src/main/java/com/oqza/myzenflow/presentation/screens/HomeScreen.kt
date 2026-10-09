@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.presentation.theme.zenTabScreenInsets
 import com.oqza.myzenflow.data.models.PracticeGoal
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.Lifecycle
@@ -95,6 +96,7 @@ fun HomeScreen(
 
     ZenBackdrop(modifier = Modifier.fillMaxSize(), timeOfDay = timeOfDay) {
         Scaffold(
+            contentWindowInsets = zenTabScreenInsets(),
             containerColor = Color.Transparent,
             snackbarHost = { SnackbarHost(snackbarHostState) }
         ) { paddingValues ->

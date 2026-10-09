@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.presentation.theme.zenTabScreenInsets
 import androidx.compose.material.icons.outlined.AutoAwesome
 import com.oqza.myzenflow.presentation.components.ZenAnimatedText
 import com.oqza.myzenflow.presentation.theme.ZenDawnGold
@@ -58,6 +59,7 @@ fun ProfileScreen(
     val scrollState = rememberScrollState()
 
     Scaffold(
+        contentWindowInsets = zenTabScreenInsets(),
         topBar = {
             TopAppBar(
                 title = {

@@ -1,5 +1,13 @@
 package com.oqza.myzenflow
 
+import com.oqza.myzenflow.presentation.theme.ZenMotion
+import com.oqza.myzenflow.presentation.navigation.shouldShowBottomBar
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.AnimatedVisibility
 import com.oqza.myzenflow.utils.DeepLinks
 import androidx.compose.runtime.mutableStateOf
 import android.os.Bundle
@@ -107,10 +115,14 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                // Hide bottom bar on immersive screens
-                val shouldShowBottomBar = currentRoute != Screen.Breathing.route &&
-                        currentRoute != Screen.Focus.route &&
-                        currentRoute != Screen.Onboarding.route
+                // The bar stays on every non-immersive destination. Until the first back stack entry
+                // exists, fall back to the start route so the bar does not pop in late.
+                val startRoute = if (userPreferences.onboardingCompleted) {
+                    Screen.Home.route
+                } else {
+                    Screen.Onboarding.route
+                }
+                val shouldShowBottomBar = shouldShowBottomBar(currentRoute ?: startRoute)
 
                 // Screens own their system-bar insets; the outer scaffold only reserves
                 // space for the bottom navigation bar.
@@ -118,7 +130,14 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     contentWindowInsets = WindowInsets(0, 0, 0, 0),
                     bottomBar = {
-                        if (shouldShowBottomBar) {
+                        // Slides in/out instead of popping, and the content padding follows the animation
+                        AnimatedVisibility(
+                            visible = shouldShowBottomBar,
+                            enter = slideInVertically(tween(ZenMotion.MEDIUM, easing = ZenMotion.Standard)) { it } +
+                                fadeIn(tween(ZenMotion.MEDIUM)),
+                            exit = slideOutVertically(tween(ZenMotion.MEDIUM, easing = ZenMotion.Standard)) { it } +
+                                fadeOut(tween(ZenMotion.SHORT))
+                        ) {
                             BottomNavigationBar(navController = navController)
                         }
                     }
@@ -128,11 +147,7 @@ class MainActivity : ComponentActivity() {
                             PaddingValues(bottom = innerPadding.calculateBottomPadding())
                         ),
                         navController = navController,
-                        startDestination = if (userPreferences.onboardingCompleted) {
-                            Screen.Home.route
-                        } else {
-                            Screen.Onboarding.route
-                        }
+                        startDestination = startRoute
                     )
                 }
             }

@@ -84,7 +84,7 @@ fun WeeklyBarChart(
                         color = MaterialTheme.colorScheme.secondary
                     )
                     ChartSummaryItem(
-                        label = "Ortalama",
+                        label = stringResource(R.string.chart_average),
                         value = "${weeklyData.filter { it.sessions > 0 }.size}/7 gün",
                         color = MaterialTheme.colorScheme.tertiary
                     )
