@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
 
 /**
  * Window insets for a screen that is shown above the bottom navigation bar.
@@ -17,6 +16,5 @@ import androidx.compose.runtime.ReadOnlyComposable
  * Usage: `Scaffold(contentWindowInsets = zenTabScreenInsets(), ...)`
  */
 @Composable
-@ReadOnlyComposable
 fun zenTabScreenInsets(): WindowInsets =
     WindowInsets.systemBars.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
