@@ -1,5 +1,8 @@
 package com.oqza.myzenflow.presentation.components
 
+import com.oqza.myzenflow.presentation.theme.ZenDawnGold
+import com.oqza.myzenflow.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -339,7 +342,7 @@ fun PremiumCard(
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
-                    text = "Upgrade to Premium",
+                    text = stringResource(R.string.premium_upgrade),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onPrimaryContainer
@@ -370,7 +373,7 @@ fun PremiumCard(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
-                    text = "Unlock Now",
+                    text = stringResource(R.string.premium_upgrade_cta),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onPrimary,
@@ -440,12 +443,12 @@ fun PremiumStatusCard(
                 Icon(
                     imageVector = Icons.Default.Star,
                     contentDescription = null,
-                    tint = Color(0xFFFFD700), // Gold color
+                    tint = ZenDawnGold,
                     modifier = Modifier.size(32.dp)
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
-                    text = "Premium Active",
+                    text = stringResource(R.string.premium_active),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onPrimary
@@ -455,7 +458,7 @@ fun PremiumStatusCard(
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = "You have access to all premium features",
+                text = stringResource(R.string.premium_description),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f)
             )
@@ -472,7 +475,7 @@ fun PremiumStatusCard(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
-                    text = "Restore Purchases",
+                    text = stringResource(R.string.restore_purchases),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.primary,

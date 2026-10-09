@@ -1,5 +1,10 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.presentation.components.ZenButtonStyle
+import com.oqza.myzenflow.presentation.components.ZenButton
+import com.oqza.myzenflow.R
+import androidx.compose.ui.res.stringResource
+import com.oqza.myzenflow.presentation.components.ZenCard
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
@@ -41,15 +46,15 @@ fun FocusTimerScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Pomodoro Timer") },
+                title = { Text(stringResource(R.string.focus_title_bar)) },
                 actions = {
                     IconButton(onClick = { showSettingsDialog = true }) {
-                        Icon(Icons.Default.Settings, contentDescription = "Settings")
+                        Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.focus_settings))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground
                 )
             )
         }
@@ -131,9 +136,8 @@ fun FocusTimerScreen(
             if (todaysSessions.isNotEmpty()) {
                 item {
                     Text(
-                        text = "Bugünün Seansları",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
+                        text = stringResource(R.string.focus_todays_sessions),
+                        style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(top = 8.dp)
                     )
                 }
@@ -180,7 +184,7 @@ fun ModeSelectionSection(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Odaklanma Modu",
+            text = stringResource(R.string.focus_mode_label),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
@@ -244,29 +248,28 @@ fun SessionTypeCard(
             backgroundColor = MaterialTheme.colorScheme.primaryContainer
             textColor = MaterialTheme.colorScheme.onPrimaryContainer
             icon = Icons.Default.WorkOutline
-            text = "Çalışma Seansı"
+            text = stringResource(R.string.work_session)
         }
         TimerSessionType.SHORT_BREAK -> {
             backgroundColor = MaterialTheme.colorScheme.tertiaryContainer
             textColor = MaterialTheme.colorScheme.onTertiaryContainer
             icon = Icons.Default.Coffee
-            text = "Kısa Mola"
+            text = stringResource(R.string.short_break)
         }
         TimerSessionType.LONG_BREAK -> {
             backgroundColor = MaterialTheme.colorScheme.secondaryContainer
             textColor = MaterialTheme.colorScheme.onSecondaryContainer
             icon = Icons.Default.SelfImprovement
-            text = "Uzun Mola"
+            text = stringResource(R.string.long_break)
         }
     }
 
-    Card(
+    ZenCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = backgroundColor
-        )
+        containerColor = backgroundColor,
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp)
     ) {
         Row(
             modifier = Modifier
@@ -292,7 +295,7 @@ fun SessionTypeCard(
                 )
             }
             Text(
-                text = "Seans: $cycleInfo",
+                text = stringResource(R.string.focus_session_info, cycleInfo),
                 style = MaterialTheme.typography.bodyMedium,
                 color = textColor
             )
@@ -386,8 +389,8 @@ fun TaskNameInput(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
-        label = { Text("Görev Adı (Opsiyonel)") },
-        placeholder = { Text("Üzerinde çalıştığın görevi gir") },
+        label = { Text(stringResource(R.string.focus_task_name)) },
+        placeholder = { Text(stringResource(R.string.focus_task_hint)) },
         singleLine = true,
         leadingIcon = {
             Icon(
@@ -417,137 +420,63 @@ fun TimerControlButtons(
             verticalAlignment = Alignment.CenterVertically
         ) {
             when (timerStatus) {
-                TimerStatus.IDLE -> {
-                    // Start button
-                    Button(
-                        onClick = onStart,
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(56.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary
-                        )
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.PlayArrow,
-                            contentDescription = "Start",
-                            modifier = Modifier.size(24.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Başla", style = MaterialTheme.typography.titleMedium)
-                    }
-                }
+                TimerStatus.IDLE -> ZenButton(
+                    text = stringResource(R.string.button_start),
+                    onClick = onStart,
+                    icon = Icons.Default.PlayArrow,
+                    modifier = Modifier.weight(1f)
+                )
 
                 TimerStatus.RUNNING -> {
-                    // Pause button
-                    Button(
+                    ZenButton(
+                        text = stringResource(R.string.timer_pause),
                         onClick = onPause,
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(56.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.tertiary
-                        )
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Pause,
-                            contentDescription = "Pause",
-                            modifier = Modifier.size(24.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Duraklat", style = MaterialTheme.typography.titleMedium)
-                    }
-
-                    // Stop button
-                    OutlinedButton(
+                        icon = Icons.Default.Pause,
+                        modifier = Modifier.weight(1f)
+                    )
+                    ZenButton(
+                        text = stringResource(R.string.timer_stop),
                         onClick = onStop,
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(56.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Stop,
-                            contentDescription = "Stop",
-                            modifier = Modifier.size(24.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Durdur", style = MaterialTheme.typography.titleMedium)
-                    }
+                        style = ZenButtonStyle.Secondary,
+                        icon = Icons.Default.Stop,
+                        modifier = Modifier.weight(1f)
+                    )
                 }
 
                 TimerStatus.PAUSED -> {
-                    // Resume button
-                    Button(
+                    ZenButton(
+                        text = stringResource(R.string.timer_resume),
                         onClick = onResume,
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(56.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary
-                        )
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.PlayArrow,
-                            contentDescription = "Resume",
-                            modifier = Modifier.size(24.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Devam Et", style = MaterialTheme.typography.titleMedium)
-                    }
-
-                    // Stop button
-                    OutlinedButton(
+                        icon = Icons.Default.PlayArrow,
+                        modifier = Modifier.weight(1f)
+                    )
+                    ZenButton(
+                        text = stringResource(R.string.timer_stop),
                         onClick = onStop,
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(56.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Stop,
-                            contentDescription = "Stop",
-                            modifier = Modifier.size(24.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Durdur", style = MaterialTheme.typography.titleMedium)
-                    }
+                        style = ZenButtonStyle.Secondary,
+                        icon = Icons.Default.Stop,
+                        modifier = Modifier.weight(1f)
+                    )
                 }
 
-                TimerStatus.COMPLETED -> {
-                    // Start new session button
-                    Button(
-                        onClick = onStart,
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(56.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Refresh,
-                            contentDescription = "Start New",
-                            modifier = Modifier.size(24.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Yeni Seans", style = MaterialTheme.typography.titleMedium)
-                    }
-                }
+                TimerStatus.COMPLETED -> ZenButton(
+                    text = stringResource(R.string.focus_new_session),
+                    onClick = onStart,
+                    icon = Icons.Default.Refresh,
+                    modifier = Modifier.weight(1f)
+                )
             }
         }
 
         // Skip button (only when running or paused)
         if (timerStatus == TimerStatus.RUNNING || timerStatus == TimerStatus.PAUSED) {
-            OutlinedButton(
+            ZenButton(
+                text = stringResource(R.string.focus_next_session),
                 onClick = onSkip,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.SkipNext,
-                    contentDescription = "Skip",
-                    modifier = Modifier.size(20.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Sonraki Seans", style = MaterialTheme.typography.bodyLarge)
-            }
+                style = ZenButtonStyle.Text,
+                icon = Icons.Default.SkipNext,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 }
@@ -575,10 +504,10 @@ private fun SettingsRow(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Vibration,
-                        contentDescription = "Haptic",
+                        contentDescription = null,
                         modifier = Modifier.size(18.dp)
                     )
-                    Text("Titreşim")
+                    Text(stringResource(R.string.focus_haptic))
                 }
             },
             leadingIcon = if (hapticEnabled) {
@@ -597,10 +526,10 @@ private fun SettingsRow(
                 ) {
                     Icon(
                         imageVector = if (soundEnabled) Icons.Default.VolumeUp else Icons.Default.VolumeOff,
-                        contentDescription = "Sound",
+                        contentDescription = null,
                         modifier = Modifier.size(18.dp)
                     )
-                    Text("Ses")
+                    Text(stringResource(R.string.focus_sound))
                 }
             },
             leadingIcon = if (soundEnabled) {
@@ -612,12 +541,10 @@ private fun SettingsRow(
 
 @Composable
 fun TodaysStatsCard(stats: PomodoroViewModel.TodaysStats) {
-    Card(
+    ZenCard(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
-        ),
-        shape = RoundedCornerShape(16.dp)
+        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp)
     ) {
         Column(
             modifier = Modifier
@@ -626,9 +553,8 @@ fun TodaysStatsCard(stats: PomodoroViewModel.TodaysStats) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Bugünün İstatistikleri",
+                text = stringResource(R.string.focus_todays_stats),
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
 
@@ -695,12 +621,10 @@ fun SessionHistoryItem(session: FocusSessionData) {
         MaterialTheme.colorScheme.errorContainer
     }
 
-    Card(
+    ZenCard(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = sessionColor
-        ),
-        shape = RoundedCornerShape(12.dp)
+        containerColor = sessionColor,
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp)
     ) {
         Row(
             modifier = Modifier
@@ -772,7 +696,7 @@ fun TimerSettingsDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text("Zamanlayıcı Ayarları", style = MaterialTheme.typography.titleLarge)
+            Text(stringResource(R.string.focus_timer_settings), style = MaterialTheme.typography.titleLarge)
         },
         text = {
             Column(
@@ -782,7 +706,7 @@ fun TimerSettingsDialog(
                 // Work duration slider
                 Column {
                     Text(
-                        text = "Çalışma Süresi: ${workDurationState.toInt()} dakika",
+                        text = stringResource(R.string.focus_work_duration, workDurationState.toInt()),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Medium
                     )
@@ -797,7 +721,7 @@ fun TimerSettingsDialog(
                 // Short break duration slider
                 Column {
                     Text(
-                        text = "Kısa Mola: ${shortBreakDurationState.toInt()} dakika",
+                        text = stringResource(R.string.focus_short_break_duration, shortBreakDurationState.toInt()),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Medium
                     )
@@ -812,7 +736,7 @@ fun TimerSettingsDialog(
                 // Long break duration slider
                 Column {
                     Text(
-                        text = "Uzun Mola: ${longBreakDurationState.toInt()} dakika",
+                        text = stringResource(R.string.focus_long_break_duration, longBreakDurationState.toInt()),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Medium
                     )
@@ -827,7 +751,7 @@ fun TimerSettingsDialog(
                 // Total cycles slider
                 Column {
                     Text(
-                        text = "Uzun Molaya Kadar: ${totalCyclesState.toInt()} döngü",
+                        text = stringResource(R.string.focus_cycles_until_long, totalCyclesState.toInt()),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Medium
                     )
@@ -851,12 +775,12 @@ fun TimerSettingsDialog(
                     )
                 }
             ) {
-                Text("Kaydet")
+                Text(stringResource(R.string.button_save))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("İptal")
+                Text(stringResource(R.string.button_cancel))
             }
         }
     )

@@ -1,5 +1,8 @@
 package com.oqza.myzenflow.presentation.components
 
+import com.oqza.myzenflow.presentation.theme.ZenDawnGold
+import com.oqza.myzenflow.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -33,15 +36,14 @@ fun AchievementCard(
 ) {
     val info = AchievementEntity.getAchievementInfo(achievement.type)
 
-    Card(
+    ZenCard(
         modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isUnlocked) {
+        containerColor = if (isUnlocked) {
                 MaterialTheme.colorScheme.primaryContainer
             } else {
                 MaterialTheme.colorScheme.surfaceVariant
-            }
-        )
+            },
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp)
     ) {
         Row(
             modifier = Modifier
@@ -56,7 +58,7 @@ fun AchievementCard(
                     .size(60.dp)
                     .background(
                         color = if (isUnlocked) {
-                            Color(0xFFFFD700).copy(alpha = 0.2f)
+                            ZenDawnGold.copy(alpha = 0.2f)
                         } else {
                             Color.Gray.copy(alpha = 0.1f)
                         },
@@ -130,7 +132,7 @@ fun AchievementCard(
                     // Show unlock date
                     achievement.unlockedAt?.let { date ->
                         Text(
-                            text = "Açıldı: ${date.format(DateTimeFormatter.ofPattern("dd MMM yyyy"))}",
+                            text = stringResource(R.string.ach_unlocked_on, date.format(DateTimeFormatter.ofPattern("dd MMM yyyy"))),
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.6f)
                         )
@@ -158,11 +160,10 @@ fun BadgeGallery(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         // Summary
-        Card(
+        ZenCard(
             modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer
-            )
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp)
         ) {
             Row(
                 modifier = Modifier
@@ -178,10 +179,10 @@ fun BadgeGallery(
                         text = unlockedAchievements.size.toString(),
                         style = MaterialTheme.typography.headlineLarge,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFFFFD700)
+                        color = ZenDawnGold
                     )
                     Text(
-                        text = "Açıldı",
+                        text = stringResource(R.string.ach_unlocked),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
@@ -204,7 +205,7 @@ fun BadgeGallery(
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                     Text(
-                        text = "Toplam",
+                        text = stringResource(R.string.ach_total),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
@@ -227,7 +228,7 @@ fun BadgeGallery(
                         color = MaterialTheme.colorScheme.primary
                     )
                     Text(
-                        text = "Tamamlama",
+                        text = stringResource(R.string.ach_completion),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
@@ -238,7 +239,7 @@ fun BadgeGallery(
         // Unlocked achievements grid
         if (unlockedAchievements.isNotEmpty()) {
             Text(
-                text = "Açılan Rozetler",
+                text = stringResource(R.string.ach_badges_unlocked),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -259,7 +260,7 @@ fun BadgeGallery(
         // Locked achievements grid
         if (lockedAchievements.isNotEmpty()) {
             Text(
-                text = "Kilitli Rozetler",
+                text = stringResource(R.string.ach_badges_locked),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -298,7 +299,7 @@ private fun BadgeItem(
                 .size(60.dp)
                 .background(
                     color = if (isUnlocked) {
-                        Color(0xFFFFD700).copy(alpha = 0.2f)
+                        ZenDawnGold.copy(alpha = 0.2f)
                     } else {
                         Color.Gray.copy(alpha = 0.1f)
                     },

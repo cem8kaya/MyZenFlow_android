@@ -1,5 +1,9 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.presentation.theme.ZenDawnGold
+import com.oqza.myzenflow.R
+import androidx.compose.ui.res.stringResource
+import com.oqza.myzenflow.presentation.components.ZenCard
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -33,10 +37,10 @@ fun ZenGardenScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Zen Bahçem") },
+                title = { Text(stringResource(R.string.garden_title)) },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground
                 )
             )
         }
@@ -49,25 +53,25 @@ fun ZenGardenScreen(
             // Tab row
             TabRow(
                 selectedTabIndex = uiState.selectedTab.ordinal,
-                containerColor = MaterialTheme.colorScheme.surface
+                containerColor = MaterialTheme.colorScheme.background
             ) {
                 Tab(
                     selected = uiState.selectedTab == ZenGardenTab.TREE,
                     onClick = { viewModel.selectTab(ZenGardenTab.TREE) },
-                    text = { Text("Ağaç") },
-                    icon = { Icon(Icons.Default.Park, contentDescription = "Ağaç") }
+                    text = { Text(stringResource(R.string.garden_tab_tree)) },
+                    icon = { Icon(Icons.Default.Park, contentDescription = null) }
                 )
                 Tab(
                     selected = uiState.selectedTab == ZenGardenTab.ACHIEVEMENTS,
                     onClick = { viewModel.selectTab(ZenGardenTab.ACHIEVEMENTS) },
-                    text = { Text("Başarılar") },
-                    icon = { Icon(Icons.Default.EmojiEvents, contentDescription = "Başarılar") }
+                    text = { Text(stringResource(R.string.garden_tab_achievements)) },
+                    icon = { Icon(Icons.Default.EmojiEvents, contentDescription = null) }
                 )
                 Tab(
                     selected = uiState.selectedTab == ZenGardenTab.STATS,
                     onClick = { viewModel.selectTab(ZenGardenTab.STATS) },
-                    text = { Text("İstatistikler") },
-                    icon = { Icon(Icons.Default.Analytics, contentDescription = "İstatistikler") }
+                    text = { Text(stringResource(R.string.garden_tab_stats)) },
+                    icon = { Icon(Icons.Default.Analytics, contentDescription = null) }
                 )
             }
 
@@ -131,11 +135,10 @@ private fun TreeTab(
 
         // Tree visualization
         item {
-            Card(
+            ZenCard(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
+                containerColor = MaterialTheme.colorScheme.background,
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp)
             ) {
                 Box(
                     modifier = Modifier
@@ -180,7 +183,7 @@ private fun StatsCardsRow(
     ) {
         item {
             StatCard(
-                title = "Toplam Seans",
+                title = stringResource(R.string.garden_stat_sessions),
                 value = uiState.userStats.totalSessions.toString(),
                 icon = Icons.Default.SelfImprovement,
                 color = MaterialTheme.colorScheme.primary
@@ -188,7 +191,7 @@ private fun StatsCardsRow(
         }
         item {
             StatCard(
-                title = "Toplam Dakika",
+                title = stringResource(R.string.garden_stat_minutes),
                 value = uiState.userStats.totalMinutes.toString(),
                 icon = Icons.Default.Timer,
                 color = MaterialTheme.colorScheme.secondary
@@ -196,18 +199,18 @@ private fun StatsCardsRow(
         }
         item {
             StatCard(
-                title = "Mevcut Seri",
-                value = "${uiState.userStats.currentStreak} gün",
+                title = stringResource(R.string.garden_stat_streak),
+                value = stringResource(R.string.days_short, uiState.userStats.currentStreak),
                 icon = Icons.Default.Whatshot,
-                color = Color(0xFFFF6347) // Tomato
+                color = MaterialTheme.colorScheme.tertiary
             )
         }
         item {
             StatCard(
-                title = "Başarılar",
+                title = stringResource(R.string.garden_stat_achievements),
                 value = "${uiState.unlockedAchievements.size}/${uiState.achievements.size}",
                 icon = Icons.Default.EmojiEvents,
-                color = Color(0xFFFFD700) // Gold
+                color = ZenDawnGold
             )
         }
     }
@@ -223,13 +226,12 @@ private fun StatCard(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     color: Color
 ) {
-    Card(
+    ZenCard(
         modifier = Modifier
             .width(140.dp)
             .height(100.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = color.copy(alpha = 0.1f)
-        )
+        containerColor = color.copy(alpha = 0.1f),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp)
     ) {
         Column(
             modifier = Modifier
@@ -239,7 +241,7 @@ private fun StatCard(
         ) {
             Icon(
                 imageVector = icon,
-                contentDescription = title,
+                contentDescription = null,
                 tint = color,
                 modifier = Modifier.size(24.dp)
             )
@@ -267,11 +269,10 @@ private fun StatCard(
 private fun GrowthInfoCard(
     uiState: com.oqza.myzenflow.presentation.viewmodels.ZenGardenUiState
 ) {
-    Card(
+    ZenCard(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer
-        )
+        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp)
     ) {
         Column(
             modifier = Modifier
@@ -285,12 +286,11 @@ private fun GrowthInfoCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Büyüme İlerlemesi",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    text = stringResource(R.string.garden_growth_title),
+                    style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    text = "Seviye ${uiState.userStats.treeLevel}/5",
+                    text = stringResource(R.string.garden_level_format, uiState.userStats.treeLevel),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -311,7 +311,7 @@ private fun GrowthInfoCard(
                 )
             } else {
                 Text(
-                    text = "🎉 Maksimum seviyeye ulaştınız! Muhteşemsiniz!",
+                    text = stringResource(R.string.garden_max_level),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold
@@ -324,14 +324,15 @@ private fun GrowthInfoCard(
 /**
  * Get next level info text
  */
+@Composable
 private fun getNextLevelInfo(currentLevel: Int, totalMinutes: Int): String {
     val thresholds = listOf(0, 30, 120, 360, 900, 1800)
-    if (currentLevel >= 5) return "Maksimum seviye!"
+    if (currentLevel >= 5) return stringResource(R.string.garden_max_level)
 
     val nextThreshold = thresholds[currentLevel + 1]
     val minutesNeeded = nextThreshold - totalMinutes
 
-    return "Sonraki seviye için $minutesNeeded dakika daha meditasyon yapın"
+    return stringResource(R.string.garden_next_level, minutesNeeded)
 }
 
 /**
@@ -348,9 +349,8 @@ private fun AchievementsTab(
     ) {
         item {
             Text(
-                text = "Açılan Başarılar (${uiState.unlockedAchievements.size})",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+                text = stringResource(R.string.garden_unlocked_title, uiState.unlockedAchievements.size),
+                style = MaterialTheme.typography.titleLarge
             )
         }
 
@@ -361,9 +361,8 @@ private fun AchievementsTab(
         item {
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Kilitli Başarılar (${uiState.lockedAchievements.size})",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+                text = stringResource(R.string.garden_locked_title, uiState.lockedAchievements.size),
+                style = MaterialTheme.typography.titleLarge
             )
         }
 
@@ -387,9 +386,8 @@ private fun StatsTab(
     ) {
         item {
             Text(
-                text = "İstatistikler",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+                text = stringResource(R.string.garden_stats_title),
+                style = MaterialTheme.typography.titleLarge
             )
         }
 
@@ -419,11 +417,10 @@ private fun StatsTab(
 
         // Weekly goal progress card
         item {
-            Card(
+            ZenCard(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer
-                )
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp)
             ) {
                 Column(
                     modifier = Modifier
@@ -432,9 +429,8 @@ private fun StatsTab(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
-                        text = "Haftalık Hedef",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
+                        text = stringResource(R.string.garden_weekly_goal),
+                        style = MaterialTheme.typography.titleMedium
                     )
 
                     Row(
@@ -442,7 +438,7 @@ private fun StatsTab(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "${uiState.userStats.weeklyCompletedMinutes} / ${uiState.userStats.weeklyGoalMinutes} dakika",
+                            text = stringResource(R.string.garden_goal_progress, uiState.userStats.weeklyCompletedMinutes, uiState.userStats.weeklyGoalMinutes),
                             style = MaterialTheme.typography.bodyLarge
                         )
                         Text(
