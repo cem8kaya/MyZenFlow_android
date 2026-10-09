@@ -424,4 +424,13 @@
     <string name="tree_max_level">Maximum level!</string>
     <string name="notif_blocked">Notifications are blocked. You can allow them in system settings.</string>
     <string name="notif_open_settings">Open settings</string>
+    <string name="cal_type_meditation">Meditation</string>
+    <string name="cal_type_focus">Focus</string>
+    <string name="cal_type_breathing">Breathing</string>
+    <string name="cal_default_focus_title">Focus session</string>
+    <string name="time_just_now">Just now</string>
+    <string name="time_minutes_ago">%1$d min ago</string>
+    <string name="time_hours_ago">%1$d h ago</string>
+    <string name="time_yesterday">Yesterday</string>
+    <string name="time_days_ago">%1$d days ago</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.presentation.navigation.navigateTo
 import com.oqza.myzenflow.presentation.theme.zenTabScreenInsets
 import androidx.compose.material.icons.outlined.AutoAwesome
 import com.oqza.myzenflow.presentation.components.ZenAnimatedText
@@ -133,10 +134,10 @@ fun ProfileScreen(
                 )
 
                 QuickLinksSection(
-                    onAchievementsClick = { navController?.navigate(Screen.ZenGarden.route) },
-                    onHistoryClick = { navController?.navigate(Screen.Calendar.route) },
-                    onWeeklyClick = { navController?.navigate(Screen.WeeklySummary.route) },
-                    onSettingsClick = { navController?.navigate(Screen.Settings.route) }
+                    onAchievementsClick = { navController?.navigateTo(Screen.ZenGarden.route) },
+                    onHistoryClick = { navController?.navigateTo(Screen.Calendar.route) },
+                    onWeeklyClick = { navController?.navigateTo(Screen.WeeklySummary.route) },
+                    onSettingsClick = { navController?.navigateTo(Screen.Settings.route) }
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))

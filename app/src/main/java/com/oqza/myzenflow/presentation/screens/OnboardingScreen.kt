@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.screens
 
+import androidx.activity.compose.BackHandler
 import com.oqza.myzenflow.data.models.PracticeGoal
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.semantics.Role
@@ -60,6 +61,11 @@ fun OnboardingScreen(
 ) {
     val pagerState = rememberPagerState(pageCount = { PAGE_COUNT })
     val coroutineScope = rememberCoroutineScope()
+
+    // System back steps to the previous page instead of closing the app mid-onboarding
+    BackHandler(enabled = pagerState.currentPage > 0) {
+        coroutineScope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) }
+    }
     var userName by remember { mutableStateOf("") }
     var goal by remember { mutableStateOf(PracticeGoal.NONE) }
     var weeklyGoalMinutes by remember { mutableStateOf(210) }

@@ -391,33 +391,6 @@ fun BreathingScreen(
                 }
             )
         }
-
-        // Semi-transparent floating back button (visible only when session is NOT active)
-        if (!uiState.isActive) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-                    .systemBarsPadding(),
-                contentAlignment = Alignment.TopStart
-            ) {
-                IconButton(
-                    onClick = onNavigateBack,
-                    modifier = Modifier
-                        .size(48.dp)
-                        .background(
-                            color = Color.Black.copy(alpha = 0.3f),
-                            shape = CircleShape
-                        )
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = stringResource(R.string.back),
-                        tint = Color.White
-                    )
-                }
-            }
-        }
     }
 }
 

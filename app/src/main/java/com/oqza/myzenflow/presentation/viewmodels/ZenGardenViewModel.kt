@@ -10,10 +10,8 @@ import com.oqza.myzenflow.data.repository.StatsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.temporal.TemporalAdjusters
+import com.oqza.myzenflow.utils.DailyStatsCalculator
 import javax.inject.Inject
 
 /**
@@ -51,6 +49,12 @@ enum class ZenGardenTab {
 /**
  * ViewModel for Zen Garden screen
  * Manages tree growth, achievements, and statistics
+ *
+ * Data flow (one direction, no cycles):
+ *   sessions -> stats ------------------------> UI state (tree, charts, achievements list)
+ *   sessions + stats -> achievement progress -> achievements table -> UI state
+ * Writing achievement progress must never be part of the flow that produces the UI state. It used
+ * to be, and the endless write -> re-emit -> write loop made the charts flash empty and refill.
  */
 @HiltViewModel
 class ZenGardenViewModel @Inject constructor(
@@ -63,220 +67,69 @@ class ZenGardenViewModel @Inject constructor(
     val uiState: StateFlow<ZenGardenUiState> = _uiState.asStateFlow()
 
     init {
-        initializeData()
+        trackAchievementProgress()
+        observeUiState()
     }
 
     /**
-     * Initialize data from repositories
+     * Keeps achievement progress in sync with practice. Runs on its own so that its database
+     * writes cannot trigger it again.
      */
-    private fun initializeData() {
+    private fun trackAchievementProgress() {
         viewModelScope.launch {
-            // Initialize achievements if they don't exist
             achievementRepository.initializeAchievements()
-
-            // Combine all data streams
             combine(
                 statsRepository.getUserStats(),
-                achievementRepository.getAllAchievements()
-            ) { stats, achievements ->
-                // Update achievement progress based on stats
-                updateAchievementProgress(stats)
-
-                val unlocked = achievements.filter { it.isUnlocked }
-                val locked = achievements.filter { !it.isUnlocked }
-
-                ZenGardenUiState(
-                    userStats = stats,
-                    achievements = achievements,
-                    unlockedAchievements = unlocked,
-                    lockedAchievements = locked,
-                    weeklyData = emptyList(), // Will be loaded separately
-                    monthlyData = emptyList(), // Will be loaded separately
-                    isLoading = false,
-                    selectedTab = _uiState.value.selectedTab
-                )
-            }.collect { newState ->
-                _uiState.value = newState
-                // Load weekly and monthly data after main state is loaded
-                if (!newState.isLoading) {
-                    loadChartData()
+                statsRepository.getPracticeSessions()
+            ) { stats, sessions -> stats to sessions }
+                .distinctUntilChanged()
+                .collect { (stats, sessions) ->
+                    achievementRepository.updateAllAchievementProgress(
+                        totalSessions = stats.totalSessions,
+                        totalMinutes = stats.totalMinutes,
+                        currentStreak = stats.currentStreak,
+                        focusSessions = stats.totalFocusSessions,
+                        breathingSessions = breathingRepository.getTotalCompletedSessions(),
+                        earlyBirdSessions = DailyStatsCalculator.earlyBirdSessions(sessions),
+                        nightOwlSessions = DailyStatsCalculator.nightOwlSessions(sessions),
+                        weekendStreaks = DailyStatsCalculator.consecutiveWeekends(sessions),
+                        treeLevel = stats.treeLevel
+                    )
                 }
-            }
         }
     }
 
     /**
-     * Update achievement progress based on user stats
+     * Builds the screen state, charts included, in a single step so nothing is ever briefly empty.
      */
-    private suspend fun updateAchievementProgress(stats: UserStats) {
-        // Calculate special achievement progress
-        val earlyBirdSessions = calculateEarlyBirdSessions()
-        val nightOwlSessions = calculateNightOwlSessions()
-        val weekendStreaks = calculateWeekendStreaks()
-
-        // Update all achievement progress
-        achievementRepository.updateAllAchievementProgress(
-            totalSessions = stats.totalSessions,
-            totalMinutes = stats.totalMinutes,
-            currentStreak = stats.currentStreak,
-            focusSessions = stats.totalFocusSessions,
-            breathingSessions = breathingRepository.getTotalCompletedSessions(),
-            earlyBirdSessions = earlyBirdSessions,
-            nightOwlSessions = nightOwlSessions,
-            weekendStreaks = weekendStreaks,
-            treeLevel = stats.treeLevel
-        )
-    }
-
-    /**
-     * Calculate early bird sessions (before 8 AM)
-     */
-    private suspend fun calculateEarlyBirdSessions(): Int {
-        return statsRepository.getSessionsForDateRange(
-            LocalDate.now().minusYears(1).atStartOfDay(),
-            LocalDateTime.now()
-        ).first().count { it.date.hour < 8 }
-    }
-
-    /**
-     * Calculate night owl sessions (after 10 PM)
-     */
-    private suspend fun calculateNightOwlSessions(): Int {
-        return statsRepository.getSessionsForDateRange(
-            LocalDate.now().minusYears(1).atStartOfDay(),
-            LocalDateTime.now()
-        ).first().count { it.date.hour >= 22 }
-    }
-
-    /**
-     * Calculate weekend streaks
-     */
-    private suspend fun calculateWeekendStreaks(): Int {
-        val sessions = statsRepository.getSessionsForDateRange(
-            LocalDate.now().minusMonths(2).atStartOfDay(),
-            LocalDateTime.now()
-        ).first()
-
-        val weekendDates = sessions
-            .filter {
-                val dayOfWeek = it.date.dayOfWeek
-                dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY
-            }
-            .map { it.date.toLocalDate() }
-            .distinct()
-            .sorted()
-
-        // Count consecutive weekends
-        var streaks = 0
-        var currentStreak = 0
-        var lastWeekendDate: LocalDate? = null
-
-        for (date in weekendDates) {
-            if (lastWeekendDate == null || date.toEpochDay() - lastWeekendDate.toEpochDay() <= 7) {
-                currentStreak++
-                if (currentStreak >= 2) { // At least 2 weekends
-                    streaks = currentStreak / 2 // Number of complete weekend pairs
-                }
-            } else {
-                currentStreak = 1
-            }
-            lastWeekendDate = date
-        }
-
-        return streaks
-    }
-
-    /**
-     * Load weekly and monthly chart data
-     */
-    private fun loadChartData() {
+    private fun observeUiState() {
         viewModelScope.launch {
-            val weeklyData = calculateWeeklyData()
-            val monthlyData = calculateMonthlyData()
-
-            _uiState.value = _uiState.value.copy(
-                weeklyData = weeklyData,
-                monthlyData = monthlyData
-            )
+            combine(
+                statsRepository.getUserStats(),
+                achievementRepository.getAllAchievements(),
+                statsRepository.getPracticeSessions()
+            ) { stats, achievements, sessions ->
+                Triple(stats, achievements, sessions)
+            }.collect { (stats, achievements, sessions) ->
+                _uiState.update { current ->
+                    current.copy(
+                        userStats = stats,
+                        achievements = achievements,
+                        unlockedAchievements = achievements.filter { it.isUnlocked },
+                        lockedAchievements = achievements.filter { !it.isUnlocked },
+                        weeklyData = DailyStatsCalculator.currentWeek(sessions),
+                        monthlyData = DailyStatsCalculator.currentMonth(sessions),
+                        isLoading = false
+                    )
+                }
+            }
         }
-    }
-
-    /**
-     * Calculate daily stats for the current week
-     */
-    private suspend fun calculateWeeklyData(): List<DailyStats> {
-        val startOfWeek = LocalDate.now()
-            .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-        val endOfWeek = LocalDate.now()
-            .with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
-
-        val sessions = statsRepository.getSessionsForDateRange(
-            startOfWeek.atStartOfDay(),
-            endOfWeek.atTime(23, 59, 59)
-        ).first()
-
-        val dailyStats = mutableListOf<DailyStats>()
-        var currentDate = startOfWeek
-
-        while (!currentDate.isAfter(endOfWeek)) {
-            val daySessions = sessions.filter { it.date.toLocalDate() == currentDate }
-            dailyStats.add(
-                DailyStats(
-                    date = currentDate,
-                    minutes = daySessions.sumOf { it.duration } / 60,
-                    sessions = daySessions.size
-                )
-            )
-            currentDate = currentDate.plusDays(1)
-        }
-
-        return dailyStats
-    }
-
-    /**
-     * Calculate daily stats for the current month
-     */
-    private suspend fun calculateMonthlyData(): List<DailyStats> {
-        val startOfMonth = LocalDate.now()
-            .with(TemporalAdjusters.firstDayOfMonth())
-        val endOfMonth = LocalDate.now()
-            .with(TemporalAdjusters.lastDayOfMonth())
-
-        val sessions = statsRepository.getSessionsForDateRange(
-            startOfMonth.atStartOfDay(),
-            endOfMonth.atTime(23, 59, 59)
-        ).first()
-
-        val dailyStats = mutableListOf<DailyStats>()
-        var currentDate = startOfMonth
-
-        while (!currentDate.isAfter(endOfMonth)) {
-            val daySessions = sessions.filter { it.date.toLocalDate() == currentDate }
-            dailyStats.add(
-                DailyStats(
-                    date = currentDate,
-                    minutes = daySessions.sumOf { it.duration } / 60,
-                    sessions = daySessions.size
-                )
-            )
-            currentDate = currentDate.plusDays(1)
-        }
-
-        return dailyStats
     }
 
     /**
      * Select a tab
      */
     fun selectTab(tab: ZenGardenTab) {
-        _uiState.value = _uiState.value.copy(selectedTab = tab)
-    }
-
-    /**
-     * Refresh data
-     */
-    fun refresh() {
-        _uiState.value = _uiState.value.copy(isLoading = true)
-        initializeData()
+        _uiState.update { it.copy(selectedTab = tab) }
     }
 }

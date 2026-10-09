@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import java.util.Locale
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
@@ -47,7 +48,7 @@ class ProfileViewModel @Inject constructor(
                 ProfileUiState(
                     userName = preferences.userName.ifEmpty { "Zenmaster" },
                     isPremium = preferences.isPremiumUnlocked,
-                    memberSince = formatMemberSinceDate(preferences.installDate, stats),
+                    memberSince = formatMemberSinceDate(preferences.installDate),
                     stats = stats,
                     isLoading = false
                 )
@@ -85,25 +86,11 @@ class ProfileViewModel @Inject constructor(
     }
 
     /**
-     * Format member since date
-     * Uses first session date if available, otherwise install date
+     * "Member since" month, from the install date. Formatted in the app's current locale.
      */
-    private fun formatMemberSinceDate(installDate: Long, stats: UserStats): String {
-        val date = stats.lastSessionDate?.let { lastSession ->
-            // Try to get first session date by checking earliest session
-            viewModelScope.launch {
-                sessionRepository.getAllSessions().first().minByOrNull { it.date }?.date?.toLocalDate()
-            }
-            // For now, use install date as fallback
-            Instant.ofEpochMilli(installDate)
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate()
-        } ?: Instant.ofEpochMilli(installDate)
-            .atZone(ZoneId.systemDefault())
-            .toLocalDate()
-
-        val formatter = DateTimeFormatter.ofPattern("MMMM yyyy")
-        return date.format(formatter)
+    private fun formatMemberSinceDate(installDate: Long): String {
+        val date = Instant.ofEpochMilli(installDate).atZone(ZoneId.systemDefault()).toLocalDate()
+        return date.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale.getDefault()))
     }
 
     /**

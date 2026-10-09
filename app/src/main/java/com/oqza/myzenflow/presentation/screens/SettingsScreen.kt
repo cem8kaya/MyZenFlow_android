@@ -1,5 +1,7 @@
 package com.oqza.myzenflow.presentation.screens
 
+import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.ChevronRight
 import com.oqza.myzenflow.presentation.components.rememberNotificationPermissionRequester
 import kotlinx.coroutines.launch
@@ -74,6 +76,7 @@ import com.oqza.myzenflow.presentation.viewmodels.SettingsViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
+    onNavigateBack: (() -> Unit)? = null,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -125,6 +128,16 @@ fun SettingsScreen(
                         text = stringResource(R.string.settings_title),
                         style = MaterialTheme.typography.headlineSmall
                     )
+                },
+                navigationIcon = {
+                    if (onNavigateBack != null) {
+                        IconButton(onClick = onNavigateBack) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.back)
+                            )
+                        }
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,

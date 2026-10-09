@@ -158,49 +158,54 @@ private fun getSessionIcon(type: SessionType): ImageVector {
 }
 
 /**
- * Get session title
+ * Localized session title
  */
+@Composable
 private fun getSessionTitle(session: SessionData): String {
-    return when (session.type) {
-        SessionType.BREATHING -> session.breathingExercise?.displayName ?: session.type.displayName
-        SessionType.MEDITATION -> session.type.displayName
-        SessionType.FOCUS -> session.type.displayName
-        SessionType.MINDFULNESS -> session.type.displayName
-        SessionType.SLEEP -> session.type.displayName
+    if (session.type == SessionType.BREATHING) {
+        session.breathingExercise?.let { return it.displayName }
     }
+    return stringResource(
+        when (session.type) {
+            SessionType.BREATHING -> R.string.session_type_breathing
+            SessionType.MEDITATION -> R.string.session_type_meditation
+            SessionType.FOCUS -> R.string.session_type_focus
+            SessionType.MINDFULNESS -> R.string.session_type_mindfulness
+            SessionType.SLEEP -> R.string.session_type_sleep
+        }
+    )
 }
 
 /**
  * Format duration in minutes and seconds
  */
+@Composable
 private fun formatDuration(durationSeconds: Int): String {
     val minutes = durationSeconds / 60
     val seconds = durationSeconds % 60
     return if (minutes > 0) {
-        "$minutes dk $seconds sn"
+        stringResource(R.string.duration_min_sec, minutes, seconds)
     } else {
-        "$seconds sn"
+        stringResource(R.string.duration_sec, seconds)
     }
 }
 
 /**
- * Format timestamp relative to now
+ * Format timestamp relative to now, in the app language
  */
+@Composable
 private fun formatTimestamp(dateTime: java.time.LocalDateTime): String {
     val now = java.time.LocalDateTime.now()
     val minutesAgo = ChronoUnit.MINUTES.between(dateTime, now)
     val hoursAgo = ChronoUnit.HOURS.between(dateTime, now)
-    val daysAgo = ChronoUnit.DAYS.between(dateTime, now)
+    val daysAgo = ChronoUnit.DAYS.between(dateTime.toLocalDate().atStartOfDay(), now.toLocalDate().atStartOfDay())
 
     return when {
-        minutesAgo < 1 -> "Az önce"
-        minutesAgo < 60 -> "$minutesAgo dakika önce"
-        hoursAgo < 24 -> "$hoursAgo saat önce"
-        daysAgo == 1L -> "Dün"
-        daysAgo < 7 -> "$daysAgo gün önce"
-        else -> {
-            val formatter = DateTimeFormatter.ofPattern("d MMM", java.util.Locale("tr"))
-            dateTime.format(formatter)
-        }
+        minutesAgo < 1 -> stringResource(R.string.time_just_now)
+        minutesAgo < 60 -> stringResource(R.string.time_minutes_ago, minutesAgo.toInt())
+        hoursAgo < 24 && daysAgo == 0L -> stringResource(R.string.time_hours_ago, hoursAgo.toInt())
+        daysAgo == 1L -> stringResource(R.string.time_yesterday)
+        daysAgo < 7 -> stringResource(R.string.time_days_ago, daysAgo.toInt())
+        else -> dateTime.format(DateTimeFormatter.ofPattern("d MMM", java.util.Locale.getDefault()))
     }
 }

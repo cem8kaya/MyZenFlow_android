@@ -1,5 +1,7 @@
 package com.oqza.myzenflow.presentation.viewmodels
 
+import com.oqza.myzenflow.utils.StreakCalculator
+import com.oqza.myzenflow.data.repository.SessionRepository
 import android.app.Application
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -39,6 +41,7 @@ import javax.inject.Inject
 class PomodoroViewModel @Inject constructor(
     application: Application,
     private val focusRepository: FocusRepository,
+    private val sessionRepository: SessionRepository,
     private val hapticManager: HapticManager,
     private val notificationHelper: NotificationHelper,
     private val timerDataStore: PomodoroTimerDataStore
@@ -197,27 +200,11 @@ class PomodoroViewModel @Inject constructor(
             _todaysStats.value = TodaysStats(
                 completedWorkSessions = completedSessions,
                 totalFocusMinutes = totalMinutes,
-                currentStreak = calculateStreak(sessions)
+                currentStreak = StreakCalculator.current(
+                    sessionRepository.getAllPracticeSessions().first().map { it.date.toLocalDate() }
+                )
             )
         }
-    }
-
-    /**
-     * Calculate current streak
-     */
-    private fun calculateStreak(sessions: List<com.oqza.myzenflow.data.models.FocusSessionData>): Int {
-        val completedSessions = sessions.filter { it.completed }.sortedBy { it.date }
-        if (completedSessions.isEmpty()) return 0
-
-        var streak = 0
-        for (session in completedSessions.reversed()) {
-            if (session.completed) {
-                streak++
-            } else {
-                break
-            }
-        }
-        return streak
     }
 
     /**

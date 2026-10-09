@@ -10,11 +10,15 @@ import com.oqza.myzenflow.data.repository.FocusRepository
 import com.oqza.myzenflow.data.repository.SessionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
+import java.time.temporal.TemporalAdjusters
 import java.time.format.TextStyle
 import java.util.*
 import javax.inject.Inject
@@ -112,85 +116,79 @@ class CalendarViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(CalendarUiState())
     val uiState: StateFlow<CalendarUiState> = _uiState.asStateFlow()
 
+    // Only the most recent month request may update the screen (rapid next/prev taps, refreshes)
+    private var loadJob: Job? = null
+
     init {
         loadMonth(YearMonth.now())
     }
 
     /**
-     * Load data for a specific month
+     * Show a month. Cached months appear instantly; others are loaded (the latest request wins).
+     * @param silent keep the current content visible instead of showing the loading skeleton
      */
-    fun loadMonth(yearMonth: YearMonth) {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
-
-            // Check cache first
-            val cachedData = _uiState.value.monthCache[yearMonth]
-            if (cachedData != null) {
-                _uiState.value = _uiState.value.copy(
-                    selectedMonth = yearMonth,
-                    monthDays = cachedData,
-                    isLoading = false,
-                    totalSessionsThisMonth = cachedData.sumOf { it.sessionCount },
-                    totalMinutesThisMonth = cachedData.sumOf { it.totalMinutes }
-                )
+    fun loadMonth(yearMonth: YearMonth, silent: Boolean = false) {
+        loadJob?.cancel()
+        loadJob = viewModelScope.launch {
+            val cached = _uiState.value.monthCache[yearMonth]
+            if (cached != null) {
+                showMonth(yearMonth, cached)
                 return@launch
             }
 
-            // Calculate month range
-            val firstDayOfMonth = yearMonth.atDay(1)
-            val lastDayOfMonth = yearMonth.atEndOfMonth()
-
-            // Get first day of calendar (might be from previous month)
-            val firstDayOfCalendar = firstDayOfMonth.with(DayOfWeek.MONDAY)
-
-            // Get last day of calendar (might be from next month)
-            val lastDayOfCalendar = lastDayOfMonth.with(DayOfWeek.SUNDAY).let {
-                if (it.isBefore(lastDayOfMonth)) lastDayOfMonth.plusWeeks(1).with(DayOfWeek.SUNDAY)
-                else it
+            if (!silent) {
+                _uiState.update { it.copy(isLoading = true) }
             }
-
-            // Fetch all sessions for the month (including surrounding days)
-            val startDateTime = firstDayOfCalendar.atStartOfDay()
-            val endDateTime = lastDayOfCalendar.atTime(23, 59, 59)
-
             try {
-                // Combine all session types
-                val allSessions = combineSessionsForDateRange(startDateTime, endDateTime)
-
-                // Group sessions by date
-                val sessionsByDate = allSessions.groupBy { it.date.toLocalDate() }
-
-                // Generate day data for each day in the calendar
-                val monthDays = generateCalendarDays(
-                    firstDayOfCalendar,
-                    lastDayOfCalendar,
-                    yearMonth,
-                    sessionsByDate
-                )
-
-                // Update cache
-                val newCache = _uiState.value.monthCache.toMutableMap()
-                newCache[yearMonth] = monthDays
-
-                _uiState.value = _uiState.value.copy(
-                    selectedMonth = yearMonth,
-                    monthDays = monthDays,
-                    isLoading = false,
-                    monthCache = newCache,
-                    totalSessionsThisMonth = monthDays
-                        .filter { it.isCurrentMonth }
-                        .sumOf { it.sessionCount },
-                    totalMinutesThisMonth = monthDays
-                        .filter { it.isCurrentMonth }
-                        .sumOf { it.totalMinutes }
-                )
+                val days = buildMonth(yearMonth)
+                _uiState.update { it.copy(monthCache = it.monthCache + (yearMonth to days)) }
+                showMonth(yearMonth, days)
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    monthDays = emptyList()
-                )
+                _uiState.update { it.copy(isLoading = false, monthDays = emptyList()) }
             }
         }
+    }
+
+    /**
+     * Publish a month to the UI. Selection flags and the selected day's sessions are always
+     * re-derived, so a cached month never shows an outdated selection.
+     */
+    private fun showMonth(yearMonth: YearMonth, days: List<DayData>) {
+        _uiState.update { state ->
+            val selected = state.selectedDate
+            val shown = days.map { it.copy(isSelected = it.date == selected) }
+            val inMonth = shown.filter { it.isCurrentMonth }
+            state.copy(
+                selectedMonth = yearMonth,
+                monthDays = shown,
+                sessionsForSelectedDate = selected?.let { d -> shown.find { it.date == d }?.sessions }
+                    ?: emptyList(),
+                isLoading = false,
+                totalSessionsThisMonth = inMonth.sumOf { it.sessionCount },
+                totalMinutesThisMonth = inMonth.sumOf { it.totalMinutes }
+            )
+        }
+    }
+
+    /** Builds the day cells (including leading/trailing days of neighbouring months). */
+    private suspend fun buildMonth(yearMonth: YearMonth): List<DayData> {
+        val firstDayOfMonth = yearMonth.atDay(1)
+        val lastDayOfMonth = yearMonth.atEndOfMonth()
+        val firstDayOfCalendar = firstDayOfMonth.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+        val lastDayOfCalendar = lastDayOfMonth.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
+
+        val allSessions = combineSessionsForDateRange(
+            firstDayOfCalendar.atStartOfDay(),
+            lastDayOfCalendar.atTime(23, 59, 59)
+        )
+        return generateCalendarDays(
+            firstDayOfCalendar,
+            lastDayOfCalendar,
+            yearMonth,
+            allSessions.groupBy { it.date.toLocalDate() }
+        )
     }
 
     /**
@@ -395,39 +393,33 @@ class CalendarViewModel @Inject constructor(
     }
 
     /**
-     * Refresh current month
+     * Reload from the database, e.g. after returning to the screen: a session finished elsewhere
+     * must show up, so every cached month is dropped.
      */
     fun refresh() {
-        // Clear cache for current month
-        val newCache = _uiState.value.monthCache.toMutableMap()
-        newCache.remove(_uiState.value.selectedMonth)
-        _uiState.value = _uiState.value.copy(monthCache = newCache)
-
-        // Reload
-        loadMonth(_uiState.value.selectedMonth)
+        _uiState.update { it.copy(monthCache = emptyMap()) }
+        loadMonth(_uiState.value.selectedMonth, silent = true)
     }
 
     /**
-     * Preload adjacent months for smooth navigation
+     * Warm the cache for the neighbouring months so month navigation feels instant.
+     * Only fills the cache: it never changes the month that is on screen.
      */
     fun preloadAdjacentMonths() {
         viewModelScope.launch {
-            val currentMonth = _uiState.value.selectedMonth
-            val prevMonth = currentMonth.minusMonths(1)
-            val nextMonth = currentMonth.plusMonths(1)
-
-            // Load previous month if not cached
-            if (!_uiState.value.monthCache.containsKey(prevMonth)) {
-                loadMonth(prevMonth)
+            val current = _uiState.value.selectedMonth
+            listOf(current.minusMonths(1), current.plusMonths(1)).forEach { month ->
+                if (!_uiState.value.monthCache.containsKey(month)) {
+                    try {
+                        val days = buildMonth(month)
+                        _uiState.update { it.copy(monthCache = it.monthCache + (month to days)) }
+                    } catch (e: CancellationException) {
+                        throw e
+                    } catch (_: Exception) {
+                        // Preloading is optional
+                    }
+                }
             }
-
-            // Load next month if not cached
-            if (!_uiState.value.monthCache.containsKey(nextMonth)) {
-                loadMonth(nextMonth)
-            }
-
-            // Restore current month
-            loadMonth(currentMonth)
         }
     }
 }
