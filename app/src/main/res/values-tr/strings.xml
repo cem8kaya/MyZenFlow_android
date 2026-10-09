@@ -280,4 +280,26 @@
     <string name="breathing_exit">Çık</string>
     <string name="breathing_continue">Devam Et</string>
     <string name="premium_upgrade_cta">Şimdi Aç</string>
+    <string name="sound_sheet_title">Ses Ayarları</string>
+    <string name="sound_sheet_subtitle">Rahatlatıcı bir ortam sesi seçin</string>
+    <string name="sound_volume_label">Ses Seviyesi</string>
+    <string name="sound_volume_low">Düşük ses</string>
+    <string name="sound_volume_high">Yüksek ses</string>
+    <string name="sound_selected">Seçildi</string>
+    <string name="sound_none">Sessiz</string>
+    <string name="sound_none_desc">Ortam sesi yok</string>
+    <string name="sound_ocean">Okyanus Dalgaları</string>
+    <string name="sound_ocean_desc">Sakinleştirici dalga sesleri</string>
+    <string name="sound_rain">Yağmur</string>
+    <string name="sound_rain_desc">Rahatlatıcı yağmur sesi</string>
+    <string name="sound_forest">Orman</string>
+    <string name="sound_forest_desc">Hafif rüzgar ve kuş sesleri</string>
+    <string name="sound_white">Beyaz Gürültü</string>
+    <string name="sound_white_desc">Odaklanma için arka plan sesi</string>
+    <string name="sleep_timer_title">Uyku zamanlayıcısı</string>
+    <string name="sleep_timer_off">Kapalı</string>
+    <string name="sleep_timer_minutes">%1$d dk</string>
+    <string name="sleep_timer_remaining">Ses %1$s sonra yavaşça kapanır</string>
+    <string name="focus_deep_mode">Derin odak</string>
+    <string name="focus_deep_exit">Çıkmak için ekrana dokun</string>
 </resources>

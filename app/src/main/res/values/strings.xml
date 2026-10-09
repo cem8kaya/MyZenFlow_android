@@ -280,4 +280,26 @@
     <string name="breathing_exit">Exit</string>
     <string name="breathing_continue">Continue</string>
     <string name="premium_upgrade_cta">Unlock Now</string>
+    <string name="sound_sheet_title">Sound</string>
+    <string name="sound_sheet_subtitle">Choose a calming ambient sound</string>
+    <string name="sound_volume_label">Volume</string>
+    <string name="sound_volume_low">Low volume</string>
+    <string name="sound_volume_high">High volume</string>
+    <string name="sound_selected">Selected</string>
+    <string name="sound_none">Silent</string>
+    <string name="sound_none_desc">No ambient sound</string>
+    <string name="sound_ocean">Ocean Waves</string>
+    <string name="sound_ocean_desc">Slow, soothing waves</string>
+    <string name="sound_rain">Rain</string>
+    <string name="sound_rain_desc">Steady, gentle rainfall</string>
+    <string name="sound_forest">Forest</string>
+    <string name="sound_forest_desc">Soft wind and birdsong</string>
+    <string name="sound_white">White Noise</string>
+    <string name="sound_white_desc">Even background sound for focus</string>
+    <string name="sleep_timer_title">Sleep timer</string>
+    <string name="sleep_timer_off">Off</string>
+    <string name="sleep_timer_minutes">%1$d min</string>
+    <string name="sleep_timer_remaining">Sound fades out in %1$s</string>
+    <string name="focus_deep_mode">Deep focus</string>
+    <string name="focus_deep_exit">Tap anywhere to exit deep focus</string>
 </resources>

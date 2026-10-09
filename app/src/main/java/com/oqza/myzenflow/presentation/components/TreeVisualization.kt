@@ -1,5 +1,9 @@
 package com.oqza.myzenflow.presentation.components
 
+import com.oqza.myzenflow.presentation.components.drawGardenEnvironment
+import com.oqza.myzenflow.data.models.TimeOfDay
+import androidx.compose.ui.draw.clip
+import androidx.compose.runtime.remember
 import com.oqza.myzenflow.presentation.theme.LocalReducedMotion
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
@@ -49,6 +53,17 @@ fun TreeVisualization(
         label = "sway_offset"
     )
 
+    val cloudDrift by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = if (reducedMotion) 0f else 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(120_000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "cloud_drift"
+    )
+    val timeOfDay = remember { TimeOfDay.fromHour(java.time.LocalTime.now().hour) }
+
     // Colors from theme
     val trunkColor = TreeTrunkColor
     val leavesColor = treeLeavesColor
@@ -87,9 +102,13 @@ fun TreeVisualization(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(400.dp)
+                .clip(MaterialTheme.shapes.medium)
         ) {
             val centerX = size.width / 2
             val groundY = size.height * 0.85f
+
+            // Sky, sun/moon, clouds, flowers and birds behind the tree
+            drawGardenEnvironment(timeOfDay, level, groundY, cloudDrift)
 
             // Draw ground line
             drawLine(

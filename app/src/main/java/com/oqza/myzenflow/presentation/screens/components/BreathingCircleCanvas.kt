@@ -50,6 +50,19 @@ fun BreathingCircleCanvas(
         label = "circle_scale"
     )
 
+    // Two softer, slower copies of the circle trail behind it, so every breath leaves ripples
+    val rippleTarget = if (isActive) targetScale else 0.6f
+    val rippleScale1 by animateFloatAsState(
+        targetValue = rippleTarget,
+        animationSpec = spring(dampingRatio = 0.9f, stiffness = 120f),
+        label = "ripple_1"
+    )
+    val rippleScale2 by animateFloatAsState(
+        targetValue = rippleTarget,
+        animationSpec = spring(dampingRatio = 0.9f, stiffness = 60f),
+        label = "ripple_2"
+    )
+
     // Phase colors from theme
     val phaseColors = breathingPhaseColors(phase)
 
@@ -57,7 +70,7 @@ fun BreathingCircleCanvas(
     val animatedPrimaryColor by animateColorAsState(
         targetValue = phaseColors.primary,
         animationSpec = tween(
-            durationMillis = 400,
+            durationMillis = 800,
             easing = FastOutSlowInEasing
         ),
         label = "primary_color"
@@ -66,7 +79,7 @@ fun BreathingCircleCanvas(
     val animatedSecondaryColor by animateColorAsState(
         targetValue = phaseColors.secondary,
         animationSpec = tween(
-            durationMillis = 400,
+            durationMillis = 800,
             easing = FastOutSlowInEasing
         ),
         label = "secondary_color"
@@ -126,6 +139,21 @@ fun BreathingCircleCanvas(
                 ),
                 radius = innerCircleRadius + 60f,
                 center = Offset(centerX, centerY)
+            )
+
+            // Trailing ripple rings (kept inside the progress ring)
+            val baseRadius = canvasWidth / 2f - 80f
+            drawCircle(
+                color = animatedPrimaryColor.copy(alpha = 0.16f),
+                radius = baseRadius * rippleScale1 + 22f,
+                center = Offset(centerX, centerY),
+                style = Stroke(width = 3f)
+            )
+            drawCircle(
+                color = animatedPrimaryColor.copy(alpha = 0.09f),
+                radius = baseRadius * rippleScale2 + 40f,
+                center = Offset(centerX, centerY),
+                style = Stroke(width = 2f)
             )
 
             // Draw middle circle with gradient

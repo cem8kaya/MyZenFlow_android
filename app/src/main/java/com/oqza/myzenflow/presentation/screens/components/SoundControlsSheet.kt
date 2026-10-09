@@ -1,5 +1,8 @@
 package com.oqza.myzenflow.presentation.screens.components
 
+import com.oqza.myzenflow.presentation.components.ZenChip
+import com.oqza.myzenflow.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -30,6 +33,9 @@ fun SoundControlsSheet(
     onSoundSelected: (BreathingAudioManager.AmbientSound) -> Unit,
     onVolumeChanged: (Float) -> Unit,
     onToggleSound: (Boolean) -> Unit,
+    sleepTimerMinutes: Int,
+    sleepTimerRemainingMs: Long?,
+    onSleepTimerSelected: (Int) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -53,9 +59,8 @@ fun SoundControlsSheet(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Ses Ayarları",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
+                    text = stringResource(R.string.sound_sheet_title),
+                    style = MaterialTheme.typography.headlineSmall
                 )
 
                 // Sound toggle
@@ -66,7 +71,7 @@ fun SoundControlsSheet(
             }
 
             Text(
-                text = "Rahatlatıcı ortam sesi seçin",
+                text = stringResource(R.string.sound_sheet_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
@@ -113,7 +118,59 @@ fun SoundControlsSheet(
                 }
             }
 
+            if (soundEnabled) {
+                Spacer(modifier = Modifier.height(8.dp))
+                SleepTimerSection(
+                    selectedMinutes = sleepTimerMinutes,
+                    remainingMs = sleepTimerRemainingMs,
+                    onSelected = onSleepTimerSelected,
+                    modifier = Modifier.padding(horizontal = 24.dp)
+                )
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
+        }
+    }
+}
+
+/**
+ * Sleep timer: fades the ambient sound out after the chosen time.
+ */
+@Composable
+private fun SleepTimerSection(
+    selectedMinutes: Int,
+    remainingMs: Long?,
+    onSelected: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = stringResource(R.string.sleep_timer_title),
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Medium
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            listOf(0, 10, 20, 30, 60).forEach { minutes ->
+                ZenChip(
+                    label = if (minutes == 0) stringResource(R.string.sleep_timer_off)
+                    else stringResource(R.string.sleep_timer_minutes, minutes),
+                    selected = selectedMinutes == minutes,
+                    onClick = { onSelected(minutes) }
+                )
+            }
+        }
+        if (remainingMs != null) {
+            Spacer(modifier = Modifier.height(8.dp))
+            val totalSeconds = remainingMs / 1000
+            Text(
+                text = stringResource(
+                    R.string.sleep_timer_remaining,
+                    "%d:%02d".format(totalSeconds / 60, totalSeconds % 60)
+                ),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
@@ -134,7 +191,7 @@ private fun VolumeControl(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Ses Seviyesi",
+                text = stringResource(R.string.sound_volume_label),
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Medium
             )
@@ -156,7 +213,7 @@ private fun VolumeControl(
         ) {
             Icon(
                 imageVector = Icons.Default.VolumeDown,
-                contentDescription = "Düşük ses",
+                contentDescription = stringResource(R.string.sound_volume_low),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(20.dp)
             )
@@ -170,7 +227,7 @@ private fun VolumeControl(
 
             Icon(
                 imageVector = Icons.Default.VolumeUp,
-                contentDescription = "Yüksek ses",
+                contentDescription = stringResource(R.string.sound_volume_high),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(20.dp)
             )
@@ -218,7 +275,7 @@ private fun SoundItem(
             ) {
                 Icon(
                     imageVector = getSoundIcon(sound),
-                    contentDescription = getSoundName(sound),
+                    contentDescription = null,
                     tint = if (isSelected && isEnabled)
                         MaterialTheme.colorScheme.onPrimaryContainer
                     else
@@ -257,7 +314,7 @@ private fun SoundItem(
             if (isSelected && isEnabled) {
                 Icon(
                     imageVector = Icons.Default.CheckCircle,
-                    contentDescription = "Seçildi",
+                    contentDescription = stringResource(R.string.sound_selected),
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(24.dp)
                 )
@@ -295,25 +352,27 @@ private fun getSoundIcon(sound: BreathingAudioManager.AmbientSound): androidx.co
 /**
  * Get name for ambient sound
  */
+@Composable
 private fun getSoundName(sound: BreathingAudioManager.AmbientSound): String {
     return when (sound) {
-        BreathingAudioManager.AmbientSound.NONE -> "Sessiz"
-        BreathingAudioManager.AmbientSound.OCEAN_WAVES -> "Okyanus Dalgaları"
-        BreathingAudioManager.AmbientSound.RAIN -> "Yağmur"
-        BreathingAudioManager.AmbientSound.FOREST -> "Orman"
-        BreathingAudioManager.AmbientSound.WHITE_NOISE -> "Beyaz Gürültü"
+        BreathingAudioManager.AmbientSound.NONE -> stringResource(R.string.sound_none)
+        BreathingAudioManager.AmbientSound.OCEAN_WAVES -> stringResource(R.string.sound_ocean)
+        BreathingAudioManager.AmbientSound.RAIN -> stringResource(R.string.sound_rain)
+        BreathingAudioManager.AmbientSound.FOREST -> stringResource(R.string.sound_forest)
+        BreathingAudioManager.AmbientSound.WHITE_NOISE -> stringResource(R.string.sound_white)
     }
 }
 
 /**
  * Get description for ambient sound
  */
+@Composable
 private fun getSoundDescription(sound: BreathingAudioManager.AmbientSound): String {
     return when (sound) {
-        BreathingAudioManager.AmbientSound.NONE -> "Ortam sesi yok"
-        BreathingAudioManager.AmbientSound.OCEAN_WAVES -> "Sakinleştirici dalga sesleri"
-        BreathingAudioManager.AmbientSound.RAIN -> "Rahatlatıcı yağmur sesi"
-        BreathingAudioManager.AmbientSound.FOREST -> "Doğa ve kuş sesleri"
-        BreathingAudioManager.AmbientSound.WHITE_NOISE -> "Odaklanma için arka plan sesi"
+        BreathingAudioManager.AmbientSound.NONE -> stringResource(R.string.sound_none_desc)
+        BreathingAudioManager.AmbientSound.OCEAN_WAVES -> stringResource(R.string.sound_ocean_desc)
+        BreathingAudioManager.AmbientSound.RAIN -> stringResource(R.string.sound_rain_desc)
+        BreathingAudioManager.AmbientSound.FOREST -> stringResource(R.string.sound_forest_desc)
+        BreathingAudioManager.AmbientSound.WHITE_NOISE -> stringResource(R.string.sound_white_desc)
     }
 }
