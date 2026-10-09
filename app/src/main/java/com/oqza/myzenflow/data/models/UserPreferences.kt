@@ -22,12 +22,22 @@ data class UserPreferences(
     val showSessionReminders: Boolean = true,
     val onboardingCompleted: Boolean = false,
     val userName: String = "",
+    val primaryGoal: PracticeGoal = PracticeGoal.NONE,
     val installDate: Long = System.currentTimeMillis()
 )
 
 /**
  * App theme preference. SYSTEM follows the device setting.
  */
+/** What the user mainly wants from the app; picked during onboarding and used to tailor suggestions. */
+enum class PracticeGoal {
+    NONE, STRESS, SLEEP, FOCUS, CALM;
+
+    companion object {
+        fun fromName(name: String?): PracticeGoal = entries.firstOrNull { it.name == name } ?: NONE
+    }
+}
+
 enum class ThemeMode {
     SYSTEM,
     LIGHT,

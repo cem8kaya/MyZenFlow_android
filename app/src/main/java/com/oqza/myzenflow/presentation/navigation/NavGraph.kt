@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.navigation
 
+import com.oqza.myzenflow.presentation.screens.WeeklySummaryScreen
 import com.oqza.myzenflow.presentation.theme.ZenMotion
 import com.oqza.myzenflow.presentation.theme.LocalReducedMotion
 import androidx.navigation.NavBackStackEntry
@@ -91,6 +92,10 @@ fun NavGraph(
 
         composable(route = Screen.Breathing.route) {
             BreathingScreen()
+        }
+
+        composable(route = Screen.WeeklySummary.route) {
+            WeeklySummaryScreen(navController = navController)
         }
 
         composable(route = Screen.Onboarding.route) {

@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.data.datastore
 
+import com.oqza.myzenflow.data.models.PracticeGoal
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
@@ -128,6 +129,15 @@ class PreferencesDataStore(private val context: Context) {
     }
 
     /**
+     * Update the user's primary goal
+     */
+    suspend fun updatePrimaryGoal(goal: PracticeGoal) {
+        context.dataStore.edit { preferences ->
+            preferences[PRIMARY_GOAL] = goal.name
+        }
+    }
+
+    /**
      * Update dynamic (Material You) color setting
      */
     suspend fun updateDynamicColor(enabled: Boolean) {
@@ -215,6 +225,7 @@ class PreferencesDataStore(private val context: Context) {
                 // Migrate legacy boolean: explicit dark choice stays dark, otherwise follow system
                 ?: if (preferences[DARK_MODE_ENABLED] == true) ThemeMode.DARK else ThemeMode.SYSTEM,
             dynamicColorEnabled = preferences[DYNAMIC_COLOR] ?: false,
+            primaryGoal = PracticeGoal.fromName(preferences[PRIMARY_GOAL]),
             autoStartBreathingExercise = preferences[AUTO_START_BREATHING] ?: false,
             showSessionReminders = preferences[SHOW_SESSION_REMINDERS] ?: true,
             onboardingCompleted = preferences[ONBOARDING_COMPLETED] ?: false,
@@ -240,6 +251,7 @@ class PreferencesDataStore(private val context: Context) {
         private val WEEKLY_GOAL_MINUTES = intPreferencesKey("weekly_goal_minutes")
         private val BREATHING_GUIDANCE_VOICE = booleanPreferencesKey("breathing_guidance_voice")
         private val DARK_MODE_ENABLED = booleanPreferencesKey("dark_mode_enabled") // legacy, read for migration only
+        private val PRIMARY_GOAL = stringPreferencesKey("primary_goal")
         private val DYNAMIC_COLOR = booleanPreferencesKey("dynamic_color")
         private val THEME_MODE = stringPreferencesKey("theme_mode")
         private val AUTO_START_BREATHING = booleanPreferencesKey("auto_start_breathing")

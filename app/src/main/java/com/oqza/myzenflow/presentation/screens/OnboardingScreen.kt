@@ -1,5 +1,12 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.data.models.PracticeGoal
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.semantics.Role
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.selection.selectable
 import com.oqza.myzenflow.domain.workers.ReminderScheduler
 import com.oqza.myzenflow.presentation.theme.ZenIndigo
 import android.Manifest
@@ -51,8 +58,9 @@ fun OnboardingScreen(
     navController: NavController,
     viewModel: OnboardingViewModel = hiltViewModel()
 ) {
-    val pagerState = rememberPagerState(pageCount = { 4 })
+    val pagerState = rememberPagerState(pageCount = { PAGE_COUNT })
     var userName by remember { mutableStateOf("") }
+    var goal by remember { mutableStateOf(PracticeGoal.NONE) }
     var weeklyGoalMinutes by remember { mutableStateOf(210) }
     var notificationsEnabled by remember { mutableStateOf(false) }
     var reminderTime by remember { mutableStateOf("09:00") }
@@ -88,13 +96,17 @@ fun OnboardingScreen(
                 when (page) {
                     0 -> WelcomePage()
                     1 -> FeaturesPage()
-                    2 -> PersonalizationPage(
+                    2 -> GoalPage(
+                        selected = goal,
+                        onSelect = { goal = it }
+                    )
+                    3 -> PersonalizationPage(
                         userName = userName,
                         onNameChange = { userName = it },
                         weeklyGoalMinutes = weeklyGoalMinutes,
                         onGoalChange = { weeklyGoalMinutes = it }
                     )
-                    3 -> NotificationsPage(
+                    4 -> NotificationsPage(
                         notificationsEnabled = notificationsEnabled,
                         onNotificationsToggle = { enabled ->
                             notificationsEnabled = enabled
@@ -111,14 +123,15 @@ fun OnboardingScreen(
             // Bottom Navigation
             OnboardingBottomBar(
                 currentPage = pagerState.currentPage,
-                totalPages = 4,
+                totalPages = PAGE_COUNT,
                 onNextClick = {
-                    if (pagerState.currentPage < 3) {
+                    if (pagerState.currentPage < PAGE_COUNT - 1) {
                         viewModel.navigateToPage(pagerState.currentPage + 1, pagerState)
                     } else {
                         // Complete onboarding
                         viewModel.completeOnboarding(
-                            userName = userName.ifBlank { "Zenmaster" },
+                            userName = userName.trim(),
+                            goal = goal,
                             weeklyGoal = weeklyGoalMinutes,
                             notificationsEnabled = notificationsEnabled &&
                                     (notificationPermissionState?.status?.isGranted ?: true),
@@ -131,7 +144,8 @@ fun OnboardingScreen(
                 },
                 onSkipClick = {
                     viewModel.completeOnboarding(
-                        userName = "Zenmaster",
+                        userName = "",
+                        goal = PracticeGoal.NONE,
                         weeklyGoal = 210,
                         notificationsEnabled = false,
                         reminderTime = "09:00"
@@ -146,6 +160,72 @@ fun OnboardingScreen(
                     }
                 }
             )
+        }
+    }
+}
+
+private const val PAGE_COUNT = 5
+
+/**
+ * Goal page: what brings the user here. Used to tailor the first suggestions.
+ */
+@Composable
+private fun GoalPage(
+    selected: PracticeGoal,
+    onSelect: (PracticeGoal) -> Unit
+) {
+    val options = listOf(
+        Triple(PracticeGoal.STRESS, "😮\u200D💨", R.string.onb_goal_stress),
+        Triple(PracticeGoal.SLEEP, "🌙", R.string.onb_goal_sleep),
+        Triple(PracticeGoal.FOCUS, "🎯", R.string.onb_goal_focus),
+        Triple(PracticeGoal.CALM, "🌿", R.string.onb_goal_calm)
+    )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp)
+            .selectableGroup(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = stringResource(R.string.onb_goal_page_title),
+            style = MaterialTheme.typography.displaySmall,
+            color = Color.White,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = stringResource(R.string.onb_goal_page_subtitle),
+            style = MaterialTheme.typography.bodyLarge,
+            color = Color.White.copy(alpha = 0.85f),
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(32.dp))
+        options.forEach { (goal, emoji, label) ->
+            val isSelected = goal == selected
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 6.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color.White.copy(alpha = if (isSelected) 0.32f else 0.14f))
+                    .selectable(selected = isSelected, role = Role.RadioButton, onClick = { onSelect(goal) })
+                    .padding(horizontal = 20.dp, vertical = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = emoji, fontSize = 26.sp)
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(
+                    text = stringResource(label),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.White,
+                    modifier = Modifier.weight(1f)
+                )
+                if (isSelected) {
+                    Icon(Icons.Default.CheckCircle, contentDescription = null, tint = Color.White)
+                }
+            }
         }
     }
 }
@@ -576,12 +656,14 @@ class OnboardingViewModel @Inject constructor(
 
     fun completeOnboarding(
         userName: String,
+        goal: PracticeGoal,
         weeklyGoal: Int,
         notificationsEnabled: Boolean,
         reminderTime: String
     ) {
         viewModelScope.launch {
             preferencesRepository.updateUserName(userName)
+            preferencesRepository.updatePrimaryGoal(goal)
             preferencesRepository.updateWeeklyGoal(weeklyGoal)
             preferencesRepository.updateDailyReminder(notificationsEnabled, reminderTime)
             if (notificationsEnabled) reminderScheduler.schedule(reminderTime, replace = true)

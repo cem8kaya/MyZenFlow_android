@@ -1,5 +1,12 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.data.models.PracticeGoal
+import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.lifecycle.Lifecycle
+import com.oqza.myzenflow.presentation.components.ZenCard
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.outlined.ChevronRight
+import androidx.compose.material.icons.outlined.AutoAwesome
 import com.oqza.myzenflow.utils.StreakCalculator
 import com.oqza.myzenflow.presentation.components.DailyCheckInCard
 import androidx.compose.animation.AnimatedVisibility
@@ -76,6 +83,9 @@ fun HomeScreen(
     val scrollState = rememberScrollState()
     val timeOfDay = remember { TimeOfDay.fromHour(LocalTime.now().hour) }
 
+    // Pick up sessions finished elsewhere when returning to Home
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { viewModel.refreshData() }
+
     LaunchedEffect(uiState.error) {
         uiState.error?.let { error ->
             snackbarHostState.showSnackbar(error)
@@ -116,6 +126,8 @@ fun HomeScreen(
 
                             RecommendationCard(
                                 timeOfDay = timeOfDay,
+                                goal = uiState.userPreferences.primaryGoal,
+                                isFirstSession = uiState.recentSessions.isEmpty(),
                                 onStart = { route -> navController?.navigate(route) }
                             )
 
@@ -142,6 +154,13 @@ fun HomeScreen(
                                 onActionClick = { route -> navController?.navigate(route) }
                             )
 
+                            if (uiState.recentSessions.isNotEmpty()) {
+                                Spacer(modifier = Modifier.height(ZenSpacing.xxl))
+                                WeeklySummaryEntry(
+                                    onClick = { navController?.navigate(Screen.WeeklySummary.route) }
+                                )
+                            }
+
                             Spacer(modifier = Modifier.height(ZenSpacing.xxl))
 
                             RecentSessionsSection(
@@ -154,6 +173,44 @@ fun HomeScreen(
                     }
                 }
             }
+        }
+    }
+}
+
+/**
+ * Entry card to the weekly review.
+ */
+@Composable
+private fun WeeklySummaryEntry(onClick: () -> Unit) {
+    ZenCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = ZenSpacing.screen),
+        onClick = onClick
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                imageVector = Icons.Outlined.AutoAwesome,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
+            )
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = ZenSpacing.md)
+            ) {
+                Text(stringResource(R.string.weekly_card_title), style = MaterialTheme.typography.titleMedium)
+                Text(
+                    stringResource(R.string.weekly_card_subtitle),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Icon(
+                imageVector = Icons.Outlined.ChevronRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
@@ -184,9 +241,17 @@ private fun StreakMessage(state: StreakCalculator.State) {
 @Composable
 private fun RecommendationCard(
     timeOfDay: TimeOfDay,
+    goal: PracticeGoal,
+    isFirstSession: Boolean,
     onStart: (String) -> Unit
 ) {
-    val (titleRes, messageRes, route) = when (timeOfDay) {
+    val (titleRes, messageRes, route) = if (isFirstSession && goal != PracticeGoal.NONE) when (goal) {
+        // Very first session: speak to the goal the user chose in onboarding
+        PracticeGoal.STRESS -> Triple(R.string.reco_first_stress_title, R.string.reco_first_stress_message, Screen.Breathing.route)
+        PracticeGoal.SLEEP -> Triple(R.string.reco_first_sleep_title, R.string.reco_first_sleep_message, Screen.Breathing.route)
+        PracticeGoal.FOCUS -> Triple(R.string.reco_first_focus_title, R.string.reco_first_focus_message, Screen.Focus.route)
+        else -> Triple(R.string.reco_first_calm_title, R.string.reco_first_calm_message, Screen.Breathing.route)
+    } else when (timeOfDay) {
         TimeOfDay.MORNING -> Triple(R.string.reco_morning_title, R.string.reco_morning_message, Screen.Breathing.route)
         TimeOfDay.AFTERNOON -> Triple(R.string.reco_afternoon_title, R.string.reco_afternoon_message, Screen.Focus.route)
         TimeOfDay.EVENING -> Triple(R.string.reco_evening_title, R.string.reco_evening_message, Screen.Breathing.route)

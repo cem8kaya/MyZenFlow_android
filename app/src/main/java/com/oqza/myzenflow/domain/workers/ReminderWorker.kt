@@ -38,7 +38,7 @@ class ReminderWorker @AssistedInject constructor(
                 return Result.success() // chain ends; re-enabled from Settings
             }
 
-            val days = sessionRepository.getCompletedSessions().first().map { it.date.toLocalDate() }
+            val days = sessionRepository.getAllPracticeSessions().first().map { it.date.toLocalDate() }
             val practicedToday = days.contains(LocalDate.now())
             if (!practicedToday) {
                 notificationHelper.showDailyReminderNotification(

@@ -73,6 +73,13 @@ sealed class Screen(
         unselectedIcon = Icons.Outlined.Home // Placeholder
     )
 
+    object WeeklySummary : Screen(
+        route = "weekly_summary",
+        titleResId = R.string.weekly_title,
+        selectedIcon = Icons.Filled.Home, // Placeholder, not a bottom tab
+        unselectedIcon = Icons.Outlined.Home // Placeholder, not a bottom tab
+    )
+
     object Onboarding : Screen(
         route = "onboarding",
         titleResId = R.string.app_name, // Placeholder

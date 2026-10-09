@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.screens
 
+import androidx.compose.material.icons.outlined.AutoAwesome
 import com.oqza.myzenflow.presentation.components.ZenAnimatedText
 import com.oqza.myzenflow.presentation.theme.ZenDawnGold
 import com.oqza.myzenflow.presentation.theme.ZenIndigo
@@ -132,6 +133,7 @@ fun ProfileScreen(
                 QuickLinksSection(
                     onAchievementsClick = { navController?.navigate(Screen.ZenGarden.route) },
                     onHistoryClick = { navController?.navigate(Screen.Calendar.route) },
+                    onWeeklyClick = { navController?.navigate(Screen.WeeklySummary.route) },
                     onSettingsClick = { navController?.navigate(Screen.Settings.route) }
                 )
 
@@ -352,6 +354,7 @@ private fun ProfileStatCard(
 private fun QuickLinksSection(
     onAchievementsClick: () -> Unit,
     onHistoryClick: () -> Unit,
+    onWeeklyClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
     Column(
@@ -369,6 +372,13 @@ private fun QuickLinksSection(
             title = stringResource(R.string.profile_history),
             subtitle = stringResource(R.string.profile_history_subtitle),
             onClick = onHistoryClick
+        )
+
+        QuickLinkItem(
+            icon = Icons.Outlined.AutoAwesome,
+            title = stringResource(R.string.weekly_title),
+            subtitle = stringResource(R.string.weekly_card_subtitle),
+            onClick = onWeeklyClick
         )
 
         QuickLinkItem(

@@ -1,5 +1,11 @@
 package com.oqza.myzenflow.data.repository
 
+import kotlinx.coroutines.flow.combine
+import com.oqza.myzenflow.data.models.BreathingExerciseType
+import com.oqza.myzenflow.data.entities.FocusSessionEntity
+import com.oqza.myzenflow.data.entities.BreathingSessionEntity
+import com.oqza.myzenflow.data.dao.FocusSessionDao
+import com.oqza.myzenflow.data.dao.BreathingSessionDao
 import com.oqza.myzenflow.data.dao.MeditationSessionDao
 import com.oqza.myzenflow.data.entities.MeditationSessionEntity
 import com.oqza.myzenflow.data.models.SessionData
@@ -16,8 +22,26 @@ import javax.inject.Singleton
  */
 @Singleton
 class SessionRepository @Inject constructor(
-    private val meditationSessionDao: MeditationSessionDao
+    private val meditationSessionDao: MeditationSessionDao,
+    private val breathingSessionDao: BreathingSessionDao,
+    private val focusSessionDao: FocusSessionDao
 ) {
+
+    /**
+     * Every completed practice session, newest first: meditation sessions plus breathing and
+     * focus sessions, which live in their own tables. Use this for anything that should count
+     * "all practice" (streaks, weekly summary, home stats, reminders).
+     */
+    fun getAllPracticeSessions(): Flow<List<SessionData>> = combine(
+        meditationSessionDao.getCompletedSessions(),
+        breathingSessionDao.getCompletedSessions(),
+        focusSessionDao.getCompletedSessions()
+    ) { meditation, breathing, focus ->
+        (meditation.map { it.toSessionData() } +
+            breathing.map { it.toPracticeSession() } +
+            focus.map { it.toPracticeSession() })
+            .sortedByDescending { it.date }
+    }
 
     /**
      * Get all sessions as Flow
@@ -151,4 +175,23 @@ class SessionRepository @Inject constructor(
     suspend fun deleteAllSessions() {
         meditationSessionDao.deleteAll()
     }
+
+    private fun BreathingSessionEntity.toPracticeSession() = SessionData(
+        id = id,
+        date = date,
+        duration = durationSeconds,
+        type = SessionType.BREATHING,
+        breathingExercise = BreathingExerciseType.fromId(exerciseId),
+        notes = notes,
+        completed = completed
+    )
+
+    private fun FocusSessionEntity.toPracticeSession() = SessionData(
+        id = id,
+        date = date,
+        duration = duration,
+        type = SessionType.FOCUS,
+        notes = taskName,
+        completed = completed
+    )
 }

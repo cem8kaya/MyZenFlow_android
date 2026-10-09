@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.presentation.components.ZenEmptyState
 import com.oqza.myzenflow.presentation.theme.ZenSpacing
 import com.oqza.myzenflow.presentation.components.ZenSkeleton
 import com.oqza.myzenflow.R
@@ -564,30 +565,9 @@ private fun SessionItem(
  */
 @Composable
 private fun EmptyStateMessage() {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier.padding(32.dp)
-    ) {
-        Icon(
-            Icons.Default.EventBusy,
-            contentDescription = null,
-            modifier = Modifier.size(64.dp),
-            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = stringResource(R.string.cal_empty_title),
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-            textAlign = TextAlign.Center
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = stringResource(R.string.cal_empty_message),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-            textAlign = TextAlign.Center
-        )
-    }
+    ZenEmptyState(
+        icon = Icons.Default.EventBusy,
+        title = stringResource(R.string.cal_empty_title),
+        message = stringResource(R.string.cal_empty_message)
+    )
 }

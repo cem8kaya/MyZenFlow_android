@@ -27,7 +27,7 @@ class StatsRepository @Inject constructor(
      */
     fun getUserStats(): Flow<UserStats> {
         return combine(
-            sessionRepository.getAllSessions(),
+            sessionRepository.getAllPracticeSessions(),
             focusRepository.getAllSessions(),
             preferencesRepository.userPreferences
         ) { meditationSessions, focusSessions, preferences ->
