@@ -102,8 +102,10 @@
     <string name="restore_purchases">Restore Purchases</string>
     <string name="language_setting">Language</string>
     <string name="language_select">Select Language</string>
-    <string name="dark_mode">Dark Mode</string>
-    <string name="dark_mode_subtitle">Use dark theme</string>
+    <string name="theme_setting">Theme</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
     <string name="notifications">Notifications</string>
     <string name="notifications_subtitle">Enable notifications</string>
     <string name="daily_reminder">Daily Reminder</string>

@@ -102,8 +102,10 @@
     <string name="restore_purchases">Satın Alımları Geri Yükle</string>
     <string name="language_setting">Dil</string>
     <string name="language_select">Dil Seçin</string>
-    <string name="dark_mode">Karanlık Mod</string>
-    <string name="dark_mode_subtitle">Karanlık tema kullan</string>
+    <string name="theme_setting">Tema</string>
+    <string name="theme_system">Sistem</string>
+    <string name="theme_light">Açık</string>
+    <string name="theme_dark">Koyu</string>
     <string name="notifications">Bildirimler</string>
     <string name="notifications_subtitle">Bildirimleri etkinleştir</string>
     <string name="daily_reminder">Günlük Hatırlatıcı</string>

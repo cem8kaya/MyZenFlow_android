@@ -7,18 +7,39 @@ plugins {
 
 android {
     namespace = "com.oqza.myzenflow"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.oqza.myzenflow"
         minSdk = 24
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0.0"
+        targetSdk = 36
+        versionCode = (project.findProperty("versionCode") as String?)?.toIntOrNull() ?: 1
+        versionName = (project.findProperty("versionName") as String?) ?: "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+    }
+
+    // Release signing is read from keystore.properties (git-ignored) or CI env vars.
+    // Without them the release build stays unsigned; Play App Signing re-signs uploads.
+    val keystoreProps = java.util.Properties().apply {
+        val f = rootProject.file("keystore.properties")
+        if (f.exists()) f.inputStream().use { load(it) }
+    }
+    fun signingValue(key: String, env: String): String? =
+        keystoreProps.getProperty(key) ?: System.getenv(env)
+
+    signingConfigs {
+        val storePath = signingValue("storeFile", "ZENFLOW_KEYSTORE_FILE")
+        if (storePath != null) {
+            create("release") {
+                storeFile = rootProject.file(storePath)
+                storePassword = signingValue("storePassword", "ZENFLOW_KEYSTORE_PASSWORD")
+                keyAlias = signingValue("keyAlias", "ZENFLOW_KEY_ALIAS")
+                keyPassword = signingValue("keyPassword", "ZENFLOW_KEY_PASSWORD")
+            }
         }
     }
 
@@ -32,6 +53,7 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             isDebuggable = false
+            signingConfigs.findByName("release")?.let { signingConfig = it }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -71,6 +93,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.0")
     implementation("androidx.activity:activity-compose:1.9.0")
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
     // Jetpack Compose BOM
     val composeBom = platform("androidx.compose:compose-bom:2024.06.00")

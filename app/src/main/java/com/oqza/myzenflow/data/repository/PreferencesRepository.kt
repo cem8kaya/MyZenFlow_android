@@ -2,6 +2,7 @@ package com.oqza.myzenflow.data.repository
 
 import com.oqza.myzenflow.data.datastore.PreferencesDataStore
 import com.oqza.myzenflow.data.models.AppLanguage
+import com.oqza.myzenflow.data.models.ThemeMode
 import com.oqza.myzenflow.data.models.UserPreferences
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -90,8 +91,8 @@ class PreferencesRepository @Inject constructor(
     /**
      * Update dark mode
      */
-    suspend fun updateDarkMode(enabled: Boolean) {
-        preferencesDataStore.updateDarkMode(enabled)
+    suspend fun updateThemeMode(mode: ThemeMode) {
+        preferencesDataStore.updateThemeMode(mode)
     }
 
     /**

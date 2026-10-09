@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -37,6 +38,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.oqza.myzenflow.data.models.ThemeMode
 
 /**
  * Setting section header
@@ -141,6 +143,40 @@ fun SettingItem(
 /**
  * Setting item with toggle switch
  */
+/**
+ * Three-way theme selector (System / Light / Dark)
+ */
+@Composable
+fun SettingThemeModeItem(
+    title: String,
+    selected: ThemeMode,
+    labels: Map<ThemeMode, String>,
+    onSelected: (ThemeMode) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp)
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Medium
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            ThemeMode.entries.forEach { mode ->
+                FilterChip(
+                    selected = mode == selected,
+                    onClick = { onSelected(mode) },
+                    label = { Text(labels[mode].orEmpty()) }
+                )
+            }
+        }
+    }
+}
+
 @Composable
 fun SettingToggleItem(
     title: String,

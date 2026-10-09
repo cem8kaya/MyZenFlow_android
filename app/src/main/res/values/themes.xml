@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.MyZenFlow" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- Window theme used after the splash screen; Compose draws the real UI. -->
+    <style name="Theme.MyZenFlow" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/splash_background</item>
+    </style>
+
+    <style name="Theme.MyZenFlow.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.MyZenFlow</item>
+    </style>
 </resources>
