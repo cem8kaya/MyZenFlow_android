@@ -45,7 +45,7 @@
     <string name="phase_rest">Dinlen</string>
     <string name="session_complete">Seans Tamamlandı!</string>
     <string name="cycles_completed">Tamamlanan Döngüler</string>
-    <string name="cycle_progress">Döngü %d / %d</string>
+    <string name="cycle_progress" formatted="false">Döngü %d / %d</string>
     <string name="select_exercise">Bir egzersiz seç</string>
     <string name="exercise_select">Egzersiz Seç</string>
     <string name="back">Geri</string>

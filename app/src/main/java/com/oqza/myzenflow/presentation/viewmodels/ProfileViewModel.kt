@@ -110,13 +110,7 @@ class ProfileViewModel @Inject constructor(
      * Get formatted favorite exercise name
      */
     fun getFavoriteExerciseName(exercise: BreathingExerciseType?): String {
-        return when (exercise) {
-            BreathingExerciseType.BOX -> "Box Breathing"
-            BreathingExerciseType.FOUR_SEVEN_EIGHT -> "4-7-8 Breathing"
-            BreathingExerciseType.DEEP -> "Deep Breathing"
-            BreathingExerciseType.ALTERNATE_NOSTRIL -> "Alternate Nostril"
-            null -> "None yet"
-        }
+        return exercise?.displayName ?: "None yet"
     }
 }
 

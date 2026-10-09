@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     kotlin("android")
@@ -24,7 +26,7 @@ android {
 
     // Release signing is read from keystore.properties (git-ignored) or CI env vars.
     // Without them the release build stays unsigned; Play App Signing re-signs uploads.
-    val keystoreProps = java.util.Properties().apply {
+    val keystoreProps = Properties().apply {
         val f = rootProject.file("keystore.properties")
         if (f.exists()) f.inputStream().use { load(it) }
     }
@@ -88,7 +90,7 @@ android {
         kotlinCompilerExtensionVersion = "1.5.8"
     }
 
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
@@ -99,6 +101,7 @@ dependencies {
     // Core Android
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
     implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.0")
     implementation("androidx.activity:activity-compose:1.9.0")
     implementation("androidx.core:core-splashscreen:1.0.1")

@@ -36,10 +36,11 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -127,7 +128,7 @@ fun ZenGradientCard(
     val clickable = if (onClick != null) {
         base.clickable(
             interactionSource = source,
-            indication = androidx.compose.material3.ripple(),
+            indication = rememberRipple(),
             role = Role.Button,
             onClick = onClick
         )

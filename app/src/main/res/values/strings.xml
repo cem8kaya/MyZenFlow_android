@@ -45,7 +45,7 @@
     <string name="phase_rest">Rest</string>
     <string name="session_complete">Session Complete!</string>
     <string name="cycles_completed">Cycles Completed</string>
-    <string name="cycle_progress">Cycle %d / %d</string>
+    <string name="cycle_progress" formatted="false">Cycle %d / %d</string>
     <string name="select_exercise">Select an exercise</string>
     <string name="exercise_select">Select Exercise</string>
     <string name="back">Back</string>
