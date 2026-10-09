@@ -82,7 +82,6 @@ fun BreathingScreen(
     val gradientColors = breathingGradientColors()
 
     // Status bar handling
-    val view = LocalView.current
     val darkTheme = isSystemInDarkTheme()
     val colorScheme = MaterialTheme.colorScheme
 

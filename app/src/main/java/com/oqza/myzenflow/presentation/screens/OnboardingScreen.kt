@@ -59,6 +59,7 @@ fun OnboardingScreen(
     viewModel: OnboardingViewModel = hiltViewModel()
 ) {
     val pagerState = rememberPagerState(pageCount = { PAGE_COUNT })
+    val coroutineScope = rememberCoroutineScope()
     var userName by remember { mutableStateOf("") }
     var goal by remember { mutableStateOf(PracticeGoal.NONE) }
     var weeklyGoalMinutes by remember { mutableStateOf(210) }
@@ -126,7 +127,9 @@ fun OnboardingScreen(
                 totalPages = PAGE_COUNT,
                 onNextClick = {
                     if (pagerState.currentPage < PAGE_COUNT - 1) {
-                        viewModel.navigateToPage(pagerState.currentPage + 1, pagerState)
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                        }
                     } else {
                         // Complete onboarding
                         viewModel.completeOnboarding(
@@ -156,7 +159,9 @@ fun OnboardingScreen(
                 },
                 onBackClick = {
                     if (pagerState.currentPage > 0) {
-                        viewModel.navigateToPage(pagerState.currentPage - 1, pagerState)
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(pagerState.currentPage - 1)
+                        }
                     }
                 }
             )
@@ -647,12 +652,6 @@ class OnboardingViewModel @Inject constructor(
     private val preferencesRepository: PreferencesRepository,
     private val reminderScheduler: ReminderScheduler
 ) : ViewModel() {
-
-    fun navigateToPage(page: Int, pagerState: androidx.compose.foundation.pager.PagerState) {
-        viewModelScope.launch {
-            pagerState.animateScrollToPage(page)
-        }
-    }
 
     fun completeOnboarding(
         userName: String,
