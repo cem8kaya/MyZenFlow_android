@@ -257,7 +257,7 @@ private fun WelcomePage() {
         ) {
             Icon(
                 imageVector = Icons.Filled.Spa,
-                contentDescription = "ZenFlow",
+                contentDescription = stringResource(R.string.onb_logo_desc),
                 modifier = Modifier.size(80.dp),
                 tint = Color.White
             )
@@ -443,7 +443,7 @@ private fun NotificationsPage(
     ) {
         Icon(
             imageVector = Icons.Outlined.Notifications,
-            contentDescription = "Notifications",
+            contentDescription = stringResource(R.string.onb_notif_icon_desc),
             modifier = Modifier.size(80.dp),
             tint = Color.White
         )

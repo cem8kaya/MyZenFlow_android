@@ -75,7 +75,7 @@ fun AchievementCard(
                 } else {
                     Icon(
                         imageVector = Icons.Default.Lock,
-                        contentDescription = "Locked",
+                        contentDescription = stringResource(R.string.ach_locked),
                         tint = Color.Gray,
                         modifier = Modifier.size(32.dp)
                     )
@@ -316,7 +316,7 @@ private fun BadgeItem(
             } else {
                 Icon(
                     imageVector = Icons.Default.Lock,
-                    contentDescription = "Locked",
+                    contentDescription = stringResource(R.string.ach_locked),
                     tint = Color.Gray,
                     modifier = Modifier.size(24.dp)
                 )

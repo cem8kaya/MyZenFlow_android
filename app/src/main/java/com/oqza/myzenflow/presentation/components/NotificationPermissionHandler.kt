@@ -1,5 +1,7 @@
 package com.oqza.myzenflow.presentation.components
 
+import com.oqza.myzenflow.R
+import androidx.compose.ui.res.stringResource
 import android.Manifest
 import android.os.Build
 import androidx.compose.material3.AlertDialog
@@ -60,12 +62,9 @@ fun NotificationPermissionHandler(
                 showRationale = false
                 onPermissionDenied()
             },
-            title = { Text("Bildirim İzni Gerekli") },
+            title = { Text(stringResource(R.string.notif_perm_title)) },
             text = {
-                Text(
-                    "Pomodoro timer tamamlandığında sizi bilgilendirmek için " +
-                            "bildirim izni gereklidir. Lütfen ayarlardan bildirim iznini açın."
-                )
+                Text(stringResource(R.string.notif_perm_message))
             },
             confirmButton = {
                 TextButton(
@@ -74,7 +73,7 @@ fun NotificationPermissionHandler(
                         permissionState.launchPermissionRequest()
                     }
                 ) {
-                    Text("İzin Ver")
+                    Text(stringResource(R.string.notif_perm_allow))
                 }
             },
             dismissButton = {
@@ -84,9 +83,28 @@ fun NotificationPermissionHandler(
                         onPermissionDenied()
                     }
                 ) {
-                    Text("İptal")
+                    Text(stringResource(R.string.button_cancel))
                 }
             }
         )
+    }
+}
+
+/**
+ * Returns a function that asks for the notification permission when it is still missing
+ * (Android 13+). Call it right when the user turns on something that needs notifications
+ * (reminders, timer alerts), so the request has a clear reason. [onDenied] runs when the user says no.
+ */
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun rememberNotificationPermissionRequester(onDenied: () -> Unit = {}): () -> Unit {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        return remember { {} }
+    }
+    val state = rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS) { granted ->
+        if (!granted) onDenied()
+    }
+    return remember(state) {
+        { if (!state.status.isGranted) state.launchPermissionRequest() }
     }
 }

@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.presentation.theme.zenTabScreenInsets
 import com.oqza.myzenflow.presentation.components.ZenEmptyState
 import com.oqza.myzenflow.presentation.theme.ZenSpacing
 import com.oqza.myzenflow.presentation.components.ZenSkeleton
@@ -54,6 +55,7 @@ fun CalendarScreen(
     }
 
     Scaffold(
+        contentWindowInsets = zenTabScreenInsets(),
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.calendar_title)) },

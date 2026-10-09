@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.viewmodels
 
+import com.oqza.myzenflow.R
 import com.oqza.myzenflow.domain.workers.ReminderScheduler
 import android.content.Context
 import androidx.lifecycle.ViewModel
@@ -60,9 +61,9 @@ class SettingsViewModel @Inject constructor(
                 preferencesRepository.updateLanguage(language)
                 // LocaleManager.setLocale is called in MainActivity when the preference changes
                 // We just need to update the preference here
-                showMessage("Language updated successfully")
+                showMessage(context.getString(R.string.msg_language_updated))
             } catch (e: Exception) {
-                showError("Failed to update language")
+                showError(context.getString(R.string.msg_update_failed))
             }
         }
     }
@@ -75,7 +76,7 @@ class SettingsViewModel @Inject constructor(
             try {
                 preferencesRepository.updateHapticFeedback(enabled)
             } catch (e: Exception) {
-                showError("Failed to update haptic feedback")
+                showError(context.getString(R.string.msg_update_failed))
             }
         }
     }
@@ -88,12 +89,12 @@ class SettingsViewModel @Inject constructor(
             try {
                 preferencesRepository.updateNotifications(enabled)
                 if (enabled) {
-                    showMessage("Notifications enabled")
+                    showMessage(context.getString(R.string.msg_notifications_on))
                 } else {
-                    showMessage("Notifications disabled")
+                    showMessage(context.getString(R.string.msg_notifications_off))
                 }
             } catch (e: Exception) {
-                showError("Failed to update notifications")
+                showError(context.getString(R.string.msg_update_failed))
             }
         }
     }
@@ -107,12 +108,12 @@ class SettingsViewModel @Inject constructor(
                 preferencesRepository.updateDailyReminder(enabled, time)
                 if (enabled) reminderScheduler.schedule(time, replace = true) else reminderScheduler.cancel()
                 if (enabled) {
-                    showMessage("Daily reminder set for $time")
+                    showMessage(context.getString(R.string.msg_reminder_set, time))
                 } else {
-                    showMessage("Daily reminder disabled")
+                    showMessage(context.getString(R.string.msg_reminder_off))
                 }
             } catch (e: Exception) {
-                showError("Failed to update daily reminder")
+                showError(context.getString(R.string.msg_update_failed))
             }
         }
     }
@@ -131,7 +132,7 @@ class SettingsViewModel @Inject constructor(
                     backgroundMusicType = prefs.backgroundMusicType
                 )
             } catch (e: Exception) {
-                showError("Failed to update sound settings")
+                showError(context.getString(R.string.msg_update_failed))
             }
         }
     }
@@ -150,7 +151,7 @@ class SettingsViewModel @Inject constructor(
                     backgroundMusicType = prefs.backgroundMusicType
                 )
             } catch (e: Exception) {
-                showError("Failed to update volume")
+                showError(context.getString(R.string.msg_update_failed))
             }
         }
     }
@@ -169,7 +170,7 @@ class SettingsViewModel @Inject constructor(
                     backgroundMusicType = prefs.backgroundMusicType
                 )
             } catch (e: Exception) {
-                showError("Failed to update background music")
+                showError(context.getString(R.string.msg_update_failed))
             }
         }
     }
@@ -182,7 +183,7 @@ class SettingsViewModel @Inject constructor(
             try {
                 preferencesRepository.updateDynamicColor(enabled)
             } catch (e: Exception) {
-                showError("Failed to update theme")
+                showError(context.getString(R.string.msg_update_failed))
             }
         }
     }
@@ -192,7 +193,7 @@ class SettingsViewModel @Inject constructor(
             try {
                 preferencesRepository.updateThemeMode(mode)
             } catch (e: Exception) {
-                showError("Failed to update theme")
+                showError(context.getString(R.string.msg_update_failed))
             }
         }
     }
@@ -225,12 +226,12 @@ class SettingsViewModel @Inject constructor(
                 // For now, just check current status from preferences
                 val isPremium = _uiState.value.userPreferences.isPremiumUnlocked
                 if (isPremium) {
-                    showMessage("Premium is already active")
+                    showMessage(context.getString(R.string.msg_premium_active))
                 } else {
-                    showMessage("No purchases to restore")
+                    showMessage(context.getString(R.string.msg_no_purchases))
                 }
             } catch (e: Exception) {
-                showError("Failed to restore purchases")
+                showError(context.getString(R.string.msg_update_failed))
             }
         }
     }

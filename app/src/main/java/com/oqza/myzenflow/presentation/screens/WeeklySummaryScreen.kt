@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.presentation.theme.zenTabScreenInsets
 import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -69,6 +70,7 @@ fun WeeklySummaryScreen(
     val context = LocalContext.current
 
     Scaffold(
+        contentWindowInsets = zenTabScreenInsets(),
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.weekly_title)) },

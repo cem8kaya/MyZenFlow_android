@@ -1,6 +1,7 @@
 package com.oqza.myzenflow.presentation.components
 
-import com.oqza.myzenflow.presentation.components.drawGardenEnvironment
+import com.oqza.myzenflow.R
+import androidx.compose.ui.res.stringResource
 import com.oqza.myzenflow.data.models.TimeOfDay
 import androidx.compose.ui.draw.clip
 import androidx.compose.runtime.remember
@@ -77,7 +78,7 @@ fun TreeVisualization(
     ) {
         // Tree level indicator
         Text(
-            text = getTreeLevelName(level),
+            text = "${treeEmoji(level)} ${treeLevelName(level)}",
             style = MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.primary
         )
@@ -87,9 +88,9 @@ fun TreeVisualization(
         // Progress indicator
         Text(
             text = if (level < 5) {
-                "${(progress * 100).toInt()}% to next level"
+                stringResource(R.string.tree_progress, (progress * 100).toInt())
             } else {
-                "Maximum Level!"
+                stringResource(R.string.tree_max_level)
             },
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface
@@ -98,17 +99,23 @@ fun TreeVisualization(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Tree canvas
-        Canvas(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(400.dp)
                 .clip(MaterialTheme.shapes.medium)
         ) {
-            val centerX = size.width / 2
-            val groundY = size.height * 0.85f
+        // Layer 1: sky, sun/moon, clouds, flowers and birds. Cached brushes; only clouds move.
+        Spacer(
+            modifier = Modifier
+                .fillMaxSize()
+                .gardenEnvironment(timeOfDay, level) { cloudDrift }
+        )
 
-            // Sky, sun/moon, clouds, flowers and birds behind the tree
-            drawGardenEnvironment(timeOfDay, level, groundY, cloudDrift)
+        // Layer 2: the tree and particles
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val centerX = size.width / 2
+            val groundY = size.height * GROUND_FRACTION
 
             // Draw ground line
             drawLine(
@@ -136,6 +143,7 @@ fun TreeVisualization(
                     center = Offset(particle.x, particle.y)
                 )
             }
+        }
         }
     }
 }
@@ -505,20 +513,41 @@ private fun DrawScope.drawGrandTree(
     )
 }
 
-/**
- * Get tree level name
- */
-private fun getTreeLevelName(level: Int): String {
-    return when (level) {
-        0 -> "🌱 Tohum"
-        1 -> "🌿 Fidan"
-        2 -> "🌳 Genç Ağaç"
-        3 -> "🌲 Olgun Ağaç"
-        4 -> "🎋 Muhteşem Ağaç"
-        5 -> "🌴 Zen Ağacı"
-        else -> "Ağaç"
-    }
+/** Emoji for a tree level (0 = seed). */
+fun treeEmoji(level: Int): String = when (level) {
+    1 -> "🌿"
+    2 -> "🌳"
+    3 -> "🌲"
+    4 -> "🎋"
+    5 -> "🌴"
+    else -> "🌱"
 }
+
+/** Localized tree level name. */
+@Composable
+fun treeLevelName(level: Int): String = stringResource(
+    when (level) {
+        1 -> R.string.tree_1
+        2 -> R.string.tree_2
+        3 -> R.string.tree_3
+        4 -> R.string.tree_4
+        5 -> R.string.tree_5
+        else -> R.string.tree_0
+    }
+)
+
+/** Localized encouragement shown when reaching a level. */
+@Composable
+fun treeEncouragement(level: Int): String = stringResource(
+    when (level) {
+        1 -> R.string.tree_encourage_1
+        2 -> R.string.tree_encourage_2
+        3 -> R.string.tree_encourage_3
+        4 -> R.string.tree_encourage_4
+        5 -> R.string.tree_encourage_5
+        else -> R.string.tree_encourage_0
+    }
+)
 
 /**
  * Particle data class for effects

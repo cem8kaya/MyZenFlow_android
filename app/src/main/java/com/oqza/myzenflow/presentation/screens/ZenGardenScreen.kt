@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.presentation.theme.zenTabScreenInsets
 import com.oqza.myzenflow.presentation.theme.LocalReducedMotion
 import com.oqza.myzenflow.presentation.theme.ZenDawnGold
 import com.oqza.myzenflow.R
@@ -36,6 +37,7 @@ fun ZenGardenScreen(
     val particleSystem = rememberParticleSystem()
 
     Scaffold(
+        contentWindowInsets = zenTabScreenInsets(),
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.garden_title)) },

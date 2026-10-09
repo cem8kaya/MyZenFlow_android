@@ -1,5 +1,7 @@
 package com.oqza.myzenflow.presentation.screens.components
 
+import com.oqza.myzenflow.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -45,14 +47,14 @@ fun ExerciseSelectionSheet(
         ) {
             // Header
             Text(
-                text = "Nefes Egzersizi Seç",
+                text = stringResource(R.string.exercise_sheet_title),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
             )
 
             Text(
-                text = "Size uygun bir egzersiz seçin ve rahatlayın",
+                text = stringResource(R.string.exercise_sheet_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
@@ -174,7 +176,7 @@ private fun ExerciseItem(
             if (isSelected) {
                 Icon(
                     imageVector = Icons.Default.CheckCircle,
-                    contentDescription = "Seçildi",
+                    contentDescription = stringResource(R.string.sound_selected),
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .padding(start = 8.dp)

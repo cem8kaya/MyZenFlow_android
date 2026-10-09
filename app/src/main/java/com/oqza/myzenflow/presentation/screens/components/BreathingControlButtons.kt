@@ -1,5 +1,7 @@
 package com.oqza.myzenflow.presentation.screens.components
 
+import com.oqza.myzenflow.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
@@ -58,12 +60,12 @@ fun BreathingControlButtons(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.PlayArrow,
-                                contentDescription = "Başlat",
+                                contentDescription = null,
                                 modifier = Modifier.size(32.dp)
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
-                                text = "Başlat",
+                                text = stringResource(R.string.breathing_start),
                                 style = MaterialTheme.typography.labelSmall
                             )
                         }
@@ -117,12 +119,12 @@ fun BreathingControlButtons(
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Stop,
-                                    contentDescription = "Durdur",
+                                    contentDescription = null,
                                     modifier = Modifier.size(28.dp)
                                 )
                                 Spacer(modifier = Modifier.height(2.dp))
                                 Text(
-                                    text = "Durdur",
+                                    text = stringResource(R.string.breathing_stop),
                                     style = MaterialTheme.typography.labelSmall
                                 )
                             }
@@ -152,7 +154,7 @@ fun SettingsButtonsRow(
         // Sound button
         SettingButton(
             icon = if (soundEnabled) Icons.Default.VolumeUp else Icons.Default.VolumeOff,
-            label = "Ses",
+            label = stringResource(R.string.breathing_sound_label),
             isEnabled = soundEnabled,
             onClick = onSoundClick
         )
@@ -160,7 +162,7 @@ fun SettingsButtonsRow(
         // Haptic button
         SettingButton(
             icon = Icons.Default.PhoneAndroid,
-            label = "Titreşim",
+            label = stringResource(R.string.breathing_haptic_label),
             isEnabled = hapticEnabled,
             onClick = onHapticClick
         )

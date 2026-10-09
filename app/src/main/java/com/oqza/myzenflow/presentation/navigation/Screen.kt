@@ -96,3 +96,14 @@ val bottomNavigationScreens = listOf(
     Screen.Calendar,
     Screen.Profile
 )
+
+/**
+ * Routes that take over the whole screen. Every other destination keeps the bottom navigation
+ * bar, so switching tabs (or opening a secondary screen such as Settings) never makes it vanish.
+ */
+private val immersiveRoutes = setOf(
+    Screen.Breathing.route,
+    Screen.Onboarding.route
+)
+
+fun shouldShowBottomBar(route: String?): Boolean = route != null && route !in immersiveRoutes
