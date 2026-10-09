@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.oqza.myzenflow.data.models.AppLanguage
+import com.oqza.myzenflow.data.models.ThemeMode
 import com.oqza.myzenflow.data.models.UserPreferences
 import com.oqza.myzenflow.data.repository.PreferencesRepository
 import com.oqza.myzenflow.utils.LocaleManager
@@ -173,12 +174,22 @@ class SettingsViewModel @Inject constructor(
     /**
      * Update dark mode setting
      */
-    fun updateDarkMode(enabled: Boolean) {
+    fun updateDynamicColor(enabled: Boolean) {
         viewModelScope.launch {
             try {
-                preferencesRepository.updateDarkMode(enabled)
+                preferencesRepository.updateDynamicColor(enabled)
             } catch (e: Exception) {
-                showError("Failed to update dark mode")
+                showError("Failed to update theme")
+            }
+        }
+    }
+
+    fun updateThemeMode(mode: ThemeMode) {
+        viewModelScope.launch {
+            try {
+                preferencesRepository.updateThemeMode(mode)
+            } catch (e: Exception) {
+                showError("Failed to update theme")
             }
         }
     }

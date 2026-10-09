@@ -23,6 +23,9 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.ui.res.stringResource
+import com.oqza.myzenflow.R
+import com.oqza.myzenflow.presentation.theme.ZenSpacing
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -109,69 +112,29 @@ fun RecentSessionsSection(
     onStartClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-    ) {
-        Text(
-            text = "Son Seanslar",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+    Column(modifier = modifier.fillMaxWidth()) {
+        ZenSectionHeader(title = stringResource(R.string.recent_sessions))
+
+        Spacer(modifier = Modifier.height(ZenSpacing.md))
 
         if (sessions.isEmpty()) {
-            // Empty state
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-                )
+            ZenCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = ZenSpacing.screen)
             ) {
-                Column(
-                    modifier = Modifier
-                        .padding(32.dp)
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.SelfImprovement,
-                        contentDescription = "Henüz seans yok",
-                        modifier = Modifier.size(48.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Text(
-                        text = "Henüz seans kaydınız yok",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        text = "İlk seansınıza başlayın!",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Button(onClick = onStartClick) {
-                        Text("Başla")
-                    }
-                }
+                ZenEmptyState(
+                    icon = Icons.Outlined.SelfImprovement,
+                    title = stringResource(R.string.no_sessions_yet),
+                    message = stringResource(R.string.start_first_session),
+                    actionLabel = stringResource(R.string.button_start),
+                    onAction = onStartClick
+                )
             }
         } else {
-            // Sessions list
             LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(horizontal = 0.dp)
+                horizontalArrangement = Arrangement.spacedBy(ZenSpacing.md),
+                contentPadding = PaddingValues(horizontal = ZenSpacing.screen)
             ) {
                 items(sessions) { session ->
                     RecentSessionItem(session = session)

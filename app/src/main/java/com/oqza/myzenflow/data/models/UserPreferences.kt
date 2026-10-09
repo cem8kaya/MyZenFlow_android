@@ -16,13 +16,28 @@ data class UserPreferences(
     val isPremiumUnlocked: Boolean = false,
     val weeklyGoalMinutes: Int = 210, // 30 minutes per day
     val breathingGuidanceVoice: Boolean = true,
-    val darkModeEnabled: Boolean = false,
+    val themeMode: ThemeMode = ThemeMode.SYSTEM,
+    val dynamicColorEnabled: Boolean = false, // Material You colors instead of brand palette
     val autoStartBreathingExercise: Boolean = false,
     val showSessionReminders: Boolean = true,
     val onboardingCompleted: Boolean = false,
     val userName: String = "",
     val installDate: Long = System.currentTimeMillis()
 )
+
+/**
+ * App theme preference. SYSTEM follows the device setting.
+ */
+enum class ThemeMode {
+    SYSTEM,
+    LIGHT,
+    DARK;
+
+    companion object {
+        fun fromName(name: String?): ThemeMode =
+            entries.firstOrNull { it.name == name } ?: SYSTEM
+    }
+}
 
 enum class AppLanguage(val displayName: String, val code: String) {
     ENGLISH("English", "en"),

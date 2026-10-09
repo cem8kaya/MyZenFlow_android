@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.theme
 
+import androidx.compose.runtime.CompositionLocalProvider
 import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -72,8 +73,8 @@ private val DarkColorScheme = darkColorScheme(
 @Composable
 fun MyZenFlowTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    // Opt-in: Material You colors replace the ZenFlow brand palette (Android 12+)
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -89,14 +90,19 @@ fun MyZenFlowTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            val controller = WindowCompat.getInsetsController(window, view)
+            controller.isAppearanceLightStatusBars = !darkTheme
+            controller.isAppearanceLightNavigationBars = !darkTheme
         }
     }
+
+    val reducedMotion = rememberReducedMotion()
 
     MaterialTheme(
         colorScheme = colorScheme,
         typography = ZenTypography,
-        content = content
-    )
+        shapes = ZenShapes
+    ) {
+        CompositionLocalProvider(LocalReducedMotion provides reducedMotion, content = content)
+    }
 }

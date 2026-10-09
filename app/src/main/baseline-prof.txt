@@ -1,0 +1,12 @@
+# Hand-written starter baseline profile: precompiles the startup path and the main screens.
+# Replace with a generated profile (Macrobenchmark BaselineProfileRule) before a store release.
+HSPLcom/oqza/myzenflow/MainActivity;->**(**)**
+HSPLcom/oqza/myzenflow/MyZenFlowApplication;->**(**)**
+HSPLcom/oqza/myzenflow/presentation/theme/**;->**(**)**
+HSPLcom/oqza/myzenflow/presentation/navigation/**;->**(**)**
+HSPLcom/oqza/myzenflow/presentation/components/**;->**(**)**
+HSPLcom/oqza/myzenflow/presentation/screens/HomeScreenKt;->**(**)**
+HSPLcom/oqza/myzenflow/presentation/viewmodels/HomeViewModel;->**(**)**
+HSPLcom/oqza/myzenflow/data/datastore/**;->**(**)**
+HSPLcom/oqza/myzenflow/data/repository/**;->**(**)**
+Lcom/oqza/myzenflow/**;

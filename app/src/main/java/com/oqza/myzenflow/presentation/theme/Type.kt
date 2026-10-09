@@ -6,11 +6,20 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
+/**
+ * Font families. System serif/sans are used today; to ship brand fonts, drop the
+ * .ttf files into res/font and swap these two values (nothing else needs to change).
+ */
+object ZenFonts {
+    val display: FontFamily = FontFamily.Serif
+    val body: FontFamily = FontFamily.SansSerif
+}
+
 // ZenFlow Typography System
 val ZenTypography = Typography(
     // Display Large
     displayLarge = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = ZenFonts.display,
         fontWeight = FontWeight.Normal,
         fontSize = 57.sp,
         lineHeight = 64.sp,
@@ -18,7 +27,7 @@ val ZenTypography = Typography(
     ),
     // Display Medium
     displayMedium = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = ZenFonts.display,
         fontWeight = FontWeight.Normal,
         fontSize = 45.sp,
         lineHeight = 52.sp,
@@ -26,7 +35,7 @@ val ZenTypography = Typography(
     ),
     // Display Small
     displaySmall = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = ZenFonts.display,
         fontWeight = FontWeight.Normal,
         fontSize = 36.sp,
         lineHeight = 44.sp,
@@ -34,7 +43,7 @@ val ZenTypography = Typography(
     ),
     // Headline Large
     headlineLarge = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = ZenFonts.display,
         fontWeight = FontWeight.Normal,
         fontSize = 32.sp,
         lineHeight = 40.sp,
@@ -42,7 +51,7 @@ val ZenTypography = Typography(
     ),
     // Headline Medium
     headlineMedium = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = ZenFonts.display,
         fontWeight = FontWeight.Normal,
         fontSize = 28.sp,
         lineHeight = 36.sp,
@@ -50,7 +59,7 @@ val ZenTypography = Typography(
     ),
     // Headline Small
     headlineSmall = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = ZenFonts.display,
         fontWeight = FontWeight.Normal,
         fontSize = 24.sp,
         lineHeight = 32.sp,
@@ -58,7 +67,7 @@ val ZenTypography = Typography(
     ),
     // Title Large
     titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = ZenFonts.display,
         fontWeight = FontWeight.Medium,
         fontSize = 22.sp,
         lineHeight = 28.sp,
@@ -66,7 +75,7 @@ val ZenTypography = Typography(
     ),
     // Title Medium
     titleMedium = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = ZenFonts.body,
         fontWeight = FontWeight.Medium,
         fontSize = 16.sp,
         lineHeight = 24.sp,
@@ -74,7 +83,7 @@ val ZenTypography = Typography(
     ),
     // Title Small
     titleSmall = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = ZenFonts.body,
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
         lineHeight = 20.sp,
@@ -82,7 +91,7 @@ val ZenTypography = Typography(
     ),
     // Body Large
     bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = ZenFonts.body,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
@@ -90,7 +99,7 @@ val ZenTypography = Typography(
     ),
     // Body Medium
     bodyMedium = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = ZenFonts.body,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
         lineHeight = 20.sp,
@@ -98,7 +107,7 @@ val ZenTypography = Typography(
     ),
     // Body Small
     bodySmall = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = ZenFonts.body,
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
         lineHeight = 16.sp,
@@ -106,7 +115,7 @@ val ZenTypography = Typography(
     ),
     // Label Large
     labelLarge = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = ZenFonts.body,
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
         lineHeight = 20.sp,
@@ -114,7 +123,7 @@ val ZenTypography = Typography(
     ),
     // Label Medium
     labelMedium = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = ZenFonts.body,
         fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
         lineHeight = 16.sp,
@@ -122,7 +131,7 @@ val ZenTypography = Typography(
     ),
     // Label Small
     labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = ZenFonts.body,
         fontWeight = FontWeight.Medium,
         fontSize = 11.sp,
         lineHeight = 16.sp,

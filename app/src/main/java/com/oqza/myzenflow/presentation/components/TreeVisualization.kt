@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.components
 
+import com.oqza.myzenflow.presentation.theme.LocalReducedMotion
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
@@ -37,9 +38,10 @@ fun TreeVisualization(
 ) {
     // Animation for gentle swaying
     val infiniteTransition = rememberInfiniteTransition(label = "tree_sway")
+    val reducedMotion = LocalReducedMotion.current
     val swayOffset by infiniteTransition.animateFloat(
-        initialValue = -2f,
-        targetValue = 2f,
+        initialValue = if (reducedMotion) 0f else -2f,
+        targetValue = if (reducedMotion) 0f else 2f,
         animationSpec = infiniteRepeatable(
             animation = tween(3000, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse

@@ -1,5 +1,7 @@
 package com.oqza.myzenflow.presentation.components
 
+import com.oqza.myzenflow.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -33,12 +35,9 @@ fun WeeklyBarChart(
     weeklyData: List<DailyStats>,
     modifier: Modifier = Modifier
 ) {
-    Card(
+    ZenCard(
         modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp)
     ) {
         Column(
             modifier = Modifier
@@ -47,7 +46,7 @@ fun WeeklyBarChart(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Bu Hafta",
+                text = stringResource(R.string.chart_this_week),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
@@ -55,7 +54,7 @@ fun WeeklyBarChart(
 
             if (weeklyData.isEmpty()) {
                 Text(
-                    text = "Henüz veri yok",
+                    text = stringResource(R.string.chart_no_data),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                 )
@@ -75,13 +74,13 @@ fun WeeklyBarChart(
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     ChartSummaryItem(
-                        label = "Toplam",
-                        value = "${weeklyData.sumOf { it.sessions }} seans",
+                        label = stringResource(R.string.chart_total),
+                        value = stringResource(R.string.sessions_count, weeklyData.sumOf { it.sessions }),
                         color = MaterialTheme.colorScheme.primary
                     )
                     ChartSummaryItem(
-                        label = "Toplam",
-                        value = "${weeklyData.sumOf { it.minutes }} dk",
+                        label = stringResource(R.string.chart_total),
+                        value = stringResource(R.string.minutes_count, weeklyData.sumOf { it.minutes }),
                         color = MaterialTheme.colorScheme.secondary
                     )
                     ChartSummaryItem(
@@ -104,12 +103,9 @@ fun MonthlyBarChart(
     monthlyData: List<DailyStats>,
     modifier: Modifier = Modifier
 ) {
-    Card(
+    ZenCard(
         modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp)
     ) {
         Column(
             modifier = Modifier
@@ -118,7 +114,7 @@ fun MonthlyBarChart(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Bu Ay",
+                text = stringResource(R.string.chart_this_month),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
@@ -126,7 +122,7 @@ fun MonthlyBarChart(
 
             if (monthlyData.isEmpty()) {
                 Text(
-                    text = "Henüz veri yok",
+                    text = stringResource(R.string.chart_no_data),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                 )
@@ -147,20 +143,20 @@ fun MonthlyBarChart(
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     ChartSummaryItem(
-                        label = "Toplam",
-                        value = "${monthlyData.sumOf { it.sessions }} seans",
+                        label = stringResource(R.string.chart_total),
+                        value = stringResource(R.string.sessions_count, monthlyData.sumOf { it.sessions }),
                         color = MaterialTheme.colorScheme.primary
                     )
                     ChartSummaryItem(
-                        label = "Toplam",
-                        value = "${monthlyData.sumOf { it.minutes }} dk",
+                        label = stringResource(R.string.chart_total),
+                        value = stringResource(R.string.minutes_count, monthlyData.sumOf { it.minutes }),
                         color = MaterialTheme.colorScheme.secondary
                     )
                     val avgPerDay = monthlyData.filter { it.sessions > 0 }
                         .let { if (it.isEmpty()) 0 else it.sumOf { d -> d.minutes } / it.size }
                     ChartSummaryItem(
-                        label = "Ort/Gün",
-                        value = "$avgPerDay dk",
+                        label = stringResource(R.string.chart_avg_per_day),
+                        value = stringResource(R.string.minutes_count, avgPerDay),
                         color = MaterialTheme.colorScheme.tertiary
                     )
                 }
@@ -308,12 +304,10 @@ fun AllTimeStatsCard(
     favoriteExercise: String?,
     modifier: Modifier = Modifier
 ) {
-    Card(
+    ZenCard(
         modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp)
     ) {
         Column(
             modifier = Modifier
@@ -322,7 +316,7 @@ fun AllTimeStatsCard(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Tüm Zamanlar",
+                text = stringResource(R.string.chart_all_time),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
@@ -333,13 +327,13 @@ fun AllTimeStatsCard(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 AllTimeStatItem(
-                    label = "Toplam Seans",
+                    label = stringResource(R.string.chart_total_sessions),
                     value = totalSessions.toString(),
                     icon = "🧘"
                 )
                 AllTimeStatItem(
-                    label = "Toplam Süre",
-                    value = "${totalMinutes / 60}s ${totalMinutes % 60}dk",
+                    label = stringResource(R.string.chart_total_time),
+                    value = stringResource(R.string.hours_minutes_short, totalMinutes / 60, totalMinutes % 60),
                     icon = "⏱️"
                 )
             }
@@ -351,12 +345,12 @@ fun AllTimeStatsCard(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 AllTimeStatItem(
-                    label = "En Uzun Seri",
-                    value = "$longestStreak gün",
+                    label = stringResource(R.string.chart_longest_streak),
+                    value = stringResource(R.string.days_short, longestStreak),
                     icon = "🔥"
                 )
                 AllTimeStatItem(
-                    label = "Favori Egzersiz",
+                    label = stringResource(R.string.chart_favorite),
                     value = favoriteExercise ?: "N/A",
                     icon = "💨"
                 )

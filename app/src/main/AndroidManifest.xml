@@ -13,6 +13,8 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyZenFlow"
@@ -33,7 +35,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.MyZenFlow">
+            android:theme="@style/Theme.MyZenFlow.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -48,7 +50,7 @@
             android:foregroundServiceType="specialUse">
             <property
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="Pomodoro timer countdown" />
+                android:value="User-initiated Pomodoro focus/break countdown that must keep running with the screen off; shows an ongoing notification with pause, resume and stop controls." />
         </service>
 
         <!-- Broadcast Receiver for Timer Notification Actions -->

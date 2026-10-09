@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import com.oqza.myzenflow.data.models.AppLanguage
+import com.oqza.myzenflow.data.models.ThemeMode
 import com.oqza.myzenflow.data.models.UserPreferences
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -118,11 +119,20 @@ class PreferencesDataStore(private val context: Context) {
     }
 
     /**
-     * Update dark mode setting
+     * Update theme mode setting
      */
-    suspend fun updateDarkMode(enabled: Boolean) {
+    suspend fun updateThemeMode(mode: ThemeMode) {
         context.dataStore.edit { preferences ->
-            preferences[DARK_MODE_ENABLED] = enabled
+            preferences[THEME_MODE] = mode.name
+        }
+    }
+
+    /**
+     * Update dynamic (Material You) color setting
+     */
+    suspend fun updateDynamicColor(enabled: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[DYNAMIC_COLOR] = enabled
         }
     }
 
@@ -201,7 +211,10 @@ class PreferencesDataStore(private val context: Context) {
             isPremiumUnlocked = preferences[IS_PREMIUM] ?: false,
             weeklyGoalMinutes = preferences[WEEKLY_GOAL_MINUTES] ?: 210,
             breathingGuidanceVoice = preferences[BREATHING_GUIDANCE_VOICE] ?: true,
-            darkModeEnabled = preferences[DARK_MODE_ENABLED] ?: false,
+            themeMode = preferences[THEME_MODE]?.let { ThemeMode.fromName(it) }
+                // Migrate legacy boolean: explicit dark choice stays dark, otherwise follow system
+                ?: if (preferences[DARK_MODE_ENABLED] == true) ThemeMode.DARK else ThemeMode.SYSTEM,
+            dynamicColorEnabled = preferences[DYNAMIC_COLOR] ?: false,
             autoStartBreathingExercise = preferences[AUTO_START_BREATHING] ?: false,
             showSessionReminders = preferences[SHOW_SESSION_REMINDERS] ?: true,
             onboardingCompleted = preferences[ONBOARDING_COMPLETED] ?: false,
@@ -226,7 +239,9 @@ class PreferencesDataStore(private val context: Context) {
         private val IS_PREMIUM = booleanPreferencesKey("is_premium")
         private val WEEKLY_GOAL_MINUTES = intPreferencesKey("weekly_goal_minutes")
         private val BREATHING_GUIDANCE_VOICE = booleanPreferencesKey("breathing_guidance_voice")
-        private val DARK_MODE_ENABLED = booleanPreferencesKey("dark_mode_enabled")
+        private val DARK_MODE_ENABLED = booleanPreferencesKey("dark_mode_enabled") // legacy, read for migration only
+        private val DYNAMIC_COLOR = booleanPreferencesKey("dynamic_color")
+        private val THEME_MODE = stringPreferencesKey("theme_mode")
         private val AUTO_START_BREATHING = booleanPreferencesKey("auto_start_breathing")
         private val SHOW_SESSION_REMINDERS = booleanPreferencesKey("show_session_reminders")
         private val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")

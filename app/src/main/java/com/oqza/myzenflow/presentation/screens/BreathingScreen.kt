@@ -425,14 +425,14 @@ private fun ExitSessionDialog(
         },
         title = {
             Text(
-                text = "Exit Session?",
+                text = stringResource(R.string.breathing_exit_title),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
         },
         text = {
             Text(
-                text = "Are you sure you want to exit? Your current session progress will be lost.",
+                text = stringResource(R.string.breathing_exit_message),
                 style = MaterialTheme.typography.bodyMedium
             )
         },
@@ -443,12 +443,12 @@ private fun ExitSessionDialog(
                     contentColor = MaterialTheme.colorScheme.error
                 )
             ) {
-                Text("Exit")
+                Text(stringResource(R.string.breathing_exit))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Continue")
+                Text(stringResource(R.string.breathing_continue))
             }
         }
     )

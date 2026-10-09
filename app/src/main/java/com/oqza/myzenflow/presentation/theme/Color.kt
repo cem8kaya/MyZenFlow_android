@@ -2,67 +2,68 @@ package com.oqza.myzenflow.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Light Theme Colors - ZenFlow Color Scheme
-val ZenPrimaryLight = Color(0xFF6750A4)
+// ZenFlow brand palette: "Dawn" (light) and "Dusk" (dark)
+// Light Theme Colors
+val ZenPrimaryLight = Color(0xFF4B4F9E)
 val ZenOnPrimaryLight = Color(0xFFFFFFFF)
-val ZenPrimaryContainerLight = Color(0xFFEADDFF)
-val ZenOnPrimaryContainerLight = Color(0xFF21005D)
+val ZenPrimaryContainerLight = Color(0xFFE1E0FF)
+val ZenOnPrimaryContainerLight = Color(0xFF0E1157)
 
-val ZenSecondaryLight = Color(0xFF625B71)
+val ZenSecondaryLight = Color(0xFF4F6B5A)
 val ZenOnSecondaryLight = Color(0xFFFFFFFF)
-val ZenSecondaryContainerLight = Color(0xFFE8DEF8)
-val ZenOnSecondaryContainerLight = Color(0xFF1D192B)
+val ZenSecondaryContainerLight = Color(0xFFD1EBD9)
+val ZenOnSecondaryContainerLight = Color(0xFF0B2015)
 
-val ZenTertiaryLight = Color(0xFF7D5260)
+val ZenTertiaryLight = Color(0xFF9A4A2B)
 val ZenOnTertiaryLight = Color(0xFFFFFFFF)
-val ZenTertiaryContainerLight = Color(0xFFFFD8E4)
-val ZenOnTertiaryContainerLight = Color(0xFF31111D)
+val ZenTertiaryContainerLight = Color(0xFFFFDBCD)
+val ZenOnTertiaryContainerLight = Color(0xFF3A0B00)
 
 val ZenErrorLight = Color(0xFFB3261E)
 val ZenOnErrorLight = Color(0xFFFFFFFF)
 val ZenErrorContainerLight = Color(0xFFF9DEDC)
 val ZenOnErrorContainerLight = Color(0xFF410E0B)
 
-val ZenBackgroundLight = Color(0xFFFFFBFE)
-val ZenOnBackgroundLight = Color(0xFF1C1B1F)
-val ZenSurfaceLight = Color(0xFFFFFBFE)
-val ZenOnSurfaceLight = Color(0xFF1C1B1F)
-val ZenSurfaceVariantLight = Color(0xFFE7E0EC)
-val ZenOnSurfaceVariantLight = Color(0xFF49454F)
+val ZenBackgroundLight = Color(0xFFFBF8F4)
+val ZenOnBackgroundLight = Color(0xFF1B1B20)
+val ZenSurfaceLight = Color(0xFFFBF8F4)
+val ZenOnSurfaceLight = Color(0xFF1B1B20)
+val ZenSurfaceVariantLight = Color(0xFFE6E1EA)
+val ZenOnSurfaceVariantLight = Color(0xFF47464F)
 
-val ZenOutlineLight = Color(0xFF79747E)
-val ZenOutlineVariantLight = Color(0xFFCAC4D0)
+val ZenOutlineLight = Color(0xFF777680)
+val ZenOutlineVariantLight = Color(0xFFC8C5D0)
 
 // Dark Theme Colors
-val ZenPrimaryDark = Color(0xFFD0BCFF)
-val ZenOnPrimaryDark = Color(0xFF381E72)
-val ZenPrimaryContainerDark = Color(0xFF4F378B)
-val ZenOnPrimaryContainerDark = Color(0xFFEADDFF)
+val ZenPrimaryDark = Color(0xFFBFC1FF)
+val ZenOnPrimaryDark = Color(0xFF1E2278)
+val ZenPrimaryContainerDark = Color(0xFF363A85)
+val ZenOnPrimaryContainerDark = Color(0xFFE1E0FF)
 
-val ZenSecondaryDark = Color(0xFFCCC2DC)
-val ZenOnSecondaryDark = Color(0xFF332D41)
-val ZenSecondaryContainerDark = Color(0xFF4A4458)
-val ZenOnSecondaryContainerDark = Color(0xFFE8DEF8)
+val ZenSecondaryDark = Color(0xFFB5CEBD)
+val ZenOnSecondaryDark = Color(0xFF213528)
+val ZenSecondaryContainerDark = Color(0xFF384C3E)
+val ZenOnSecondaryContainerDark = Color(0xFFD1EBD9)
 
-val ZenTertiaryDark = Color(0xFFEFB8C8)
-val ZenOnTertiaryDark = Color(0xFF492532)
-val ZenTertiaryContainerDark = Color(0xFF633B48)
-val ZenOnTertiaryContainerDark = Color(0xFFFFD8E4)
+val ZenTertiaryDark = Color(0xFFFFB59B)
+val ZenOnTertiaryDark = Color(0xFF5A1C00)
+val ZenTertiaryContainerDark = Color(0xFF7B3314)
+val ZenOnTertiaryContainerDark = Color(0xFFFFDBCD)
 
 val ZenErrorDark = Color(0xFFF2B8B5)
 val ZenOnErrorDark = Color(0xFF601410)
 val ZenErrorContainerDark = Color(0xFF8C1D18)
 val ZenOnErrorContainerDark = Color(0xFFF9DEDC)
 
-val ZenBackgroundDark = Color(0xFF1C1B1F)
-val ZenOnBackgroundDark = Color(0xFFE6E1E5)
-val ZenSurfaceDark = Color(0xFF1C1B1F)
-val ZenOnSurfaceDark = Color(0xFFE6E1E5)
-val ZenSurfaceVariantDark = Color(0xFF49454F)
-val ZenOnSurfaceVariantDark = Color(0xFFCAC4D0)
+val ZenBackgroundDark = Color(0xFF11111A)
+val ZenOnBackgroundDark = Color(0xFFE4E1E9)
+val ZenSurfaceDark = Color(0xFF11111A)
+val ZenOnSurfaceDark = Color(0xFFE4E1E9)
+val ZenSurfaceVariantDark = Color(0xFF46464F)
+val ZenOnSurfaceVariantDark = Color(0xFFC8C5D0)
 
-val ZenOutlineDark = Color(0xFF938F99)
-val ZenOutlineVariantDark = Color(0xFF49454F)
+val ZenOutlineDark = Color(0xFF918F9A)
+val ZenOutlineVariantDark = Color(0xFF46464F)
 
 // Breathing Screen Gradient Colors - Light Theme
 val BreathingGradient1Light = Color(0xFFE3F2FD) // Light Blue
@@ -107,3 +108,11 @@ val TreeFruitColor = Color(0xFFFF6347) // Tomato
 val TreeGroundColorLight = Color(0xFFBCAAA4) // Light Brown
 val TreeGroundColorDark = Color(0xFF8B7355) // Dark Brown
 val TreeAuraColor = Color(0xFFFFD700) // Gold
+
+// Brand accents (theme independent), used for gradients and illustrations
+val ZenIndigo = Color(0xFF4B4F9E)
+val ZenLavender = Color(0xFFBFC1FF)
+val ZenSage = Color(0xFF6F9A82)
+val ZenDawnPeach = Color(0xFFFFB59B)
+val ZenDawnGold = Color(0xFFF2C879)
+val ZenMidnight = Color(0xFF11111A)

@@ -101,3 +101,5 @@ lint-baseline.xml
 
 # Kotlin
 .kotlin/
+
+keystore.properties

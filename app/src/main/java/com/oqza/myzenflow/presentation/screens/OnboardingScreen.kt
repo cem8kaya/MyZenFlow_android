@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.presentation.theme.ZenIndigo
 import android.Manifest
 import android.os.Build
 import androidx.compose.animation.*
@@ -68,9 +69,9 @@ fun OnboardingScreen(
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFF6366F1),
-                        Color(0xFF8B5CF6),
-                        Color(0xFFA855F7)
+                        ZenIndigo,
+                        Color(0xFF6B58B5),
+                        Color(0xFF9A5C8F)
                     )
                 )
             )
@@ -179,7 +180,7 @@ private fun WelcomePage() {
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            text = "Welcome to ZenFlow",
+            text = stringResource(R.string.onb_welcome_title),
             style = MaterialTheme.typography.displaySmall,
             fontWeight = FontWeight.Bold,
             color = Color.White,
@@ -189,7 +190,7 @@ private fun WelcomePage() {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Your personal meditation companion",
+            text = stringResource(R.string.onb_welcome_subtitle),
             style = MaterialTheme.typography.titleLarge,
             color = Color.White.copy(alpha = 0.9f),
             textAlign = TextAlign.Center
@@ -210,7 +211,7 @@ private fun FeaturesPage() {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Discover Features",
+            text = stringResource(R.string.onb_features_title),
             style = MaterialTheme.typography.displaySmall,
             fontWeight = FontWeight.Bold,
             color = Color.White,
@@ -221,24 +222,24 @@ private fun FeaturesPage() {
 
         FeatureItem(
             icon = Icons.Outlined.Air,
-            title = "Breathing Exercises",
-            description = "Guided breathing techniques to calm your mind"
+            title = stringResource(R.string.onb_feature_breathing),
+            description = stringResource(R.string.onb_feature_breathing_desc)
         )
 
         Spacer(modifier = Modifier.height(32.dp))
 
         FeatureItem(
             icon = Icons.Outlined.Timer,
-            title = "Focus Timer",
-            description = "Pomodoro technique for enhanced productivity"
+            title = stringResource(R.string.onb_feature_focus),
+            description = stringResource(R.string.onb_feature_focus_desc)
         )
 
         Spacer(modifier = Modifier.height(32.dp))
 
         FeatureItem(
             icon = Icons.Outlined.Park,
-            title = "Zen Garden",
-            description = "Watch your meditation tree grow with every session"
+            title = stringResource(R.string.onb_feature_garden),
+            description = stringResource(R.string.onb_feature_garden_desc)
         )
     }
 }
@@ -261,7 +262,7 @@ private fun PersonalizationPage(
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Personalize Your Journey",
+            text = stringResource(R.string.onb_personalize_title),
             style = MaterialTheme.typography.displaySmall,
             fontWeight = FontWeight.Bold,
             color = Color.White,
@@ -272,7 +273,7 @@ private fun PersonalizationPage(
 
         // Name Input
         Text(
-            text = "What should we call you?",
+            text = stringResource(R.string.onb_name_question),
             style = MaterialTheme.typography.titleMedium,
             color = Color.White,
             textAlign = TextAlign.Center
@@ -283,7 +284,7 @@ private fun PersonalizationPage(
         OutlinedTextField(
             value = userName,
             onValueChange = onNameChange,
-            placeholder = { Text("Enter your name (optional)", color = Color.White.copy(alpha = 0.6f)) },
+            placeholder = { Text(stringResource(R.string.onb_name_hint), color = Color.White.copy(alpha = 0.6f)) },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
@@ -299,7 +300,7 @@ private fun PersonalizationPage(
 
         // Weekly Goal Slider
         Text(
-            text = "Set your weekly goal",
+            text = stringResource(R.string.onb_goal_title),
             style = MaterialTheme.typography.titleMedium,
             color = Color.White,
             textAlign = TextAlign.Center
@@ -308,7 +309,7 @@ private fun PersonalizationPage(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "$weeklyGoalMinutes minutes per week",
+            text = stringResource(R.string.onb_goal_per_week, weeklyGoalMinutes),
             style = MaterialTheme.typography.bodyLarge,
             color = Color.White.copy(alpha = 0.9f),
             fontWeight = FontWeight.SemiBold
@@ -330,7 +331,7 @@ private fun PersonalizationPage(
         )
 
         Text(
-            text = "~${weeklyGoalMinutes / 7} minutes per day",
+            text = stringResource(R.string.onb_goal_per_day, weeklyGoalMinutes / 7),
             style = MaterialTheme.typography.bodySmall,
             color = Color.White.copy(alpha = 0.7f)
         )
@@ -364,7 +365,7 @@ private fun NotificationsPage(
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            text = "Stay Motivated",
+            text = stringResource(R.string.onb_motivated_title),
             style = MaterialTheme.typography.displaySmall,
             fontWeight = FontWeight.Bold,
             color = Color.White,
@@ -374,7 +375,7 @@ private fun NotificationsPage(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Enable daily reminders to build a consistent meditation practice",
+            text = stringResource(R.string.onb_motivated_desc),
             style = MaterialTheme.typography.bodyLarge,
             color = Color.White.copy(alpha = 0.9f),
             textAlign = TextAlign.Center
@@ -399,7 +400,7 @@ private fun NotificationsPage(
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "Daily Reminders",
+                        text = stringResource(R.string.onb_daily_reminders),
                         style = MaterialTheme.typography.titleMedium,
                         color = Color.White,
                         fontWeight = FontWeight.SemiBold
@@ -530,7 +531,7 @@ private fun OnboardingBottomBar(
             } else {
                 TextButton(onClick = onSkipClick) {
                     Text(
-                        text = "Skip",
+                        text = stringResource(R.string.onb_skip),
                         color = Color.White
                     )
                 }
@@ -540,15 +541,15 @@ private fun OnboardingBottomBar(
                 onClick = onNextClick,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.White,
-                    contentColor = Color(0xFF6366F1)
+                    contentColor = ZenIndigo
                 ),
                 shape = RoundedCornerShape(24.dp)
             ) {
                 Text(
                     text = if (currentPage == totalPages - 1)
-                        "Get Started"
+                        stringResource(R.string.onb_get_started)
                     else
-                        "Next",
+                        stringResource(R.string.onb_next),
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
                     fontWeight = FontWeight.SemiBold
                 )

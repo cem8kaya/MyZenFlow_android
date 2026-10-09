@@ -1,5 +1,10 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.presentation.theme.ZenSpacing
+import com.oqza.myzenflow.presentation.components.ZenSkeleton
+import com.oqza.myzenflow.R
+import androidx.compose.ui.res.stringResource
+import com.oqza.myzenflow.presentation.components.ZenCard
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
@@ -50,17 +55,17 @@ fun CalendarScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Takvim") },
+                title = { Text(stringResource(R.string.calendar_title)) },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground
                 ),
                 actions = {
                     // Today button
                     IconButton(onClick = { viewModel.goToToday() }) {
                         Icon(
                             Icons.Default.Today,
-                            contentDescription = "Bugüne git"
+                            contentDescription = stringResource(R.string.cal_go_today)
                         )
                     }
                 }
@@ -68,13 +73,16 @@ fun CalendarScreen(
         }
     ) { paddingValues ->
         if (uiState.isLoading) {
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues),
-                contentAlignment = Alignment.Center
+                    .padding(paddingValues)
+                    .padding(ZenSpacing.screen),
+                verticalArrangement = Arrangement.spacedBy(ZenSpacing.md)
             ) {
-                CircularProgressIndicator()
+                ZenSkeleton(modifier = Modifier.fillMaxWidth(), height = 40.dp)
+                ZenSkeleton(modifier = Modifier.fillMaxWidth(), height = 80.dp)
+                ZenSkeleton(modifier = Modifier.fillMaxWidth(), height = 280.dp)
             }
         } else {
             Column(
@@ -159,7 +167,7 @@ private fun MonthNavigationHeader(
         IconButton(onClick = onPreviousMonth) {
             Icon(
                 Icons.Default.ChevronLeft,
-                contentDescription = "Önceki ay",
+                contentDescription = stringResource(R.string.cal_prev_month),
                 tint = MaterialTheme.colorScheme.primary
             )
         }
@@ -174,7 +182,7 @@ private fun MonthNavigationHeader(
         IconButton(onClick = onNextMonth) {
             Icon(
                 Icons.Default.ChevronRight,
-                contentDescription = "Sonraki ay",
+                contentDescription = stringResource(R.string.cal_next_month),
                 tint = MaterialTheme.colorScheme.primary
             )
         }
@@ -189,13 +197,12 @@ private fun MonthSummaryCard(
     totalSessions: Int,
     totalMinutes: Int
 ) {
-    Card(
+    ZenCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
-        )
+        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp)
     ) {
         Row(
             modifier = Modifier
@@ -213,7 +220,7 @@ private fun MonthSummaryCard(
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
                 Text(
-                    text = "Oturum",
+                    text = stringResource(R.string.cal_sessions),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
                 )
@@ -236,7 +243,7 @@ private fun MonthSummaryCard(
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
                 Text(
-                    text = "Dakika",
+                    text = stringResource(R.string.cal_minutes),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
                 )
@@ -404,14 +411,11 @@ private fun SessionDetailsPanel(
 ) {
     if (selectedDate == null) return
 
-    Card(
+    ZenCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp)
     ) {
         Column(
             modifier = Modifier
@@ -433,13 +437,13 @@ private fun SessionDetailsPanel(
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "${sessions.size} oturum • ${sessions.sumOf { it.durationSeconds } / 60} dakika",
+                        text = stringResource(R.string.cal_day_summary, sessions.size, sessions.sumOf { it.durationSeconds } / 60),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )
                 }
                 IconButton(onClick = onClose) {
-                    Icon(Icons.Default.Close, contentDescription = "Kapat")
+                    Icon(Icons.Default.Close, contentDescription = stringResource(R.string.cal_close))
                 }
             }
 
@@ -468,7 +472,7 @@ private fun SessionDetailsPanel(
             ) {
                 Icon(Icons.Default.Park, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Zen Bahçesi'nde Gör")
+                Text(stringResource(R.string.cal_view_in_garden))
             }
         }
     }
@@ -490,16 +494,15 @@ private fun SessionItem(
     }
 
     val iconColor = when (session) {
-        is CombinedSession.MeditationSession -> Color(0xFF9C27B0) // Purple
-        is CombinedSession.FocusSession -> Color(0xFF2196F3) // Blue
-        is CombinedSession.BreathingSession -> Color(0xFF4CAF50) // Green
+        is CombinedSession.MeditationSession -> MaterialTheme.colorScheme.tertiary
+        is CombinedSession.FocusSession -> MaterialTheme.colorScheme.primary
+        is CombinedSession.BreathingSession -> MaterialTheme.colorScheme.secondary
     }
 
-    Card(
+    ZenCard(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
-        )
+        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp)
     ) {
         Row(
             modifier = Modifier
@@ -574,14 +577,14 @@ private fun EmptyStateMessage() {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "Bu ay henüz oturum yok",
+            text = stringResource(R.string.cal_empty_title),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "İlk meditasyon, odaklanma veya nefes egzersizi oturumunu başlatın!",
+            text = stringResource(R.string.cal_empty_message),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
             textAlign = TextAlign.Center

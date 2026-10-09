@@ -4,12 +4,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import com.oqza.myzenflow.data.models.ThemeMode
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -20,6 +25,8 @@ import com.oqza.myzenflow.presentation.navigation.Screen
 import com.oqza.myzenflow.presentation.theme.MyZenFlowTheme
 import com.oqza.myzenflow.utils.LocaleManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.map
+import com.oqza.myzenflow.data.models.UserPreferences
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -28,22 +35,44 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var preferencesRepository: PreferencesRepository
 
+    // Keeps the splash visible until the first DataStore read, so the start destination
+    // (onboarding vs. home) and theme are correct on the first frame.
+    @Volatile
+    private var preferencesLoaded = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen().setKeepOnScreenCondition { !preferencesLoaded }
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         setContent {
             // Observe user preferences for locale changes
-            val userPreferences by preferencesRepository.userPreferences.collectAsStateWithLifecycle(
-                initialValue = com.oqza.myzenflow.data.models.UserPreferences()
-            )
+            val loadedPreferences by preferencesRepository.userPreferences
+                .map<UserPreferences, UserPreferences?> { it }
+                .collectAsStateWithLifecycle(initialValue = null)
+            val userPreferences = loadedPreferences ?: UserPreferences()
+
+            LaunchedEffect(loadedPreferences != null) {
+                if (loadedPreferences != null) preferencesLoaded = true
+            }
 
             // Apply locale when language changes
             LaunchedEffect(userPreferences.language) {
                 LocaleManager.applyLocale(this@MainActivity, userPreferences.language)
             }
 
-            MyZenFlowTheme {
+            if (loadedPreferences == null) return@setContent
+
+            val darkTheme = when (userPreferences.themeMode) {
+                ThemeMode.SYSTEM -> isSystemInDarkTheme()
+                ThemeMode.LIGHT -> false
+                ThemeMode.DARK -> true
+            }
+
+            MyZenFlowTheme(
+                darkTheme = darkTheme,
+                dynamicColor = userPreferences.dynamicColorEnabled
+            ) {
                 val navController = rememberNavController()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
@@ -62,8 +91,11 @@ class MainActivity : ComponentActivity() {
                         currentRoute != Screen.Focus.route &&
                         currentRoute != Screen.Onboarding.route
 
+                // Screens own their system-bar insets; the outer scaffold only reserves
+                // space for the bottom navigation bar.
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
+                    contentWindowInsets = WindowInsets(0, 0, 0, 0),
                     bottomBar = {
                         if (shouldShowBottomBar) {
                             BottomNavigationBar(navController = navController)
@@ -71,6 +103,9 @@ class MainActivity : ComponentActivity() {
                     }
                 ) { innerPadding ->
                     NavGraph(
+                        modifier = Modifier.padding(
+                            PaddingValues(bottom = innerPadding.calculateBottomPadding())
+                        ),
                         navController = navController,
                         startDestination = if (userPreferences.onboardingCompleted) {
                             Screen.Home.route

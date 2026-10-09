@@ -1,5 +1,16 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.presentation.components.ZenAnimatedText
+import com.oqza.myzenflow.presentation.theme.ZenDawnGold
+import com.oqza.myzenflow.presentation.theme.ZenIndigo
+import com.oqza.myzenflow.presentation.theme.ZenSpacing
+import com.oqza.myzenflow.presentation.components.ZenSkeleton
+import com.oqza.myzenflow.presentation.components.ZenGradientCard
+import com.oqza.myzenflow.presentation.components.ZenButton
+import com.oqza.myzenflow.presentation.components.ZenCard
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -56,19 +67,24 @@ fun ProfileScreen(
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
+                    containerColor = MaterialTheme.colorScheme.background
                 )
             )
         }
     ) { padding ->
         if (uiState.isLoading) {
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(padding),
-                contentAlignment = Alignment.Center
+                    .padding(padding)
+                    .padding(ZenSpacing.screen),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                CircularProgressIndicator()
+                ZenSkeleton(modifier = Modifier.size(100.dp), height = 100.dp)
+                Spacer(modifier = Modifier.height(ZenSpacing.lg))
+                ZenSkeleton(modifier = Modifier.fillMaxWidth(0.5f), height = 28.dp)
+                Spacer(modifier = Modifier.height(ZenSpacing.xl))
+                ZenSkeleton(modifier = Modifier.fillMaxWidth(), height = 110.dp)
             }
         } else {
             Column(
@@ -76,7 +92,7 @@ fun ProfileScreen(
                     .fillMaxSize()
                     .padding(padding)
                     .verticalScroll(scrollState)
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = ZenSpacing.screen)
             ) {
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -92,8 +108,7 @@ fun ProfileScreen(
                 // Stats Section
                 Text(
                     text = stringResource(R.string.your_stats),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
@@ -109,9 +124,8 @@ fun ProfileScreen(
 
                 // Quick Links Section
                 Text(
-                    text = "Quick Links",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
+                    text = stringResource(R.string.profile_quick_links),
+                    style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
@@ -172,17 +186,14 @@ private fun ProfileHeaderSection(
                 .clip(CircleShape)
                 .background(
                     brush = Brush.linearGradient(
-                        colors = listOf(
-                            Color(0xFF6366F1),
-                            Color(0xFF8B5CF6)
-                        )
+                        colors = listOf(ZenIndigo, Color(0xFF9A5C8F))
                     )
                 ),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = Icons.Filled.Person,
-                contentDescription = "Profile Avatar",
+                contentDescription = null,
                 modifier = Modifier.size(60.dp),
                 tint = Color.White
             )
@@ -197,8 +208,7 @@ private fun ProfileHeaderSection(
         ) {
             Text(
                 text = userName,
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.headlineMedium
             )
 
             Spacer(modifier = Modifier.width(8.dp))
@@ -209,7 +219,7 @@ private fun ProfileHeaderSection(
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Edit,
-                    contentDescription = "Edit name",
+                    contentDescription = stringResource(R.string.profile_edit_name),
                     modifier = Modifier.size(20.dp),
                     tint = MaterialTheme.colorScheme.primary
                 )
@@ -220,9 +230,9 @@ private fun ProfileHeaderSection(
 
         // Member since
         Text(
-            text = "Member since $memberSince",
+            text = stringResource(R.string.profile_member_since, memberSince),
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
@@ -275,7 +285,7 @@ private fun StatsGrid(
 
             ProfileStatCard(
                 icon = Icons.Outlined.EmojiEvents,
-                label = "Longest Streak",
+                label = stringResource(R.string.profile_longest_streak),
                 value = "$longestStreak ${stringResource(R.string.days_count, longestStreak).substringAfter(" ")}",
                 modifier = Modifier.weight(1f)
             )
@@ -284,7 +294,7 @@ private fun StatsGrid(
         // Favorite Exercise Card (full width)
         ProfileStatCard(
             icon = Icons.Outlined.Air,
-            label = "Favorite Exercise",
+            label = stringResource(R.string.profile_favorite_exercise),
             value = favoriteExercise,
             modifier = Modifier.fillMaxWidth()
         )
@@ -301,43 +311,34 @@ private fun ProfileStatCard(
     value: String,
     modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = modifier,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 4.dp
-        )
+    ZenCard(
+        modifier = modifier.clearAndSetSemantics { contentDescription = "$value $label" }
     ) {
         Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
                 imageVector = icon,
-                contentDescription = label,
-                modifier = Modifier.size(32.dp),
+                contentDescription = null,
+                modifier = Modifier.size(28.dp),
                 tint = MaterialTheme.colorScheme.primary
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(ZenSpacing.sm))
 
-            Text(
+            ZenAnimatedText(
                 text = value,
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(ZenSpacing.xs))
 
             Text(
                 text = label,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
         }
@@ -358,22 +359,22 @@ private fun QuickLinksSection(
     ) {
         QuickLinkItem(
             icon = Icons.Outlined.EmojiEvents,
-            title = "My Achievements",
-            subtitle = "View Zen Garden achievements",
+            title = stringResource(R.string.profile_achievements),
+            subtitle = stringResource(R.string.profile_achievements_subtitle),
             onClick = onAchievementsClick
         )
 
         QuickLinkItem(
             icon = Icons.Outlined.CalendarMonth,
-            title = "Session History",
-            subtitle = "View calendar and progress",
+            title = stringResource(R.string.profile_history),
+            subtitle = stringResource(R.string.profile_history_subtitle),
             onClick = onHistoryClick
         )
 
         QuickLinkItem(
             icon = Icons.Outlined.Settings,
             title = stringResource(R.string.screen_settings),
-            subtitle = "App settings and preferences",
+            subtitle = stringResource(R.string.profile_settings_subtitle),
             onClick = onSettingsClick
         )
     }
@@ -389,52 +390,42 @@ private fun QuickLinkItem(
     subtitle: String,
     onClick: () -> Unit
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 2.dp
-        )
+    ZenCard(
+        modifier = Modifier.fillMaxWidth(),
+        onClick = onClick
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 imageVector = icon,
-                contentDescription = title,
-                modifier = Modifier.size(40.dp),
+                contentDescription = null,
+                modifier = Modifier.size(32.dp),
                 tint = MaterialTheme.colorScheme.primary
             )
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(ZenSpacing.lg))
 
             Column(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
+                    style = MaterialTheme.typography.titleMedium
                 )
 
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
             Icon(
                 imageVector = Icons.Filled.ChevronRight,
-                contentDescription = "Navigate",
-                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
@@ -445,52 +436,46 @@ private fun QuickLinkItem(
  */
 @Composable
 private fun PremiumCard() {
-    Card(
+    ZenGradientCard(
+        colors = listOf(ZenIndigo, Color(0xFF6B58B5), Color(0xFF9A5C8F)),
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        ),
-        shape = RoundedCornerShape(16.dp)
+        contentPadding = PaddingValues(ZenSpacing.xl)
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
+            modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
                 imageVector = Icons.Filled.Star,
-                contentDescription = "Premium",
-                modifier = Modifier.size(48.dp),
-                tint = MaterialTheme.colorScheme.primary
+                contentDescription = null,
+                modifier = Modifier.size(40.dp),
+                tint = ZenDawnGold
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(ZenSpacing.md))
 
             Text(
                 text = stringResource(R.string.premium_title),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
+                style = MaterialTheme.typography.headlineSmall,
+                color = Color.White
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(ZenSpacing.sm))
 
             Text(
-                text = "Get unlimited access to all premium features",
+                text = stringResource(R.string.premium_card_message),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
+                color = Color.White.copy(alpha = 0.92f),
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(ZenSpacing.lg))
 
-            Button(
+            ZenButton(
+                text = stringResource(R.string.button_unlock),
                 onClick = { /* TODO: Navigate to premium screen */ },
                 modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(stringResource(R.string.button_unlock))
-            }
+            )
         }
     }
 }
@@ -515,7 +500,7 @@ private fun EditNameDialog(
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Name") },
+                label = { Text(stringResource(R.string.profile_name_label)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )

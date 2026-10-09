@@ -1,6 +1,9 @@
 package com.oqza.myzenflow.domain.services
 
 import android.app.Service
+import android.content.pm.ServiceInfo
+import android.os.Build
+import androidx.core.app.ServiceCompat
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
@@ -99,7 +102,16 @@ class PomodoroTimerService : Service() {
             .setOngoing(true)
             .build()
 
-        startForeground(NOTIFICATION_ID, notification)
+        ServiceCompat.startForeground(
+            this,
+            NOTIFICATION_ID,
+            notification,
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+            } else {
+                0
+            }
+        )
 
         // Start countdown job
         timerJob = serviceScope.launch {

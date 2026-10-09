@@ -1,6 +1,7 @@
 package com.oqza.myzenflow.presentation.screens
 
 import android.content.Intent
+import android.os.Build
 import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -52,6 +53,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oqza.myzenflow.BuildConfig
 import com.oqza.myzenflow.R
+import com.oqza.myzenflow.data.models.ThemeMode
+import com.oqza.myzenflow.presentation.components.SettingThemeModeItem
 import com.oqza.myzenflow.data.models.AppLanguage
 import com.oqza.myzenflow.presentation.components.PremiumCard
 import com.oqza.myzenflow.presentation.components.PremiumStatusCard
@@ -97,7 +100,7 @@ fun SettingsScreen(
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
+                    containerColor = MaterialTheme.colorScheme.background,
                     titleContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
@@ -152,13 +155,26 @@ fun SettingsScreen(
                                 }
                             )
 
-                            SettingToggleItem(
-                                title = stringResource(R.string.dark_mode),
-                                subtitle = stringResource(R.string.dark_mode_subtitle),
-                                checked = uiState.userPreferences.darkModeEnabled,
-                                onCheckedChange = { viewModel.updateDarkMode(it) },
-                                icon = Icons.Default.Brightness4
+                            SettingThemeModeItem(
+                                title = stringResource(R.string.theme_setting),
+                                selected = uiState.userPreferences.themeMode,
+                                labels = mapOf(
+                                    ThemeMode.SYSTEM to stringResource(R.string.theme_system),
+                                    ThemeMode.LIGHT to stringResource(R.string.theme_light),
+                                    ThemeMode.DARK to stringResource(R.string.theme_dark)
+                                ),
+                                onSelected = { viewModel.updateThemeMode(it) }
                             )
+
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                SettingToggleItem(
+                                    title = stringResource(R.string.dynamic_color),
+                                    subtitle = stringResource(R.string.dynamic_color_subtitle),
+                                    checked = uiState.userPreferences.dynamicColorEnabled,
+                                    onCheckedChange = { viewModel.updateDynamicColor(it) },
+                                    icon = Icons.Default.Brightness4
+                                )
+                            }
                         }
                     }
                 }
