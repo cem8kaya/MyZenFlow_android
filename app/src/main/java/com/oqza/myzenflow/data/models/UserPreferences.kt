@@ -17,6 +17,7 @@ data class UserPreferences(
     val weeklyGoalMinutes: Int = 210, // 30 minutes per day
     val breathingGuidanceVoice: Boolean = true,
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
+    val dynamicColorEnabled: Boolean = false, // Material You colors instead of brand palette
     val autoStartBreathingExercise: Boolean = false,
     val showSessionReminders: Boolean = true,
     val onboardingCompleted: Boolean = false,

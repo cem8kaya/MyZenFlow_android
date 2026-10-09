@@ -9,80 +9,66 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import java.time.LocalDateTime
+import androidx.compose.ui.res.stringResource
+import com.oqza.myzenflow.R
+import com.oqza.myzenflow.data.models.TimeOfDay
+import com.oqza.myzenflow.presentation.theme.ZenSpacing
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.Locale
 
 /**
- * Greeting header component for Home screen
- * Displays greeting message, motivational quote, and current date
+ * Greeting header for the Home screen: time-of-day greeting, localized date and quote.
  */
 @Composable
 fun GreetingHeader(
     userName: String? = null,
     motivationalQuote: String,
+    timeOfDay: TimeOfDay,
     modifier: Modifier = Modifier
 ) {
+    val greeting = stringResource(
+        when (timeOfDay) {
+            TimeOfDay.MORNING -> R.string.greeting_morning
+            TimeOfDay.AFTERNOON -> R.string.greeting_afternoon
+            TimeOfDay.EVENING -> R.string.greeting_evening
+            TimeOfDay.NIGHT -> R.string.greeting_night
+        }
+    )
+    val title = if (userName.isNullOrBlank()) greeting else "$greeting, $userName"
+
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 16.dp)
+            .padding(horizontal = ZenSpacing.screen, vertical = ZenSpacing.lg)
     ) {
-        // Greeting
         Text(
-            text = getGreeting(userName),
+            text = currentDate(),
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        Spacer(modifier = Modifier.height(ZenSpacing.xs))
+
+        Text(
+            text = title,
             style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground
         )
 
-        Spacer(modifier = Modifier.height(4.dp))
-
-        // Date
-        Text(
-            text = getCurrentDate(),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Motivational quote
-        Text(
-            text = motivationalQuote,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.primary,
-            fontWeight = FontWeight.Medium
-        )
+        if (motivationalQuote.isNotBlank()) {
+            Spacer(modifier = Modifier.height(ZenSpacing.sm))
+            Text(
+                text = motivationalQuote,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
     }
 }
 
-/**
- * Get greeting message based on time of day
- */
-private fun getGreeting(userName: String?): String {
-    val hour = LocalDateTime.now().hour
-    val greeting = when (hour) {
-        in 5..11 -> "Günaydın"
-        in 12..17 -> "İyi günler"
-        in 18..21 -> "İyi akşamlar"
-        else -> "İyi geceler"
-    }
-
-    return if (userName != null) {
-        "$greeting, $userName"
-    } else {
-        greeting
-    }
-}
-
-/**
- * Get current date formatted in Turkish
- */
-private fun getCurrentDate(): String {
-    val now = LocalDateTime.now()
-    val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy, EEEE", Locale("tr"))
-    return now.format(formatter)
-}
+private fun currentDate(): String =
+    LocalDate.now().format(
+        DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(Locale.getDefault())
+    )

@@ -1,6 +1,7 @@
 package com.oqza.myzenflow.presentation.screens
 
 import android.content.Intent
+import android.os.Build
 import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -164,6 +165,16 @@ fun SettingsScreen(
                                 ),
                                 onSelected = { viewModel.updateThemeMode(it) }
                             )
+
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                SettingToggleItem(
+                                    title = stringResource(R.string.dynamic_color),
+                                    subtitle = stringResource(R.string.dynamic_color_subtitle),
+                                    checked = uiState.userPreferences.dynamicColorEnabled,
+                                    onCheckedChange = { viewModel.updateDynamicColor(it) },
+                                    icon = Icons.Default.Brightness4
+                                )
+                            }
                         }
                     }
                 }

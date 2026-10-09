@@ -96,6 +96,13 @@ class PreferencesRepository @Inject constructor(
     }
 
     /**
+     * Update dynamic color
+     */
+    suspend fun updateDynamicColor(enabled: Boolean) {
+        preferencesDataStore.updateDynamicColor(enabled)
+    }
+
+    /**
      * Update auto-start breathing exercise
      */
     suspend fun updateAutoStartBreathingExercise(enabled: Boolean) {

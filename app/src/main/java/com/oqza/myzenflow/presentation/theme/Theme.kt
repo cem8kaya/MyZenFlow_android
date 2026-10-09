@@ -72,8 +72,8 @@ private val DarkColorScheme = darkColorScheme(
 @Composable
 fun MyZenFlowTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    // Opt-in: Material You colors replace the ZenFlow brand palette (Android 12+)
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -98,6 +98,7 @@ fun MyZenFlowTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = ZenTypography,
+        shapes = ZenShapes,
         content = content
     )
 }

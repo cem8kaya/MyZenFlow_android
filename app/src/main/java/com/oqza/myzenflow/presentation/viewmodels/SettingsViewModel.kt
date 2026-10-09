@@ -174,6 +174,16 @@ class SettingsViewModel @Inject constructor(
     /**
      * Update dark mode setting
      */
+    fun updateDynamicColor(enabled: Boolean) {
+        viewModelScope.launch {
+            try {
+                preferencesRepository.updateDynamicColor(enabled)
+            } catch (e: Exception) {
+                showError("Failed to update theme")
+            }
+        }
+    }
+
     fun updateThemeMode(mode: ThemeMode) {
         viewModelScope.launch {
             try {

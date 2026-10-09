@@ -69,7 +69,10 @@ class MainActivity : ComponentActivity() {
                 ThemeMode.DARK -> true
             }
 
-            MyZenFlowTheme(darkTheme = darkTheme) {
+            MyZenFlowTheme(
+                darkTheme = darkTheme,
+                dynamicColor = userPreferences.dynamicColorEnabled
+            ) {
                 val navController = rememberNavController()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route

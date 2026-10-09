@@ -167,10 +167,10 @@ fun SettingThemeModeItem(
         Spacer(modifier = Modifier.height(8.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             ThemeMode.entries.forEach { mode ->
-                FilterChip(
+                ZenChip(
+                    label = labels[mode].orEmpty(),
                     selected = mode == selected,
-                    onClick = { onSelected(mode) },
-                    label = { Text(labels[mode].orEmpty()) }
+                    onClick = { onSelected(mode) }
                 )
             }
         }

@@ -105,6 +105,8 @@
     <string name="theme_setting">Tema</string>
     <string name="theme_system">Sistem</string>
     <string name="theme_light">Açık</string>
+    <string name="dynamic_color">Dinamik renkler</string>
+    <string name="dynamic_color_subtitle">ZenFlow paleti yerine duvar kağıdınızın renklerini kullan</string>
     <string name="theme_dark">Koyu</string>
     <string name="notifications">Bildirimler</string>
     <string name="notifications_subtitle">Bildirimleri etkinleştir</string>
@@ -165,4 +167,18 @@
     <string name="quote_present">Bu anda var ol</string>
     <string name="quote_calm">İç huzurunu bul</string>
     <string name="quote_zen">Yolculuk varış noktasıdır</string>
+    <string name="greeting_night">İyi Geceler</string>
+    <string name="quick_actions_title">Hızlı Erişim</string>
+    <string name="stat_sessions">Seans</string>
+    <string name="stat_minutes">Dakika</string>
+    <string name="stat_streak">Seri</string>
+    <string name="reco_label">ŞİMDİ SANA ÖNERİ</string>
+    <string name="reco_morning_title">Güne sakinlikle başla</string>
+    <string name="reco_morning_message">Birkaç yavaş nefes, günün geri kalanının temposunu belirler.</string>
+    <string name="reco_afternoon_title">Odaklanma zamanı</string>
+    <string name="reco_afternoon_message">Tek bir iş seç ve ona 25 dakika kesintisiz zaman ver.</string>
+    <string name="reco_evening_title">Günü yavaşça bırak</string>
+    <string name="reco_evening_message">Gün boyu biriken gerginliği nazik bir nefes egzersiziyle bırak.</string>
+    <string name="reco_night_title">Uykudan önce yavaşla</string>
+    <string name="reco_night_message">Uzun ve yumuşak nefes vermeler bedenin dinlenmeye hazırlanmasına yardımcı olur.</string>
 </resources>

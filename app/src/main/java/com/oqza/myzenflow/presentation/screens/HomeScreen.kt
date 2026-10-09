@@ -2,24 +2,28 @@ package com.oqza.myzenflow.presentation.screens
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Air
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Park
+import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.Timer
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -38,17 +42,27 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.oqza.myzenflow.R
+import com.oqza.myzenflow.data.models.TimeOfDay
 import com.oqza.myzenflow.presentation.components.GreetingHeader
 import com.oqza.myzenflow.presentation.components.QuickAction
 import com.oqza.myzenflow.presentation.components.QuickActionsGrid
 import com.oqza.myzenflow.presentation.components.RecentSessionsSection
 import com.oqza.myzenflow.presentation.components.TodayStatsRow
+import com.oqza.myzenflow.presentation.components.ZenBackdrop
+import com.oqza.myzenflow.presentation.components.ZenButton
+import com.oqza.myzenflow.presentation.components.ZenGradientCard
+import com.oqza.myzenflow.presentation.components.ZenSkeleton
 import com.oqza.myzenflow.presentation.navigation.Screen
+import com.oqza.myzenflow.presentation.theme.ZenDawnPeach
+import com.oqza.myzenflow.presentation.theme.ZenIndigo
+import com.oqza.myzenflow.presentation.theme.ZenMotion
+import com.oqza.myzenflow.presentation.theme.ZenSpacing
 import com.oqza.myzenflow.presentation.viewmodels.HomeViewModel
+import java.time.LocalTime
 
 /**
- * Home screen with iOS-like design
- * Displays greeting, stats, quick actions, and recent sessions
+ * Home screen: time-of-day atmosphere, greeting, a "right now" recommendation,
+ * today's stats, quick actions and recent sessions.
  */
 @Composable
 fun HomeScreen(
@@ -58,8 +72,8 @@ fun HomeScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val scrollState = rememberScrollState()
+    val timeOfDay = remember { TimeOfDay.fromHour(LocalTime.now().hour) }
 
-    // Show error snackbar if present
     LaunchedEffect(uiState.error) {
         uiState.error?.let { error ->
             snackbarHostState.showSnackbar(error)
@@ -67,72 +81,66 @@ fun HomeScreen(
         }
     }
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            if (uiState.isLoading) {
-                // Loading state
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            } else {
-                // Content
-                AnimatedVisibility(
-                    visible = !uiState.isLoading,
-                    enter = fadeIn(),
-                    exit = fadeOut()
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(scrollState)
+    ZenBackdrop(modifier = Modifier.fillMaxSize(), timeOfDay = timeOfDay) {
+        Scaffold(
+            containerColor = Color.Transparent,
+            snackbarHost = { SnackbarHost(snackbarHostState) }
+        ) { paddingValues ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ) {
+                if (uiState.isLoading) {
+                    HomeSkeleton()
+                } else {
+                    AnimatedVisibility(
+                        visibleState = remember {
+                            MutableTransitionState(false).apply { targetState = true }
+                        },
+                        enter = fadeIn(tween(ZenMotion.MEDIUM)) +
+                            slideInVertically(tween(ZenMotion.MEDIUM)) { it / 20 }
                     ) {
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .verticalScroll(scrollState)
+                        ) {
+                            GreetingHeader(
+                                userName = uiState.userName,
+                                motivationalQuote = uiState.motivationalQuote,
+                                timeOfDay = timeOfDay
+                            )
 
-                        // Greeting Header
-                        GreetingHeader(
-                            userName = uiState.userName,
-                            motivationalQuote = uiState.motivationalQuote
-                        )
+                            RecommendationCard(
+                                timeOfDay = timeOfDay,
+                                onStart = { route -> navController?.navigate(route) }
+                            )
 
-                        Spacer(modifier = Modifier.height(24.dp))
+                            Spacer(modifier = Modifier.height(ZenSpacing.xl))
 
-                        // Today's Stats
-                        TodayStatsRow(
-                            sessionCount = uiState.todaySessionCount,
-                            minutes = uiState.todayMinutes,
-                            streak = uiState.currentStreak
-                        )
+                            TodayStatsRow(
+                                sessionCount = uiState.todaySessionCount,
+                                minutes = uiState.todayMinutes,
+                                streak = uiState.currentStreak
+                            )
 
-                        Spacer(modifier = Modifier.height(32.dp))
+                            Spacer(modifier = Modifier.height(ZenSpacing.xxl))
 
-                        // Quick Actions Grid
-                        QuickActionsGrid(
-                            actions = getQuickActions(),
-                            onActionClick = { route ->
-                                navController?.navigate(route)
-                            }
-                        )
+                            QuickActionsGrid(
+                                actions = getQuickActions(),
+                                onActionClick = { route -> navController?.navigate(route) }
+                            )
 
-                        Spacer(modifier = Modifier.height(32.dp))
+                            Spacer(modifier = Modifier.height(ZenSpacing.xxl))
 
-                        // Recent Sessions
-                        RecentSessionsSection(
-                            sessions = uiState.recentSessions,
-                            onStartClick = {
-                                navController?.navigate(Screen.Breathing.route)
-                            }
-                        )
+                            RecentSessionsSection(
+                                sessions = uiState.recentSessions,
+                                onStartClick = { navController?.navigate(Screen.Breathing.route) }
+                            )
 
-                        Spacer(modifier = Modifier.height(32.dp))
+                            Spacer(modifier = Modifier.height(ZenSpacing.xxl))
+                        }
                     }
                 }
             }
@@ -141,7 +149,82 @@ fun HomeScreen(
 }
 
 /**
- * Get quick action items with gradient colors
+ * Hero card suggesting one thing to do right now, based on time of day.
+ */
+@Composable
+private fun RecommendationCard(
+    timeOfDay: TimeOfDay,
+    onStart: (String) -> Unit
+) {
+    val (titleRes, messageRes, route) = when (timeOfDay) {
+        TimeOfDay.MORNING -> Triple(R.string.reco_morning_title, R.string.reco_morning_message, Screen.Breathing.route)
+        TimeOfDay.AFTERNOON -> Triple(R.string.reco_afternoon_title, R.string.reco_afternoon_message, Screen.Focus.route)
+        TimeOfDay.EVENING -> Triple(R.string.reco_evening_title, R.string.reco_evening_message, Screen.Breathing.route)
+        TimeOfDay.NIGHT -> Triple(R.string.reco_night_title, R.string.reco_night_message, Screen.Breathing.route)
+    }
+
+    ZenGradientCard(
+        colors = listOf(ZenIndigo, Color(0xFF6B58B5), Color(0xFF9A5C8F)),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = ZenSpacing.screen),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(ZenSpacing.xl)
+    ) {
+        Column {
+            Text(
+                text = stringResource(R.string.reco_label),
+                style = MaterialTheme.typography.labelLarge,
+                color = ZenDawnPeach
+            )
+            Spacer(modifier = Modifier.height(ZenSpacing.xs))
+            Text(
+                text = stringResource(titleRes),
+                style = MaterialTheme.typography.headlineSmall,
+                color = Color.White
+            )
+            Spacer(modifier = Modifier.height(ZenSpacing.sm))
+            Text(
+                text = stringResource(messageRes),
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.White.copy(alpha = 0.92f)
+            )
+            Spacer(modifier = Modifier.height(ZenSpacing.lg))
+            ZenButton(
+                text = stringResource(R.string.button_start),
+                onClick = { onStart(route) },
+                icon = Icons.Outlined.PlayArrow
+            )
+        }
+    }
+}
+
+/**
+ * Loading placeholder that mirrors the real layout, replacing a bare spinner.
+ */
+@Composable
+private fun HomeSkeleton() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+            .padding(horizontal = ZenSpacing.screen, vertical = ZenSpacing.lg)
+    ) {
+        ZenSkeleton(modifier = Modifier.width(140.dp), height = 14.dp)
+        Spacer(modifier = Modifier.height(ZenSpacing.sm))
+        ZenSkeleton(modifier = Modifier.width(240.dp), height = 32.dp)
+        Spacer(modifier = Modifier.height(ZenSpacing.xl))
+        ZenSkeleton(modifier = Modifier.fillMaxWidth(), height = 180.dp)
+        Spacer(modifier = Modifier.height(ZenSpacing.xl))
+        Row(horizontalArrangement = Arrangement.spacedBy(ZenSpacing.md)) {
+            repeat(3) {
+                ZenSkeleton(modifier = Modifier.weight(1f), height = 96.dp)
+            }
+        }
+    }
+}
+
+/**
+ * Quick action items. Gradients are dark enough for white text (AA for large/bold text).
  */
 @Composable
 private fun getQuickActions(): List<QuickAction> {
@@ -150,40 +233,28 @@ private fun getQuickActions(): List<QuickAction> {
             icon = Icons.Outlined.Air,
             title = stringResource(R.string.quick_action_breathing),
             subtitle = stringResource(R.string.quick_action_breathing_subtitle),
-            gradientColors = listOf(
-                Color(0xFF6366F1),
-                Color(0xFF8B5CF6)
-            ),
+            gradientColors = listOf(Color(0xFF4B4F9E), Color(0xFF6C70C4)),
             route = Screen.Breathing.route
         ),
         QuickAction(
             icon = Icons.Outlined.Timer,
             title = stringResource(R.string.quick_action_focus),
             subtitle = stringResource(R.string.quick_action_focus_subtitle),
-            gradientColors = listOf(
-                Color(0xFFEC4899),
-                Color(0xFFF43F5E)
-            ),
+            gradientColors = listOf(Color(0xFF9A4A2B), Color(0xFFC0643F)),
             route = Screen.Focus.route
         ),
         QuickAction(
             icon = Icons.Outlined.Park,
             title = stringResource(R.string.quick_action_garden),
             subtitle = stringResource(R.string.quick_action_garden_subtitle),
-            gradientColors = listOf(
-                Color(0xFF10B981),
-                Color(0xFF059669)
-            ),
+            gradientColors = listOf(Color(0xFF3F6B52), Color(0xFF5B8A70)),
             route = Screen.ZenGarden.route
         ),
         QuickAction(
             icon = Icons.Outlined.CalendarMonth,
             title = stringResource(R.string.quick_action_progress),
             subtitle = stringResource(R.string.quick_action_progress_subtitle),
-            gradientColors = listOf(
-                Color(0xFFF59E0B),
-                Color(0xFFEF4444)
-            ),
+            gradientColors = listOf(Color(0xFF7D5A14), Color(0xFFA67A22)),
             route = Screen.Calendar.route
         )
     )

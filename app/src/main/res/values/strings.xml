@@ -105,6 +105,8 @@
     <string name="theme_setting">Theme</string>
     <string name="theme_system">System</string>
     <string name="theme_light">Light</string>
+    <string name="dynamic_color">Dynamic colors</string>
+    <string name="dynamic_color_subtitle">Match your wallpaper instead of the ZenFlow palette</string>
     <string name="theme_dark">Dark</string>
     <string name="notifications">Notifications</string>
     <string name="notifications_subtitle">Enable notifications</string>
@@ -165,4 +167,18 @@
     <string name="quote_present">Be present in this moment</string>
     <string name="quote_calm">Find your inner calm</string>
     <string name="quote_zen">The journey is the destination</string>
+    <string name="greeting_night">Good Night</string>
+    <string name="quick_actions_title">Quick Access</string>
+    <string name="stat_sessions">Sessions</string>
+    <string name="stat_minutes">Minutes</string>
+    <string name="stat_streak">Streak</string>
+    <string name="reco_label">FOR YOU, RIGHT NOW</string>
+    <string name="reco_morning_title">Start the day with calm</string>
+    <string name="reco_morning_message">A few slow breaths set the tone for everything that follows.</string>
+    <string name="reco_afternoon_title">Time for a focus block</string>
+    <string name="reco_afternoon_message">Pick one thing and give it 25 undistracted minutes.</string>
+    <string name="reco_evening_title">Let the day settle</string>
+    <string name="reco_evening_message">Release the tension you carried today with a gentle breathing exercise.</string>
+    <string name="reco_night_title">Slow down before sleep</string>
+    <string name="reco_night_message">Long, soft exhales help your body get ready to rest.</string>
 </resources>
