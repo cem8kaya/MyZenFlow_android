@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.BuildConfig
 import com.oqza.myzenflow.presentation.navigation.navigateTo
 import com.oqza.myzenflow.presentation.theme.zenTabScreenInsets
 import androidx.compose.material.icons.outlined.AutoAwesome
@@ -143,7 +144,7 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // Premium Card (if not premium)
-                if (!uiState.isPremium) {
+                if (BuildConfig.PREMIUM_ENABLED && !uiState.isPremium) {
                     PremiumCard()
                     Spacer(modifier = Modifier.height(24.dp))
                 }

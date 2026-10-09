@@ -1,5 +1,8 @@
 package com.oqza.myzenflow.presentation.components
 
+import com.oqza.myzenflow.presentation.theme.ZenSpacing
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.heading
 import com.oqza.myzenflow.presentation.theme.ZenDawnGold
 import com.oqza.myzenflow.R
 import androidx.compose.ui.res.stringResource
@@ -55,16 +58,24 @@ fun SettingSection(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
+            .padding(vertical = ZenSpacing.sm)
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            modifier = Modifier
+                .padding(horizontal = ZenSpacing.screen + ZenSpacing.xs, vertical = ZenSpacing.sm)
+                .semantics { heading() }
         )
-        content()
+        ZenCard(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = ZenSpacing.screen),
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp)
+        ) {
+            content()
+        }
     }
 }
 
@@ -354,11 +365,10 @@ fun PremiumCard(
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                PremiumFeatureItem("Unlimited meditation sessions")
-                PremiumFeatureItem("Advanced breathing exercises")
-                PremiumFeatureItem("Detailed analytics & insights")
-                PremiumFeatureItem("Ad-free experience")
-                PremiumFeatureItem("Exclusive soundscapes")
+                PremiumFeatureItem(stringResource(R.string.feature_all_exercises))
+                PremiumFeatureItem(stringResource(R.string.feature_all_sounds))
+                PremiumFeatureItem(stringResource(R.string.feature_advanced_stats))
+                PremiumFeatureItem(stringResource(R.string.feature_premium_themes))
             }
 
             Spacer(modifier = Modifier.height(16.dp))

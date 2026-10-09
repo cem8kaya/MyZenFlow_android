@@ -18,6 +18,10 @@ android {
         versionCode = (project.findProperty("versionCode") as String?)?.toIntOrNull() ?: 1
         versionName = (project.findProperty("versionName") as String?) ?: "1.0.0"
 
+        // Premium (paywall, upgrade cards, restore purchases) stays hidden until Play Billing is
+        // implemented. Showing upgrade buttons that do nothing misleads users and fails Play review.
+        buildConfigField("boolean", "PREMIUM_ENABLED", "false")
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true

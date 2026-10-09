@@ -1,5 +1,10 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.presentation.theme.ZenSpacing
+import com.oqza.myzenflow.presentation.components.ZenSkeleton
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.ChevronRight
@@ -148,22 +153,16 @@ fun SettingsScreen(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { paddingValues ->
         if (uiState.isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(stringResource(R.string.loading))
-            }
+            SettingsSkeleton(modifier = Modifier.padding(paddingValues))
         } else {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
+                    .padding(paddingValues),
+                contentPadding = PaddingValues(bottom = ZenSpacing.xl)
             ) {
-                // SECTION 1: Premium
-                item {
+                // SECTION 1: Premium (hidden until billing exists, see BuildConfig.PREMIUM_ENABLED)
+                if (BuildConfig.PREMIUM_ENABLED) item {
                     SettingSection(title = stringResource(R.string.section_premium)) {
                         if (!uiState.userPreferences.isPremiumUnlocked) {
                             PremiumCard(
@@ -508,4 +507,25 @@ private fun TimePickerDialog(
             }
         }
     )
+}
+
+/**
+ * Loading placeholder shaped like the settings list (three sections of rows).
+ */
+@Composable
+private fun SettingsSkeleton(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = ZenSpacing.screen, vertical = ZenSpacing.md),
+        verticalArrangement = Arrangement.spacedBy(ZenSpacing.sm)
+    ) {
+        repeat(3) {
+            ZenSkeleton(modifier = Modifier.width(120.dp), height = 14.dp)
+            Spacer(Modifier.height(ZenSpacing.xs))
+            ZenSkeleton(modifier = Modifier.fillMaxWidth(), height = 64.dp)
+            ZenSkeleton(modifier = Modifier.fillMaxWidth(), height = 64.dp)
+            Spacer(Modifier.height(ZenSpacing.md))
+        }
+    }
 }
