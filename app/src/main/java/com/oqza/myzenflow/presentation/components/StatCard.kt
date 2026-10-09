@@ -56,7 +56,7 @@ fun StatCard(
 
             Spacer(modifier = Modifier.height(ZenSpacing.sm))
 
-            Text(
+            ZenAnimatedText(
                 text = value,
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onSurface

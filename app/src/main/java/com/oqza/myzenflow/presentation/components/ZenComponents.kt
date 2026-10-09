@@ -1,5 +1,12 @@
 package com.oqza.myzenflow.presentation.components
 
+import com.oqza.myzenflow.presentation.theme.LocalReducedMotion
+import androidx.compose.animation.togetherWith
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
@@ -141,7 +148,10 @@ fun ZenButton(
     enabled: Boolean = true
 ) {
     val shape = MaterialTheme.shapes.large
-    val buttonModifier = modifier.heightIn(min = 52.dp)
+    val source = remember { MutableInteractionSource() }
+    val buttonModifier = modifier
+        .heightIn(min = 52.dp)
+        .scale(rememberPressScale(source))
     val label: @Composable () -> Unit = {
         if (icon != null) {
             Icon(icon, contentDescription = null, modifier = Modifier.size(20.dp))
@@ -152,13 +162,15 @@ fun ZenButton(
     when (style) {
         ZenButtonStyle.Primary -> Button(
             onClick = onClick, modifier = buttonModifier, enabled = enabled, shape = shape,
-            colors = ButtonDefaults.buttonColors()
+            interactionSource = source, colors = ButtonDefaults.buttonColors()
         ) { label() }
         ZenButtonStyle.Secondary -> FilledTonalButton(
-            onClick = onClick, modifier = buttonModifier, enabled = enabled, shape = shape
+            onClick = onClick, modifier = buttonModifier, enabled = enabled, shape = shape,
+            interactionSource = source
         ) { label() }
         ZenButtonStyle.Text -> TextButton(
-            onClick = onClick, modifier = buttonModifier, enabled = enabled, shape = shape
+            onClick = onClick, modifier = buttonModifier, enabled = enabled, shape = shape,
+            interactionSource = source
         ) { label() }
     }
 }
@@ -209,6 +221,11 @@ fun ZenSectionHeader(
 
 /** Animated placeholder shimmer for loading states. */
 fun Modifier.zenShimmer(): Modifier = composed {
+    if (LocalReducedMotion.current) {
+        return@composed this
+            .alpha(0.55f)
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+    }
     val transition = rememberInfiniteTransition(label = "shimmer")
     val alpha by transition.animateFloat(
         initialValue = 0.35f,
@@ -314,4 +331,36 @@ fun ZenBackdrop(
         modifier = modifier.background(Brush.verticalGradient(zenBackdropColors(timeOfDay))),
         content = content
     )
+}
+
+/**
+ * Text whose value change animates (old value rises out, new value rises in). Used for
+ * counters and stats so numbers feel alive. Falls back to a plain cross-fade with
+ * reduced motion.
+ */
+@Composable
+fun ZenAnimatedText(
+    text: String,
+    modifier: Modifier = Modifier,
+    style: androidx.compose.ui.text.TextStyle = MaterialTheme.typography.headlineSmall,
+    color: Color = Color.Unspecified,
+    textAlign: TextAlign? = null
+) {
+    val reduced = LocalReducedMotion.current
+    AnimatedContent(
+        targetState = text,
+        modifier = modifier,
+        transitionSpec = {
+            if (reduced) {
+                fadeIn(tween(ZenMotion.SHORT)) togetherWith fadeOut(tween(ZenMotion.SHORT))
+            } else {
+                (slideInVertically(tween(ZenMotion.MEDIUM, easing = ZenMotion.Standard)) { it / 2 } +
+                    fadeIn(tween(ZenMotion.MEDIUM))) togetherWith
+                    (slideOutVertically(tween(ZenMotion.SHORT)) { -it / 2 } + fadeOut(tween(ZenMotion.SHORT)))
+            }
+        },
+        label = "zenAnimatedText"
+    ) { value ->
+        Text(text = value, style = style, color = color, textAlign = textAlign)
+    }
 }

@@ -69,6 +69,14 @@ android {
 
     kotlinOptions {
         jvmTarget = "17"
+        // ./gradlew assembleRelease -PcomposeMetrics  ->  app/build/compose_metrics (stability / skippability reports)
+        if (project.hasProperty("composeMetrics")) {
+            val out = layout.buildDirectory.dir("compose_metrics").get().asFile.absolutePath
+            freeCompilerArgs += listOf(
+                "-P", "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=$out",
+                "-P", "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=$out"
+            )
+        }
     }
 
     buildFeatures {
@@ -94,6 +102,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.0")
     implementation("androidx.activity:activity-compose:1.9.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
+    // Installs the baseline profile (src/main/baseline-prof.txt) for faster startup and scrolling
+    implementation("androidx.profileinstaller:profileinstaller:1.3.1")
 
     // Jetpack Compose BOM
     val composeBom = platform("androidx.compose:compose-bom:2024.06.00")

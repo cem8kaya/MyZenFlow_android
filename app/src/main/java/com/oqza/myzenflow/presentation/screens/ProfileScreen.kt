@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.presentation.components.ZenAnimatedText
 import com.oqza.myzenflow.presentation.theme.ZenDawnGold
 import com.oqza.myzenflow.presentation.theme.ZenIndigo
 import com.oqza.myzenflow.presentation.theme.ZenSpacing
@@ -326,7 +327,7 @@ private fun ProfileStatCard(
 
             Spacer(modifier = Modifier.height(ZenSpacing.sm))
 
-            Text(
+            ZenAnimatedText(
                 text = value,
                 style = MaterialTheme.typography.titleLarge,
                 textAlign = TextAlign.Center

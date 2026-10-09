@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.components
 
+import com.oqza.myzenflow.presentation.theme.LocalReducedMotion
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
@@ -77,10 +78,11 @@ fun LevelUpAnimation(
  */
 @Composable
 private fun LevelUpContent(newLevel: Int) {
+    val reducedMotion = LocalReducedMotion.current
     // Scale animation
     val scale by rememberInfiniteTransition(label = "scale").animateFloat(
-        initialValue = 0.95f,
-        targetValue = 1.05f,
+        initialValue = if (reducedMotion) 1f else 0.95f,
+        targetValue = if (reducedMotion) 1f else 1.05f,
         animationSpec = infiniteRepeatable(
             animation = tween(800, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Reverse
@@ -90,8 +92,8 @@ private fun LevelUpContent(newLevel: Int) {
 
     // Glow animation
     val glowAlpha by rememberInfiniteTransition(label = "glow").animateFloat(
-        initialValue = 0.3f,
-        targetValue = 0.8f,
+        initialValue = if (reducedMotion) 1f else 0.3f,
+        targetValue = if (reducedMotion) 1f else 0.8f,
         animationSpec = infiniteRepeatable(
             animation = tween(1000, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse

@@ -1,5 +1,8 @@
 package com.oqza.myzenflow.presentation.components
 
+import androidx.compose.ui.draw.scale
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -42,7 +45,13 @@ fun BottomNavigationBar(navController: NavController) {
 
             NavigationBarItem(
                 icon = {
+                    val iconScale by animateFloatAsState(
+                        targetValue = if (isSelected) 1.12f else 1f,
+                        animationSpec = spring(dampingRatio = 0.55f, stiffness = 500f),
+                        label = "navIconScale"
+                    )
                     Icon(
+                        modifier = Modifier.scale(iconScale),
                         imageVector = if (isSelected) screen.selectedIcon else screen.unselectedIcon,
                         contentDescription = null // label below already names the tab
                     )

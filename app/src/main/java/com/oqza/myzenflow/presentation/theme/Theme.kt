@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.theme
 
+import androidx.compose.runtime.CompositionLocalProvider
 import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -95,10 +96,13 @@ fun MyZenFlowTheme(
         }
     }
 
+    val reducedMotion = rememberReducedMotion()
+
     MaterialTheme(
         colorScheme = colorScheme,
         typography = ZenTypography,
-        shapes = ZenShapes,
-        content = content
-    )
+        shapes = ZenShapes
+    ) {
+        CompositionLocalProvider(LocalReducedMotion provides reducedMotion, content = content)
+    }
 }

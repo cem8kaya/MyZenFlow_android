@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.presentation.theme.LocalReducedMotion
 import com.oqza.myzenflow.presentation.theme.ZenDawnGold
 import com.oqza.myzenflow.R
 import androidx.compose.ui.res.stringResource
@@ -120,7 +121,7 @@ private fun TreeTab(
         particleSystem = particleSystem,
         width = 800f,
         height = 1200f,
-        trigger = showLevelUpAnimation
+        trigger = showLevelUpAnimation && !LocalReducedMotion.current
     )
 
     LazyColumn(
@@ -156,7 +157,7 @@ private fun TreeTab(
                         particleSystem = particleSystem,
                         width = 800f, // Approximate width
                         height = 1200f, // Approximate height
-                        enabled = uiState.userStats.currentStreak > 0,
+                        enabled = uiState.userStats.currentStreak > 0 && !LocalReducedMotion.current,
                         particleType = ParticleType.SPARKLE
                     )
                 }

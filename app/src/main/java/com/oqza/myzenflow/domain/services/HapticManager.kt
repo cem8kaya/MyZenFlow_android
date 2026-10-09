@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import androidx.annotation.RequiresApi
 import com.oqza.myzenflow.data.models.BreathingPhase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -27,60 +28,51 @@ class HapticManager @Inject constructor(
     }
 
     /**
-     * Vibrate for phase transition
+     * Vibrate for phase transition.
+     *
+     * The patterns follow the breath: inhale ramps up, exhale ramps down, holds are a soft
+     * tick and rest is one longer pulse. Devices without amplitude control get a single pulse.
      */
     fun vibrateForPhase(phase: BreathingPhase) {
         if (!vibrator.hasVibrator()) return
 
-        val pattern = when (phase) {
-            BreathingPhase.INHALE -> {
-                // Gentle increase for inhale
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE)
-                } else {
-                    null
-                }
-            }
-            BreathingPhase.HOLD_INHALE -> {
-                // Short pulse for hold
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    VibrationEffect.createOneShot(30, 128)
-                } else {
-                    null
-                }
-            }
-            BreathingPhase.EXHALE -> {
-                // Gentle decrease for exhale
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE)
-                } else {
-                    null
-                }
-            }
-            BreathingPhase.HOLD_EXHALE -> {
-                // Short pulse for hold
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    VibrationEffect.createOneShot(30, 128)
-                } else {
-                    null
-                }
-            }
-            BreathingPhase.REST -> {
-                // Longer pulse for rest/completion
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE)
-                } else {
-                    null
-                }
-            }
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && pattern != null) {
-            vibrator.vibrate(pattern)
-        } else {
-            // Fallback for older devices
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             @Suppress("DEPRECATION")
             vibrator.vibrate(50)
+            return
+        }
+        vibrator.vibrate(phaseEffect(phase))
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun phaseEffect(phase: BreathingPhase): VibrationEffect {
+        val canShape = vibrator.hasAmplitudeControl()
+        return when (phase) {
+            BreathingPhase.INHALE -> if (canShape) {
+                // Swelling: short pulses that grow stronger
+                VibrationEffect.createWaveform(
+                    longArrayOf(0, 30, 30, 40, 30, 60),
+                    intArrayOf(0, 40, 0, 90, 0, 170),
+                    -1
+                )
+            } else {
+                VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE)
+            }
+            BreathingPhase.EXHALE -> if (canShape) {
+                // Releasing: strong to soft
+                VibrationEffect.createWaveform(
+                    longArrayOf(0, 60, 30, 40, 30, 30),
+                    intArrayOf(0, 170, 0, 90, 0, 40),
+                    -1
+                )
+            } else {
+                VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE)
+            }
+            BreathingPhase.HOLD_INHALE,
+            BreathingPhase.HOLD_EXHALE ->
+                VibrationEffect.createOneShot(25, if (canShape) 60 else VibrationEffect.DEFAULT_AMPLITUDE)
+            BreathingPhase.REST ->
+                VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE)
         }
     }
 
