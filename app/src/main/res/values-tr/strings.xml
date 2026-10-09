@@ -424,4 +424,13 @@
     <string name="tree_max_level">Maksimum seviye!</string>
     <string name="notif_blocked">Bildirimler engelli. Sistem ayarlarından izin verebilirsin.</string>
     <string name="notif_open_settings">Ayarları aç</string>
+    <string name="cal_type_meditation">Meditasyon</string>
+    <string name="cal_type_focus">Odaklanma</string>
+    <string name="cal_type_breathing">Nefes</string>
+    <string name="cal_default_focus_title">Odak seansı</string>
+    <string name="time_just_now">Az önce</string>
+    <string name="time_minutes_ago">%1$d dakika önce</string>
+    <string name="time_hours_ago">%1$d saat önce</string>
+    <string name="time_yesterday">Dün</string>
+    <string name="time_days_ago">%1$d gün önce</string>
 </resources>

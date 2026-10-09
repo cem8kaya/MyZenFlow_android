@@ -1,5 +1,6 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.presentation.navigation.navigateTo
 import com.oqza.myzenflow.presentation.theme.zenTabScreenInsets
 import com.oqza.myzenflow.data.models.PracticeGoal
 import androidx.lifecycle.compose.LifecycleEventEffect
@@ -130,7 +131,7 @@ fun HomeScreen(
                                 timeOfDay = timeOfDay,
                                 goal = uiState.userPreferences.primaryGoal,
                                 isFirstSession = uiState.recentSessions.isEmpty(),
-                                onStart = { route -> navController?.navigate(route) }
+                                onStart = { route -> navController?.navigateTo(route) }
                             )
 
                             Spacer(modifier = Modifier.height(ZenSpacing.lg))
@@ -153,13 +154,13 @@ fun HomeScreen(
 
                             QuickActionsGrid(
                                 actions = getQuickActions(),
-                                onActionClick = { route -> navController?.navigate(route) }
+                                onActionClick = { route -> navController?.navigateTo(route) }
                             )
 
                             if (uiState.recentSessions.isNotEmpty()) {
                                 Spacer(modifier = Modifier.height(ZenSpacing.xxl))
                                 WeeklySummaryEntry(
-                                    onClick = { navController?.navigate(Screen.WeeklySummary.route) }
+                                    onClick = { navController?.navigateTo(Screen.WeeklySummary.route) }
                                 )
                             }
 
@@ -167,7 +168,7 @@ fun HomeScreen(
 
                             RecentSessionsSection(
                                 sessions = uiState.recentSessions,
-                                onStartClick = { navController?.navigate(Screen.Breathing.route) }
+                                onStartClick = { navController?.navigateTo(Screen.Breathing.route) }
                             )
 
                             Spacer(modifier = Modifier.height(ZenSpacing.xxl))

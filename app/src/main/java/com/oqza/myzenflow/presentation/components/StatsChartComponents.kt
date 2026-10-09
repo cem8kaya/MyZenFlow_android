@@ -1,5 +1,13 @@
 package com.oqza.myzenflow.presentation.components
 
+import com.oqza.myzenflow.presentation.theme.LocalReducedMotion
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import com.oqza.myzenflow.R
 import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.core.animateFloatAsState
@@ -84,8 +92,8 @@ fun WeeklyBarChart(
                         color = MaterialTheme.colorScheme.secondary
                     )
                     ChartSummaryItem(
-                        label = stringResource(R.string.chart_average),
-                        value = "${weeklyData.filter { it.sessions > 0 }.size}/7 gün",
+                        label = stringResource(R.string.weekly_active_days),
+                        value = "${weeklyData.count { it.sessions > 0 }}/${weeklyData.size}",
                         color = MaterialTheme.colorScheme.tertiary
                     )
                 }
@@ -166,7 +174,10 @@ fun MonthlyBarChart(
 }
 
 /**
- * Generic bar chart canvas
+ * Generic bar chart canvas.
+ *
+ * Bars grow in once when the chart first appears (skipped with reduced motion); after that a data
+ * change simply redraws, so a refresh can never make the chart blink or restart.
  */
 @Composable
 private fun BarChart(
@@ -176,73 +187,91 @@ private fun BarChart(
 ) {
     val textMeasurer = rememberTextMeasurer()
     val maxValue = data.maxOfOrNull { it.sessions }?.coerceAtLeast(1) ?: 1
+    val labelColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val trackColor = MaterialTheme.colorScheme.surfaceVariant
+    val locale = Locale.getDefault()
+    val compact = data.size > 10 // month view: day numbers every few bars, no value labels
 
-    // Animate bar heights
-    val animatedHeights = data.map { stat ->
-        val targetHeight = stat.sessions.toFloat() / maxValue.toFloat()
-        animateFloatAsState(
-            targetValue = targetHeight,
-            animationSpec = tween(durationMillis = 500),
-            label = "bar_height_${stat.date}"
-        ).value
+    val reducedMotion = LocalReducedMotion.current
+    var entered by remember { mutableStateOf(reducedMotion) }
+    LaunchedEffect(Unit) { entered = true }
+    val grow by animateFloatAsState(
+        targetValue = if (entered) 1f else 0f,
+        animationSpec = tween(durationMillis = if (reducedMotion) 0 else 600),
+        label = "bar_grow"
+    )
+
+    val description = remember(data, locale) {
+        data.joinToString(", ") {
+            "${it.date.dayOfWeek.getDisplayName(JavaTextStyle.SHORT, locale)} ${it.date.dayOfMonth}: ${it.sessions}"
+        }
     }
 
-    Canvas(modifier = modifier) {
-        val barWidth = size.width / (data.size * 1.5f)
-        val spacing = barWidth * 0.5f
-        val chartHeight = size.height * 0.8f
+    Canvas(modifier = modifier.semantics { contentDescription = description }) {
+        if (data.isEmpty()) return@Canvas
+        val slot = size.width / data.size
+        val barWidth = slot * 0.62f
+        val chartHeight = size.height * 0.78f
         val bottomPadding = size.height * 0.2f
+        val baseline = size.height - bottomPadding
 
         data.forEachIndexed { index, stat ->
-            val barHeight = chartHeight * animatedHeights[index]
-            val x = spacing + (index * (barWidth + spacing))
-            val y = size.height - bottomPadding - barHeight
+            val x = index * slot + (slot - barWidth) / 2f
+            val fraction = stat.sessions.toFloat() / maxValue.toFloat()
+            val barHeight = (chartHeight * fraction * grow).coerceAtLeast(if (stat.sessions > 0) 4f else 0f)
 
-            // Draw bar
+            // Track (empty-day marker) so every day has a visible slot
             drawRoundRect(
-                color = barColor,
-                topLeft = Offset(x, y),
-                size = Size(barWidth, barHeight),
-                cornerRadius = CornerRadius(8f, 8f)
+                color = trackColor,
+                topLeft = Offset(x, baseline - 4f),
+                size = Size(barWidth, 4f),
+                cornerRadius = CornerRadius(2f, 2f)
             )
 
-            // Draw bar value on top if > 0
-            if (stat.sessions > 0) {
-                val textLayoutResult = textMeasurer.measure(
+            if (barHeight > 0f) {
+                drawRoundRect(
+                    color = barColor,
+                    topLeft = Offset(x, baseline - barHeight),
+                    size = Size(barWidth, barHeight),
+                    cornerRadius = CornerRadius(8f, 8f)
+                )
+            }
+
+            // Value on top of the bar (week view only)
+            if (!compact && stat.sessions > 0) {
+                val value = textMeasurer.measure(
                     text = stat.sessions.toString(),
-                    style = TextStyle(
-                        color = barColor,
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    style = TextStyle(color = barColor, fontSize = 11.sp, fontWeight = FontWeight.Bold)
                 )
                 drawText(
-                    textLayoutResult = textLayoutResult,
+                    textLayoutResult = value,
                     topLeft = Offset(
-                        x + (barWidth - textLayoutResult.size.width) / 2,
-                        y - textLayoutResult.size.height - 4f
+                        x + (barWidth - value.size.width) / 2,
+                        baseline - barHeight - value.size.height - 4f
                     )
                 )
             }
 
-            // Draw day label
-            val dayLabel = stat.date.dayOfWeek
-                .getDisplayName(JavaTextStyle.SHORT, Locale("tr"))
-                .take(1)
-            val labelLayoutResult = textMeasurer.measure(
-                text = dayLabel,
-                style = TextStyle(
-                    color = Color.Gray,
-                    fontSize = 12.sp
+            // Axis label: weekday initial for a week, day number every 5th day for a month
+            val showLabel = !compact || index % 5 == 0 || index == data.lastIndex
+            if (showLabel) {
+                val text = if (compact) {
+                    stat.date.dayOfMonth.toString()
+                } else {
+                    stat.date.dayOfWeek.getDisplayName(JavaTextStyle.SHORT, locale)
+                }
+                val label = textMeasurer.measure(
+                    text = text,
+                    style = TextStyle(color = labelColor, fontSize = 11.sp)
                 )
-            )
-            drawText(
-                textLayoutResult = labelLayoutResult,
-                topLeft = Offset(
-                    x + (barWidth - labelLayoutResult.size.width) / 2,
-                    size.height - bottomPadding + 8f
+                drawText(
+                    textLayoutResult = label,
+                    topLeft = Offset(
+                        x + (barWidth - label.size.width) / 2,
+                        baseline + 8f
+                    )
                 )
-            )
+            }
         }
     }
 }

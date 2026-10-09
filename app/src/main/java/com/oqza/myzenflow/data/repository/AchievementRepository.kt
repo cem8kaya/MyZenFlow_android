@@ -98,7 +98,12 @@ class AchievementRepository @Inject constructor(
     suspend fun checkAndUnlock(type: AchievementType, currentProgress: Int): Boolean {
         val achievement = achievementDao.getAchievementByType(type)
         if (achievement != null && !achievement.isUnlocked) {
-            updateProgress(type, currentProgress)
+            // Skip the write when nothing changed: any UPDATE invalidates the table and re-emits
+            // getAllAchievements(), which used to feed back into this very method in an endless loop.
+            val shown = currentProgress.coerceAtMost(achievement.progressTarget)
+            if (achievement.progress != shown) {
+                updateProgress(type, shown)
+            }
             if (currentProgress >= achievement.progressTarget) {
                 unlockAchievement(type)
                 return true

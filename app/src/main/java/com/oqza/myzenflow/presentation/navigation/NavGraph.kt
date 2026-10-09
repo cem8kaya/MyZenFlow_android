@@ -79,7 +79,9 @@ fun NavGraph(
         }
 
         composable(route = Screen.Calendar.route) {
-            CalendarScreen()
+            CalendarScreen(
+                onNavigateToZenGarden = { navController.navigateToTab(Screen.ZenGarden.route) }
+            )
         }
 
         composable(route = Screen.Profile.route) {
@@ -87,11 +89,11 @@ fun NavGraph(
         }
 
         composable(route = Screen.Settings.route) {
-            SettingsScreen()
+            SettingsScreen(onNavigateBack = { navController.goBackOrHome() })
         }
 
         composable(route = Screen.Breathing.route) {
-            BreathingScreen()
+            BreathingScreen(onNavigateBack = { navController.goBackOrHome() })
         }
 
         composable(route = Screen.WeeklySummary.route) {

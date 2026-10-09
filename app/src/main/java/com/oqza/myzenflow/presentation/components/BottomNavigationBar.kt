@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.oqza.myzenflow.presentation.navigation.bottomNavigationScreens
+import com.oqza.myzenflow.presentation.navigation.navigateToTab
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
@@ -65,18 +66,7 @@ fun BottomNavigationBar(navController: NavController) {
                 ),
                 onClick = {
                     if (currentRoute != screen.route) {
-                        navController.navigate(screen.route) {
-                            // Pop up to the start destination of the graph to
-                            // avoid building up a large stack of destinations
-                            popUpTo(navController.graph.startDestinationId) {
-                                saveState = true
-                            }
-                            // Avoid multiple copies of the same destination when
-                            // reselecting the same item
-                            launchSingleTop = true
-                            // Restore state when reselecting a previously selected item
-                            restoreState = true
-                        }
+                        navController.navigateToTab(screen.route)
                     }
                 }
             )

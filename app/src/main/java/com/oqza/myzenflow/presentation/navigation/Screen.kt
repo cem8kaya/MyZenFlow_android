@@ -1,5 +1,7 @@
 package com.oqza.myzenflow.presentation.navigation
 
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavController
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
@@ -107,3 +109,30 @@ private val immersiveRoutes = setOf(
 )
 
 fun shouldShowBottomBar(route: String?): Boolean = route != null && route !in immersiveRoutes
+
+/**
+ * Switches to a bottom-navigation tab the standard way: back stack is trimmed to the start
+ * destination, each tab's state is saved/restored and tapping the current tab does not stack copies.
+ * Use this for every move to a tab, whether from the bar or from a link inside a screen.
+ */
+fun NavController.navigateToTab(route: String) {
+    navigate(route) {
+        popUpTo(graph.findStartDestination().id) { saveState = true }
+        launchSingleTop = true
+        restoreState = true
+    }
+}
+
+/** Opens any destination; tabs use [navigateToTab], other screens are pushed on top. */
+fun NavController.navigateTo(route: String) {
+    if (bottomNavigationScreens.any { it.route == route }) {
+        navigateToTab(route)
+    } else {
+        navigate(route) { launchSingleTop = true }
+    }
+}
+
+/** Back that cannot strand the user: if there is nothing to go back to, land on Home. */
+fun NavController.goBackOrHome() {
+    if (!popBackStack()) navigateToTab(Screen.Home.route)
+}

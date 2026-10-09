@@ -4,6 +4,7 @@ import com.oqza.myzenflow.utils.StreakCalculator
 import com.oqza.myzenflow.data.models.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -174,8 +175,16 @@ class StatsRepository @Inject constructor(
         startDate: LocalDateTime,
         endDate: LocalDateTime
     ): Flow<List<SessionData>> {
-        return sessionRepository.getSessionsInDateRange(startDate, endDate)
+        // All practice (meditation + breathing + focus), not just the meditation table
+        return sessionRepository.getAllPracticeSessions().map { sessions ->
+            sessions.filter { !it.date.isBefore(startDate) && !it.date.isAfter(endDate) }
+        }
     }
+
+    /**
+     * All completed practice sessions, newest first.
+     */
+    fun getPracticeSessions(): Flow<List<SessionData>> = sessionRepository.getAllPracticeSessions()
 
     /**
      * Get focus sessions for a specific date range

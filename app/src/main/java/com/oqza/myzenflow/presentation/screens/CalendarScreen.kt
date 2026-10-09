@@ -1,5 +1,9 @@
 package com.oqza.myzenflow.presentation.screens
 
+import com.oqza.myzenflow.presentation.viewmodels.CombinedSession
+import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.lifecycle.Lifecycle
+import androidx.compose.ui.platform.LocalContext
 import com.oqza.myzenflow.presentation.theme.zenTabScreenInsets
 import com.oqza.myzenflow.presentation.components.ZenEmptyState
 import com.oqza.myzenflow.presentation.theme.ZenSpacing
@@ -49,9 +53,18 @@ fun CalendarScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    // Preload adjacent months on first load
-    LaunchedEffect(Unit) {
-        viewModel.preloadAdjacentMonths()
+    // Reload whenever the screen comes back (a session may have finished meanwhile), then warm
+    // the neighbouring months so navigating between months is instant
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { viewModel.refresh() }
+    LaunchedEffect(uiState.selectedMonth, uiState.isLoading) {
+        if (!uiState.isLoading) viewModel.preloadAdjacentMonths()
+    }
+
+    val context = LocalContext.current
+    val formatDuration: (Int) -> String = { seconds ->
+        val minutes = seconds / 60
+        if (minutes < 60) context.getString(R.string.minutes_count, minutes)
+        else context.getString(R.string.hours_minutes_short, minutes / 60, minutes % 60)
     }
 
     Scaffold(
@@ -131,7 +144,7 @@ fun CalendarScreen(
                         onClose = { viewModel.clearSelection() },
                         onViewInZenGarden = onNavigateToZenGarden,
                         formatTime = { viewModel.formatTime(it) },
-                        formatDuration = { viewModel.formatDuration(it) }
+                        formatDuration = formatDuration
                     )
                 }
 
@@ -534,12 +547,26 @@ private fun SessionItem(
             // Session info
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = session.title,
+                    text = when (session) {
+                        is CombinedSession.FocusSession ->
+                            session.focusData.taskName?.takeIf { it.isNotBlank() }
+                                ?: stringResource(R.string.cal_default_focus_title)
+                        is CombinedSession.MeditationSession ->
+                            session.sessionData.breathingExercise?.displayName
+                                ?: stringResource(R.string.cal_type_meditation)
+                        is CombinedSession.BreathingSession -> session.title
+                    },
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Medium
                 )
                 Text(
-                    text = session.sessionType,
+                    text = stringResource(
+                        when (session) {
+                            is CombinedSession.FocusSession -> R.string.cal_type_focus
+                            is CombinedSession.MeditationSession -> R.string.cal_type_meditation
+                            is CombinedSession.BreathingSession -> R.string.cal_type_breathing
+                        }
+                    ),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                 )
