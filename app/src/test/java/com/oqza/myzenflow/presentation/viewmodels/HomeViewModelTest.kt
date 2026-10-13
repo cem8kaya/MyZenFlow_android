@@ -3,6 +3,8 @@ package com.oqza.myzenflow.presentation.viewmodels
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.oqza.myzenflow.data.models.SessionData
 import com.oqza.myzenflow.data.models.SessionType
+import com.oqza.myzenflow.data.models.AppLanguage
+import com.oqza.myzenflow.data.models.ThemeMode
 import com.oqza.myzenflow.data.models.UserPreferences
 import com.oqza.myzenflow.data.repository.BreathingRepository
 import com.oqza.myzenflow.data.repository.PreferencesRepository
@@ -234,8 +236,8 @@ class HomeViewModelTest {
     @Test
     fun `userPreferences are loaded correctly`() = runTest {
         val preferences = UserPreferences(
-            language = "tr",
-            theme = "dark"
+            language = AppLanguage.TURKISH,
+            themeMode = ThemeMode.DARK
         )
 
         coEvery { preferencesRepository.userPreferences } returns flowOf(preferences)
@@ -245,7 +247,7 @@ class HomeViewModelTest {
 
         val state = viewModel.uiState.value
 
-        assertEquals("tr", state.userPreferences.language)
-        assertEquals("dark", state.userPreferences.theme)
+        assertEquals(AppLanguage.TURKISH, state.userPreferences.language)
+        assertEquals(ThemeMode.DARK, state.userPreferences.themeMode)
     }
 }

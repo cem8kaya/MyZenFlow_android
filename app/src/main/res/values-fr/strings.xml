@@ -387,4 +387,9 @@
     <string name="locked_stats_title">Statistiques avancées</string>
     <string name="locked_stats_message">Les tendances mensuelles et l\'historique complet font partie de Premium.</string>
     <string name="locked_unlock">Découvrir Premium</string>
+    <string name="onb_reminder_off">Désactivé</string>
+    <string name="rate_prompt_title">Vous aimez ZenFlow ?</string>
+    <string name="rate_prompt_message">Souhaitez-vous noter ZenFlow ? Cela ne prend qu\'un instant et aide d\'autres personnes à découvrir l\'application.</string>
+    <string name="rate_prompt_rate">Noter</string>
+    <string name="rate_prompt_decline">Non merci</string>
 </resources>

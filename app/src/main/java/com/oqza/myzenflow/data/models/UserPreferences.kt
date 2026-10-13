@@ -7,8 +7,8 @@ data class UserPreferences(
     val language: AppLanguage = AppLanguage.SYSTEM,
     val hapticFeedbackEnabled: Boolean = true,
     val notificationsEnabled: Boolean = true,
-    val dailyReminderEnabled: Boolean = false,
-    val dailyReminderTime: String = "09:00", // HH:mm format
+    val dailyReminderEnabled: Boolean = true,
+    val dailyReminderTime: String = DEFAULT_REMINDER_TIME, // HH:mm format
     val soundEnabled: Boolean = true,
     val soundVolume: Float = 0.7f, // 0.0 to 1.0
     val backgroundMusicEnabled: Boolean = true,
@@ -17,14 +17,34 @@ data class UserPreferences(
     val weeklyGoalMinutes: Int = 210, // 30 minutes per day
     val breathingGuidanceVoice: Boolean = true,
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
-    val dynamicColorEnabled: Boolean = false, // Material You colors instead of brand palette
+    val dynamicColorEnabled: Boolean = true, // Material You colors (Android 12+) instead of brand palette
     val autoStartBreathingExercise: Boolean = false,
     val showSessionReminders: Boolean = true,
     val onboardingCompleted: Boolean = false,
     val userName: String = "",
     val primaryGoal: PracticeGoal = PracticeGoal.NONE,
-    val installDate: Long = System.currentTimeMillis()
+    val installDate: Long = System.currentTimeMillis(),
+    val launchCount: Int = 0,
+    val reviewState: ReviewState = ReviewState.NOT_REVIEWED
 )
+
+/** Evening default for the daily practice reminder. */
+const val DEFAULT_REMINDER_TIME = "20:00"
+
+/**
+ * What the user told us about rating the app. Drives [com.oqza.myzenflow.domain.review.ReviewPromptPolicy].
+ */
+enum class ReviewState {
+    NOT_REVIEWED,
+    /** Opened the store listing to rate; never prompt again. */
+    REVIEWED,
+    /** Said "no thanks" to the prompt; asked again only rarely. */
+    DECLINED;
+
+    companion object {
+        fun fromName(name: String?): ReviewState = entries.firstOrNull { it.name == name } ?: NOT_REVIEWED
+    }
+}
 
 /**
  * App theme preference. SYSTEM follows the device setting.

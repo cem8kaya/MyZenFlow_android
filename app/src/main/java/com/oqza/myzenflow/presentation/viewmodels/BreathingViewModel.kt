@@ -531,7 +531,7 @@ class BreathingViewModel @Inject constructor(
  * UI state for breathing exercise
  */
 data class BreathingUiState(
-    val selectedExercise: BreathingExerciseType? = null,
+    val selectedExercise: BreathingExerciseType? = BreathingExerciseType.BOX_BREATHING,
     val isActive: Boolean = false,
     val isPaused: Boolean = false,
     val currentCycle: Int = 0,

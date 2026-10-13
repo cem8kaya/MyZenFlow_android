@@ -7,6 +7,8 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.oqza.myzenflow.data.models.AppLanguage
+import com.oqza.myzenflow.data.models.DEFAULT_REMINDER_TIME
+import com.oqza.myzenflow.data.models.ReviewState
 import com.oqza.myzenflow.data.models.ThemeMode
 import com.oqza.myzenflow.data.models.UserPreferences
 import com.oqza.myzenflow.data.repository.PreferencesRepository
@@ -104,7 +106,7 @@ class SettingsViewModel @Inject constructor(
     /**
      * Update daily reminder
      */
-    fun updateDailyReminder(enabled: Boolean, time: String = "09:00") {
+    fun updateDailyReminder(enabled: Boolean, time: String = DEFAULT_REMINDER_TIME) {
         viewModelScope.launch {
             try {
                 preferencesRepository.updateDailyReminder(enabled, time)
@@ -197,6 +199,15 @@ class SettingsViewModel @Inject constructor(
             } catch (e: Exception) {
                 showError(context.getString(R.string.msg_update_failed))
             }
+        }
+    }
+
+    /**
+     * The user opened the store listing to rate the app: stop asking them to.
+     */
+    fun onRateAppOpened() {
+        viewModelScope.launch {
+            preferencesRepository.updateReviewState(ReviewState.REVIEWED)
         }
     }
 

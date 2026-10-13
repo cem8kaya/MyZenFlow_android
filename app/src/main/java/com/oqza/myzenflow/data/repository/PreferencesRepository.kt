@@ -3,6 +3,7 @@ package com.oqza.myzenflow.data.repository
 import com.oqza.myzenflow.data.models.PracticeGoal
 import com.oqza.myzenflow.data.datastore.PreferencesDataStore
 import com.oqza.myzenflow.data.models.AppLanguage
+import com.oqza.myzenflow.data.models.ReviewState
 import com.oqza.myzenflow.data.models.ThemeMode
 import com.oqza.myzenflow.data.models.UserPreferences
 import kotlinx.coroutines.flow.Flow
@@ -143,6 +144,18 @@ class PreferencesRepository @Inject constructor(
      */
     suspend fun setInstallDateIfNeeded() {
         preferencesDataStore.setInstallDateIfNeeded()
+    }
+
+    /**
+     * Count one app launch; returns the new total
+     */
+    suspend fun incrementLaunchCount(): Int = preferencesDataStore.incrementLaunchCount()
+
+    /**
+     * Remember how the user answered the rate-the-app prompt
+     */
+    suspend fun updateReviewState(state: ReviewState) {
+        preferencesDataStore.updateReviewState(state)
     }
 
     /**

@@ -387,4 +387,9 @@
     <string name="locked_stats_title">Erweiterte Statistiken</string>
     <string name="locked_stats_message">Monatliche Trends und Gesamt-Einblicke gehören zu Premium.</string>
     <string name="locked_unlock">Premium ansehen</string>
+    <string name="onb_reminder_off">Aus</string>
+    <string name="rate_prompt_title">Gefällt dir ZenFlow?</string>
+    <string name="rate_prompt_message">Möchtest du ZenFlow bewerten? Das dauert nur einen Moment und hilft anderen, die App zu finden.</string>
+    <string name="rate_prompt_rate">Bewerten</string>
+    <string name="rate_prompt_decline">Nein, danke</string>
 </resources>

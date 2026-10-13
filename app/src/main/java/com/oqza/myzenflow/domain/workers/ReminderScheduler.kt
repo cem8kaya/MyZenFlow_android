@@ -3,6 +3,7 @@ package com.oqza.myzenflow.domain.workers
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import com.oqza.myzenflow.data.models.DEFAULT_REMINDER_TIME
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -43,7 +44,7 @@ class ReminderScheduler @Inject constructor(
     companion object {
         /** Time from [now] until the next occurrence of [time]; always in the future. */
         fun delayUntilNext(time: String, now: LocalDateTime): Duration {
-            val target = runCatching { LocalTime.parse(time) }.getOrDefault(LocalTime.of(9, 0))
+            val target = runCatching { LocalTime.parse(time) }.getOrDefault(LocalTime.parse(DEFAULT_REMINDER_TIME))
             var next = now.toLocalDate().atTime(target)
             if (!next.isAfter(now)) next = next.plusDays(1)
             return Duration.between(now, next)

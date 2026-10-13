@@ -408,4 +408,9 @@
     <string name="locked_stats_title">Gelişmiş istatistikler</string>
     <string name="locked_stats_message">Aylık eğilimler ve tüm zamanların içgörüleri Premium\'a dahildir.</string>
     <string name="locked_unlock">Premium\'u gör</string>
+    <string name="onb_reminder_off">Kapalı</string>
+    <string name="rate_prompt_title">ZenFlow\'u beğeniyor musunuz?</string>
+    <string name="rate_prompt_message">ZenFlow\'u değerlendirmek ister misiniz? Yalnızca bir dakikanızı alır ve uygulamanın başkalarına ulaşmasına yardımcı olur.</string>
+    <string name="rate_prompt_rate">Değerlendir</string>
+    <string name="rate_prompt_decline">İstemiyorum</string>
 </resources>

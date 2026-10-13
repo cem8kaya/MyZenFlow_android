@@ -20,7 +20,18 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.AnimatedVisibility
 import com.oqza.myzenflow.utils.DeepLinks
+import androidx.lifecycle.lifecycleScope
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import com.oqza.myzenflow.data.models.ReviewState
+import com.oqza.myzenflow.domain.review.ReviewPromptPolicy
+import com.oqza.myzenflow.presentation.components.RatePromptDialog
+import com.oqza.myzenflow.utils.openPlayStoreListing
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -33,7 +44,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.oqza.myzenflow.data.models.ThemeMode
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -64,6 +74,9 @@ class MainActivity : ComponentActivity() {
     // Destination requested by a shortcut, widget or other launch intent (whitelisted)
     private val pendingRoute = mutableStateOf<String?>(null)
 
+    // Set when this launch is one on which the "rate the app" prompt is due (see ReviewPromptPolicy)
+    private val ratePromptDue = mutableStateOf(false)
+
     override fun onNewIntent(intent: android.content.Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
@@ -76,6 +89,18 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         pendingRoute.value = DeepLinks.routeFrom(intent)
         enableEdgeToEdge()
+
+        // Count real launches only; a configuration change or process restore recreates the activity
+        // with a saved state and is not a new launch.
+        if (savedInstanceState == null) {
+            lifecycleScope.launch {
+                val launches = preferencesRepository.incrementLaunchCount()
+                val prefs = preferencesRepository.userPreferences.first()
+                if (prefs.onboardingCompleted && ReviewPromptPolicy.shouldPrompt(launches, prefs.reviewState)) {
+                    ratePromptDue.value = true
+                }
+            }
+        }
 
         setContent {
             // Observe user preferences for locale changes
@@ -116,6 +141,18 @@ class MainActivity : ComponentActivity() {
                             popUpTo(Screen.Home.route) { inclusive = true }
                         }
                     }
+                }
+
+                // Offer to rate the app, but only when the user rests on Home. Opening straight into a
+                // shortcut, widget or other screen skips the prompt for this launch.
+                var rateDialogVisible by rememberSaveable { mutableStateOf(false) }
+                LaunchedEffect(ratePromptDue.value, currentRoute) {
+                    if (!ratePromptDue.value || currentRoute == null) return@LaunchedEffect
+                    if (currentRoute == Screen.Home.route) {
+                        delay(RATE_PROMPT_DELAY_MS) // let the screen settle first
+                        rateDialogVisible = true
+                    }
+                    ratePromptDue.value = false
                 }
 
                 // Open a shortcut/widget destination once onboarding is done
@@ -194,7 +231,26 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }
+
+                if (rateDialogVisible) {
+                    RatePromptDialog(
+                        onRate = {
+                            rateDialogVisible = false
+                            lifecycleScope.launch { preferencesRepository.updateReviewState(ReviewState.REVIEWED) }
+                            openPlayStoreListing(this@MainActivity)
+                        },
+                        onDecline = {
+                            rateDialogVisible = false
+                            lifecycleScope.launch { preferencesRepository.updateReviewState(ReviewState.DECLINED) }
+                        },
+                        onDismiss = { rateDialogVisible = false }
+                    )
+                }
             }
         }
+    }
+
+    private companion object {
+        const val RATE_PROMPT_DELAY_MS = 1500L
     }
 }
