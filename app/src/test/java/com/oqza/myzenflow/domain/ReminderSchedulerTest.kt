@@ -26,8 +26,8 @@ class ReminderSchedulerTest {
     }
 
     @Test
-    fun `invalid time falls back to nine in the morning`() {
-        assertEquals(Duration.ofHours(23), ReminderScheduler.delayUntilNext("nonsense", now))
+    fun `invalid time falls back to eight in the evening`() {
+        assertEquals(Duration.ofHours(10), ReminderScheduler.delayUntilNext("nonsense", now))
     }
 
     @Test

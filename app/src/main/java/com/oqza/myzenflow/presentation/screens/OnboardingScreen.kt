@@ -43,6 +43,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.oqza.myzenflow.R
+import com.oqza.myzenflow.data.models.DEFAULT_REMINDER_TIME
 import com.oqza.myzenflow.data.repository.PreferencesRepository
 import com.oqza.myzenflow.presentation.navigation.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -69,14 +70,27 @@ fun OnboardingScreen(
     var userName by remember { mutableStateOf("") }
     var goal by remember { mutableStateOf(PracticeGoal.NONE) }
     var weeklyGoalMinutes by remember { mutableStateOf(210) }
-    var notificationsEnabled by remember { mutableStateOf(false) }
-    var reminderTime by remember { mutableStateOf("09:00") }
+    // The evening reminder is on by default; turning it off or denying the permission switches it off
+    var notificationsEnabled by remember { mutableStateOf(true) }
+    var reminderTime by remember { mutableStateOf(DEFAULT_REMINDER_TIME) }
 
     // Notification permission (Android 13+)
     val notificationPermissionState = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
+        rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS) { granted ->
+            if (!granted) notificationsEnabled = false
+        }
     } else {
         null
+    }
+
+    // The reminder is on by default, so ask for the permission when the user reaches its page
+    LaunchedEffect(pagerState.currentPage) {
+        if (pagerState.currentPage == PAGE_COUNT - 1 &&
+            notificationsEnabled &&
+            notificationPermissionState?.status?.isGranted == false
+        ) {
+            notificationPermissionState.launchPermissionRequest()
+        }
     }
 
     Box(
@@ -92,8 +106,12 @@ fun OnboardingScreen(
                 )
             )
     ) {
+        // The window is edge-to-edge: keep the content (and the buttons) clear of the status bar,
+        // the system navigation bar and any display cutout.
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .windowInsetsPadding(WindowInsets.systemBars.union(WindowInsets.displayCutout))
         ) {
             // Pager
             HorizontalPager(
@@ -152,13 +170,7 @@ fun OnboardingScreen(
                     }
                 },
                 onSkipClick = {
-                    viewModel.completeOnboarding(
-                        userName = "",
-                        goal = PracticeGoal.NONE,
-                        weeklyGoal = 210,
-                        notificationsEnabled = false,
-                        reminderTime = "09:00"
-                    )
+                    viewModel.skipOnboarding()
                     navController.navigate(Screen.Home.route) {
                         popUpTo(Screen.Onboarding.route) { inclusive = true }
                     }
@@ -499,7 +511,11 @@ private fun NotificationsPage(
                     )
 
                     Text(
-                        text = if (notificationsEnabled) "At $reminderTime" else "Disabled",
+                        text = if (notificationsEnabled) {
+                            stringResource(R.string.daily_reminder_time, reminderTime)
+                        } else {
+                            stringResource(R.string.onb_reminder_off)
+                        },
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.White.copy(alpha = 0.8f)
                     )
@@ -658,6 +674,18 @@ class OnboardingViewModel @Inject constructor(
     private val preferencesRepository: PreferencesRepository,
     private val reminderScheduler: ReminderScheduler
 ) : ViewModel() {
+
+    /**
+     * Skip the introduction: everything stays at its default, including the 20:00 reminder.
+     * The reminder chain is normally started at app launch, so start it here for this session.
+     */
+    fun skipOnboarding() {
+        viewModelScope.launch {
+            reminderScheduler.schedule(DEFAULT_REMINDER_TIME, replace = false)
+            preferencesRepository.setInstallDateIfNeeded()
+            preferencesRepository.completeOnboarding()
+        }
+    }
 
     fun completeOnboarding(
         userName: String,

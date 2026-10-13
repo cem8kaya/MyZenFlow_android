@@ -6,6 +6,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import com.oqza.myzenflow.data.models.AppLanguage
+import com.oqza.myzenflow.data.models.DEFAULT_REMINDER_TIME
+import com.oqza.myzenflow.data.models.ReviewState
 import com.oqza.myzenflow.data.models.ThemeMode
 import com.oqza.myzenflow.data.models.UserPreferences
 import kotlinx.coroutines.flow.Flow
@@ -194,6 +196,27 @@ class PreferencesDataStore(private val context: Context) {
     }
 
     /**
+     * Count one app launch and return the new total.
+     */
+    suspend fun incrementLaunchCount(): Int {
+        var count = 0
+        context.dataStore.edit { preferences ->
+            count = (preferences[LAUNCH_COUNT] ?: 0) + 1
+            preferences[LAUNCH_COUNT] = count
+        }
+        return count
+    }
+
+    /**
+     * Remember how the user answered the rate-the-app prompt
+     */
+    suspend fun updateReviewState(state: ReviewState) {
+        context.dataStore.edit { preferences ->
+            preferences[REVIEW_STATE] = state.name
+        }
+    }
+
+    /**
      * Clear all preferences (for logout/reset)
      */
     suspend fun clearPreferences() {
@@ -212,8 +235,8 @@ class PreferencesDataStore(private val context: Context) {
             ),
             hapticFeedbackEnabled = preferences[HAPTIC_FEEDBACK] ?: true,
             notificationsEnabled = preferences[NOTIFICATIONS_ENABLED] ?: true,
-            dailyReminderEnabled = preferences[DAILY_REMINDER_ENABLED] ?: false,
-            dailyReminderTime = preferences[DAILY_REMINDER_TIME] ?: "09:00",
+            dailyReminderEnabled = preferences[DAILY_REMINDER_ENABLED] ?: true,
+            dailyReminderTime = preferences[DAILY_REMINDER_TIME] ?: DEFAULT_REMINDER_TIME,
             soundEnabled = preferences[SOUND_ENABLED] ?: true,
             soundVolume = preferences[SOUND_VOLUME] ?: 0.7f,
             backgroundMusicEnabled = preferences[BACKGROUND_MUSIC_ENABLED] ?: true,
@@ -224,13 +247,15 @@ class PreferencesDataStore(private val context: Context) {
             themeMode = preferences[THEME_MODE]?.let { ThemeMode.fromName(it) }
                 // Migrate legacy boolean: explicit dark choice stays dark, otherwise follow system
                 ?: if (preferences[DARK_MODE_ENABLED] == true) ThemeMode.DARK else ThemeMode.SYSTEM,
-            dynamicColorEnabled = preferences[DYNAMIC_COLOR] ?: false,
+            dynamicColorEnabled = preferences[DYNAMIC_COLOR] ?: true,
             primaryGoal = PracticeGoal.fromName(preferences[PRIMARY_GOAL]),
             autoStartBreathingExercise = preferences[AUTO_START_BREATHING] ?: false,
             showSessionReminders = preferences[SHOW_SESSION_REMINDERS] ?: true,
             onboardingCompleted = preferences[ONBOARDING_COMPLETED] ?: false,
             userName = preferences[USER_NAME] ?: "",
-            installDate = preferences[INSTALL_DATE] ?: System.currentTimeMillis()
+            installDate = preferences[INSTALL_DATE] ?: System.currentTimeMillis(),
+            launchCount = preferences[LAUNCH_COUNT] ?: 0,
+            reviewState = ReviewState.fromName(preferences[REVIEW_STATE])
         )
     }
 
@@ -259,5 +284,7 @@ class PreferencesDataStore(private val context: Context) {
         private val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
         private val USER_NAME = stringPreferencesKey("user_name")
         private val INSTALL_DATE = longPreferencesKey("install_date")
+        private val LAUNCH_COUNT = intPreferencesKey("launch_count")
+        private val REVIEW_STATE = stringPreferencesKey("review_state")
     }
 }

@@ -80,6 +80,7 @@ import com.oqza.myzenflow.presentation.components.SettingSection
 import com.oqza.myzenflow.presentation.components.SettingSliderItem
 import com.oqza.myzenflow.presentation.components.SettingToggleItem
 import com.oqza.myzenflow.presentation.viewmodels.SettingsViewModel
+import com.oqza.myzenflow.utils.openPlayStoreListing
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -365,8 +366,8 @@ fun SettingsScreen(
                                     title = stringResource(R.string.rate_app),
                                     icon = Icons.Default.Star,
                                     onClick = {
-                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=${context.packageName}"))
-                                        context.startActivity(intent)
+                                        viewModel.onRateAppOpened()
+                                        openPlayStoreListing(context)
                                     },
                                     showDivider = false
                                 )
@@ -478,7 +479,7 @@ private fun TimePickerDialog(
     onDismiss: () -> Unit
 ) {
     val timeParts = currentTime.split(":")
-    val initialHour = timeParts.getOrNull(0)?.toIntOrNull() ?: 9
+    val initialHour = timeParts.getOrNull(0)?.toIntOrNull() ?: 20
     val initialMinute = timeParts.getOrNull(1)?.toIntOrNull() ?: 0
 
     val timePickerState = rememberTimePickerState(

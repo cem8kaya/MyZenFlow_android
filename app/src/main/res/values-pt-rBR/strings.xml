@@ -387,4 +387,9 @@
     <string name="locked_stats_title">Estatísticas avançadas</string>
     <string name="locked_stats_message">As tendências mensais e a visão geral de todo o período fazem parte do Premium.</string>
     <string name="locked_unlock">Conhecer o Premium</string>
+    <string name="onb_reminder_off">Desativado</string>
+    <string name="rate_prompt_title">Gostando do ZenFlow?</string>
+    <string name="rate_prompt_message">Quer avaliar o ZenFlow? Leva só um instante e ajuda outras pessoas a encontrar o app.</string>
+    <string name="rate_prompt_rate">Avaliar</string>
+    <string name="rate_prompt_decline">Não, obrigado</string>
 </resources>
