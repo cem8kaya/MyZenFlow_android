@@ -84,8 +84,7 @@ class BillingManager @Inject constructor(
 
     private val client: BillingClient = BillingClient.newBuilder(context)
         .setListener(this)
-        .enablePendingPurchases(PendingPurchasesParams.newBuilder().enableOneTimeProducts().build())
-        .enableAutoServiceReconnection()
+        .enablePendingPurchases()
         .build()
 
     private val _products = MutableStateFlow<ProductsState>(ProductsState.Loading)

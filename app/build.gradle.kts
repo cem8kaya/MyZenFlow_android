@@ -121,7 +121,7 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.9.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
     // Google Play Billing (subscriptions and one-time purchase). Keep on a version Play still accepts.
-    implementation("com.android.billingclient:billing-ktx:8.0.0")
+    implementation("com.android.billingclient:billing-ktx:7.0.0")
     // Installs the baseline profile (src/main/baseline-prof.txt) for faster startup and scrolling
     implementation("androidx.profileinstaller:profileinstaller:1.3.1")
 
