@@ -28,6 +28,7 @@
     <string name="zm_action_focus">Start Pomodoro</string>
     <string name="zm_action_garden">See your Zen garden</string>
     <string name="zm_action_progress">See your progress</string>
+    <string name="zm_crisis_reply">Thank you for telling me. What you\'re going through sounds really heavy, and you don\'t have to face it alone.\n\nIf you might act on these thoughts or you are in immediate danger, please contact your local emergency number right now, or reach out to someone you trust. You can find a free helpline in your country at findahelpline.com.\n\nI\'m a mindfulness companion, not a crisis service, so I can\'t give you the support you deserve right now. A trained person can.</string>
     <string name="zm_personalization_streak">🔥 By the way, your %1$d-day streak is going strong! Great discipline.</string>
     <string name="zm_personalization_milestone">🎉 You\'ve reached %1$d minutes! That\'s a wonderful achievement!</string>
 

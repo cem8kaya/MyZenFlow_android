@@ -55,6 +55,13 @@ class ZenMasterStringsTest {
     }
 
     @Test
+    fun `crisis reply points to emergency help in both languages`() {
+        assertTrue(en.getValue("zm_crisis_reply").contains("emergency number"))
+        assertTrue(tr.getValue("zm_crisis_reply").contains("112"))
+        listOf(en, tr).forEach { assertTrue(it.getValue("zm_crisis_reply").contains("findahelpline.com")) }
+    }
+
+    @Test
     fun `fallback reply and twenty quotes exist`() {
         assertTrue("zm_response_fallback" in en)
         for (i in 0..19) assertTrue("Missing zm_quote_$i", "zm_quote_$i" in en)

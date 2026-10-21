@@ -28,6 +28,7 @@
     <string name="zm_action_focus">Pomodoro başlat</string>
     <string name="zm_action_garden">Zen bahçeni gör</string>
     <string name="zm_action_progress">İlerlemeni gör</string>
+    <string name="zm_crisis_reply">Bunu benimle paylaştığın için teşekkür ederim. Yaşadıkların çok ağır geliyor olmalı ve bununla yalnız başa çıkmak zorunda değilsin.\n\nBu düşünceler doğrultusunda hareket etme ihtimalin varsa ya da acil bir tehlikedeysen lütfen hemen 112\'yi ara veya güvendiğin birine ulaş. Ülkendeki ücretsiz yardım hatlarını findahelpline.com adresinde bulabilirsin.\n\nBen bir farkındalık arkadaşıyım, kriz hizmeti değilim; şu an hak ettiğin desteği veremem. Ama eğitimli bir uzman verebilir.</string>
     <string name="zm_personalization_streak">🔥 Bu arada, %1$d günlük serin devam ediyor! Harika bir disiplin.</string>
     <string name="zm_personalization_milestone">🎉 %1$d dakikaya ulaştın! Bu muazzam bir başarı!</string>
 
