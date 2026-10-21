@@ -5,7 +5,6 @@
     <!-- UI -->
     <string name="zm_title">Zen Master</string>
     <string name="zm_subtitle">Mindfulness yolculuğunda rehberin</string>
-    <string name="zm_empty_quote">\"Şimdiki an, sahip olduğun tek andır.\"</string>
     <string name="zm_status_online">Çevrimiçi</string>
     <string name="zm_status_typing">Yazıyor…</string>
     <string name="zm_input_placeholder">Bir şey sor…</string>

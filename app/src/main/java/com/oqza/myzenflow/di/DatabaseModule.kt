@@ -6,6 +6,7 @@ import com.oqza.myzenflow.data.dao.AchievementDao
 import com.oqza.myzenflow.data.dao.BreathingSessionDao
 import com.oqza.myzenflow.data.dao.FocusSessionDao
 import com.oqza.myzenflow.data.dao.MeditationSessionDao
+import com.oqza.myzenflow.data.dao.ZenMasterMessageDao
 import com.oqza.myzenflow.data.database.AppDatabase
 import dagger.Module
 import dagger.Provides
@@ -34,7 +35,8 @@ object DatabaseModule {
             .addMigrations(
                 AppDatabase.MIGRATION_1_2,
                 AppDatabase.MIGRATION_2_3,
-                AppDatabase.MIGRATION_3_4
+                AppDatabase.MIGRATION_3_4,
+                AppDatabase.MIGRATION_4_5
             )
             .build()
     }
@@ -73,5 +75,14 @@ object DatabaseModule {
     @Singleton
     fun provideAchievementDao(database: AppDatabase): AchievementDao {
         return database.achievementDao()
+    }
+
+    /**
+     * Provides ZenMasterMessageDao
+     */
+    @Provides
+    @Singleton
+    fun provideZenMasterMessageDao(database: AppDatabase): ZenMasterMessageDao {
+        return database.zenMasterMessageDao()
     }
 }

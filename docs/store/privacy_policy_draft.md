@@ -10,6 +10,7 @@ All of the following stays **on your device** and is never sent to us:
 - your optional name and preferences (language, theme, reminders, sound and haptics)
 - your practice history (breathing, focus and meditation sessions), streaks and achievements
 - your optional mood check-ins
+- your conversation with the Zen Master (the last 50 messages). Replies are written on your device by built-in rules; your messages are never sent anywhere. You can delete the conversation in the chat screen at any time.
 
 We do not run user accounts, show ads, or use analytics or advertising identifiers.
 

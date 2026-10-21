@@ -5,7 +5,6 @@
     <!-- UI -->
     <string name="zm_title">Zen Master</string>
     <string name="zm_subtitle">Your guide on the mindfulness journey</string>
-    <string name="zm_empty_quote">\"The present moment is the only moment you have.\"</string>
     <string name="zm_status_online">Online</string>
     <string name="zm_status_typing">Typing…</string>
     <string name="zm_input_placeholder">Ask something…</string>

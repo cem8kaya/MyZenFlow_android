@@ -9,10 +9,12 @@ import com.oqza.myzenflow.data.dao.AchievementDao
 import com.oqza.myzenflow.data.dao.BreathingSessionDao
 import com.oqza.myzenflow.data.dao.FocusSessionDao
 import com.oqza.myzenflow.data.dao.MeditationSessionDao
+import com.oqza.myzenflow.data.dao.ZenMasterMessageDao
 import com.oqza.myzenflow.data.entities.AchievementEntity
 import com.oqza.myzenflow.data.entities.BreathingSessionEntity
 import com.oqza.myzenflow.data.entities.FocusSessionEntity
 import com.oqza.myzenflow.data.entities.MeditationSessionEntity
+import com.oqza.myzenflow.data.entities.ZenMasterMessageEntity
 
 /**
  * Room database for MyZenFlow app
@@ -23,9 +25,10 @@ import com.oqza.myzenflow.data.entities.MeditationSessionEntity
         MeditationSessionEntity::class,
         FocusSessionEntity::class,
         BreathingSessionEntity::class,
-        AchievementEntity::class
+        AchievementEntity::class,
+        ZenMasterMessageEntity::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -35,6 +38,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun focusSessionDao(): FocusSessionDao
     abstract fun breathingSessionDao(): BreathingSessionDao
     abstract fun achievementDao(): AchievementDao
+    abstract fun zenMasterMessageDao(): ZenMasterMessageDao
 
     companion object {
         const val DATABASE_NAME = "myzenflow_database"
@@ -46,8 +50,9 @@ abstract class AppDatabase : RoomDatabase() {
          * - Version 1: Initial database with MeditationSession and FocusSession tables
          * - Version 2: Add BreathingSession table
          * - Version 3: Add Achievement table for gamification
-         * - Version 4 (planned): Add social features, friend connections
-         * - Version 5 (planned): Add custom meditation guides, audio files
+         * - Version 4: Add indices for performance
+         * - Version 5: Add Zen Master chat history table
+         * - Version 6 (planned): Add custom meditation guides, audio files
          */
 
         // Migration from version 1 to 2: Add breathing sessions table
@@ -111,6 +116,24 @@ abstract class AppDatabase : RoomDatabase() {
                 // Add indices to achievements
                 database.execSQL("CREATE INDEX IF NOT EXISTS index_achievements_isUnlocked ON achievements(isUnlocked)")
                 database.execSQL("CREATE INDEX IF NOT EXISTS index_achievements_unlockedAt ON achievements(unlockedAt)")
+            }
+        }
+
+        // Migration from version 4 to 5: Add Zen Master chat history. Column types and nullability
+        // must match ZenMasterMessageEntity exactly, Room validates them when the database opens.
+        val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("""
+                    CREATE TABLE IF NOT EXISTS zen_master_messages (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        text TEXT NOT NULL,
+                        isUser INTEGER NOT NULL,
+                        timestamp INTEGER NOT NULL,
+                        intent TEXT,
+                        sentiment TEXT,
+                        isCrisis INTEGER NOT NULL
+                    )
+                """.trimIndent())
             }
         }
     }
