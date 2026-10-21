@@ -1,9 +1,11 @@
 package com.oqza.myzenflow.presentation.viewmodels
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.oqza.myzenflow.data.entities.BreathingSessionEntity
 import com.oqza.myzenflow.data.models.BreathingExerciseType
+import com.oqza.myzenflow.presentation.navigation.Screen
 import com.oqza.myzenflow.data.models.BreathingPhase
 import com.oqza.myzenflow.data.repository.BreathingRepository
 import com.oqza.myzenflow.domain.services.BreathingAudioManager
@@ -30,7 +32,8 @@ import javax.inject.Inject
 class BreathingViewModel @Inject constructor(
     private val breathingRepository: BreathingRepository,
     private val hapticManager: HapticManager,
-    private val audioManager: BreathingAudioManager
+    private val audioManager: BreathingAudioManager,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(BreathingUiState())
@@ -41,6 +44,12 @@ class BreathingViewModel @Inject constructor(
 
     init {
         audioManager.preloadCues()
+
+        // Opened from the Zen Master (or a link) with an exercise in mind. An unknown id is ignored,
+        // and premium is checked before navigating, so this only selects.
+        savedStateHandle.get<String>(Screen.Breathing.ARG_EXERCISE)
+            ?.let { BreathingExerciseType.fromId(it) }
+            ?.let { selectExercise(it) }
     }
 
     private var exerciseJob: Job? = null

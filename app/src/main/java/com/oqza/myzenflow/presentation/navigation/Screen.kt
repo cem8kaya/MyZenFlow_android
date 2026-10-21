@@ -73,6 +73,21 @@ sealed class Screen(
         titleResId = R.string.screen_breathing,
         selectedIcon = Icons.Filled.Home, // Placeholder
         unselectedIcon = Icons.Outlined.Home // Placeholder
+    ) {
+        const val ARG_EXERCISE = "exercise"
+
+        /** What NavHost registers: plain "breathing" still works, the exercise is optional. */
+        val pattern = "$route?$ARG_EXERCISE={$ARG_EXERCISE}"
+
+        /** Opens breathing with this exercise (an id from BreathingExerciseType) preselected. */
+        fun routeFor(exerciseId: String) = "$route?$ARG_EXERCISE=$exerciseId"
+    }
+
+    object ZenMaster : Screen(
+        route = "zen_master",
+        titleResId = R.string.zm_title,
+        selectedIcon = Icons.Filled.Home, // Placeholder, not a bottom tab
+        unselectedIcon = Icons.Outlined.Home // Placeholder, not a bottom tab
     )
 
     object WeeklySummary : Screen(
@@ -112,6 +127,8 @@ val bottomNavigationScreens = listOf(
  */
 private val immersiveRoutes = setOf(
     Screen.Breathing.route,
+    Screen.Breathing.pattern, // the registered route carries the optional exercise argument
+    Screen.ZenMaster.route, // full-screen chat: the keyboard lifts the input, no bar in the way
     Screen.Onboarding.route,
     Screen.Paywall.route
 )

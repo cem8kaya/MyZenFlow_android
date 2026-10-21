@@ -10,6 +10,7 @@ import androidx.lifecycle.Lifecycle
 import com.oqza.myzenflow.presentation.components.ZenCard
 import androidx.compose.material3.Icon
 import androidx.compose.material.icons.outlined.AutoAwesome
+import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import com.oqza.myzenflow.utils.StreakCalculator
 import com.oqza.myzenflow.presentation.components.DailyCheckInCard
 import androidx.compose.animation.AnimatedVisibility
@@ -159,6 +160,11 @@ fun HomeScreen(
                                     onActionClick = { route -> navController?.navigateTo(route) }
                                 )
 
+                                Spacer(modifier = Modifier.height(ZenSpacing.xxl))
+                                ZenMasterEntry(
+                                    onClick = { navController?.navigateTo(Screen.ZenMaster.route) }
+                                )
+
                                 if (uiState.recentSessions.isNotEmpty()) {
                                     Spacer(modifier = Modifier.height(ZenSpacing.xxl))
                                     WeeklySummaryEntry(
@@ -179,6 +185,44 @@ fun HomeScreen(
                     }
                 }
             }
+        }
+    }
+}
+
+/**
+ * Entry card to the Zen Master chat.
+ */
+@Composable
+private fun ZenMasterEntry(onClick: () -> Unit) {
+    ZenCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = ZenSpacing.screen),
+        onClick = onClick
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                imageVector = Icons.Outlined.ChatBubbleOutline,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
+            )
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = ZenSpacing.md)
+            ) {
+                Text(stringResource(R.string.zm_home_card_title), style = MaterialTheme.typography.titleMedium)
+                Text(
+                    stringResource(R.string.zm_home_card_subtitle),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }

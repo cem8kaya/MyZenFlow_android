@@ -4,6 +4,8 @@
 
     <!-- UI -->
     <string name="zm_title">Zen Master</string>
+    <string name="zm_home_card_title">Zen Master\'a sor</string>
+    <string name="zm_home_card_subtitle">Sakin bir yanıt ve sana uygun bir pratik</string>
     <string name="zm_subtitle">Mindfulness yolculuğunda rehberin</string>
     <string name="zm_status_ready">Seni dinliyorum</string>
     <string name="zm_sender_you">Sen</string>
