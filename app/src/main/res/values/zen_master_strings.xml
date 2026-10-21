@@ -5,7 +5,8 @@
     <!-- UI -->
     <string name="zm_title">Zen Master</string>
     <string name="zm_subtitle">Your guide on the mindfulness journey</string>
-    <string name="zm_status_online">Online</string>
+    <string name="zm_status_ready">Here for you</string>
+    <string name="zm_sender_you">You</string>
     <string name="zm_status_typing">Typing…</string>
     <string name="zm_input_placeholder">Ask something…</string>
     <string name="zm_suggested_header">Pick a question to get started:</string>
