@@ -416,6 +416,27 @@ class PreferencesRepository @Inject constructor(
 }
 ```
 
+## 💬 Zen Master (Sohbet)
+
+Çevrimdışı, kural tabanlı sohbet özelliği. Ağ ve LLM kullanmaz.
+
+```
+domain/zenmaster/
+├── ZenTextNormalizer        // Türkçe harfleri ve i varyantlarını sadeleştirir
+├── ZenKeywords              // TR + EN anahtar kelimeler (niyet, duygu, kriz)
+├── ZenMessageAnalyzer       // niyet + duygu + kriz tespiti (puanlama, kelime başı eşleşmesi)
+├── ZenResponseGenerator     // niyet × duygu için 3 şablondan biri + seri/dakika notu
+├── ZenResponseCatalog       // şablon id'leri (R8 resource shrinking için açık liste)
+├── ZenReplyComposer         // mesaj + dil + istatistik -> yanıt
+└── ZenMasterConversation    // bir sohbet turu: kullanıcı satırı, bekleme, yanıt
+data/  ZenMasterMessageEntity / ZenMasterMessageDao / ZenMasterRepository
+presentation/  ZenMasterViewModel, ZenMasterScreen, ZenMasterComponents
+```
+
+- Kriz mesajı (intihar, kendine zarar vb.) sabit bir yanıt alır; bekleme, söz, buton ve kişisel not yoktur.
+- Butonun hedefi niyetten türetilir (`ZenIntent.action`), mesajla saklanmaz. Hedef `ZenAction.toRoute()` ile rotaya çevrilir; Premium gerektiren bir egzersiz paywall'a gider.
+- Metinler `zen_master_strings.xml` içindedir (şu an en + tr). Anahtar kelimeler kodda tutulur, çünkü kullanıcı uygulama dilinden bağımsız her iki dilde yazabilir.
+
 ## 🔄 Veri Akışı
 
 ### Read Flow (Data → UI)

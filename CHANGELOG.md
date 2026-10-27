@@ -5,6 +5,17 @@ Bu dosya ZenFlow projesindeki tüm önemli değişiklikleri dokümante eder.
 Format [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) standardını takip eder,
 ve bu proje [Semantic Versioning](https://semver.org/spec/v2.0.0.html) kullanır.
 
+## [Unreleased]
+
+#### Added - Eklenenler
+- **Zen Master sohbeti**
+  - Çevrimdışı çalışan, kural tabanlı sohbet: mesajın niyeti (stres, odak, uyku, nefes, motivasyon, meditasyon, ilerleme) ve duygusu bulunur, buna uygun yanıt ve ilgili özelliğe giden bir buton gösterilir
+  - Türkçe ve İngilizce (diğer diller şimdilik İngilizceye düşer)
+  - Kriz ifadeleri için sabit yanıt: yerel acil numarasına ve findahelpline.com'a yönlendirir
+  - Sohbet geçmişi cihazda saklanır (son 50 mesaj), sohbet ekranından silinebilir
+  - Ana ekrandaki karttan açılır; nefes ekranı seçili egzersizle açılabilir
+  - Veritabanı sürümü 5 (`zen_master_messages` tablosu)
+
 ## [1.0.0] - 2024-12-13
 
 ### 🎉 İlk Sürüm

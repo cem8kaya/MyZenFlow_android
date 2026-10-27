@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Zen Master chat. Shipped for en + tr first; other locales fall back to English. -->
+
+    <!-- UI -->
+    <string name="zm_title">Zen Master</string>
+    <string name="zm_home_card_title">Zen Master\'a sor</string>
+    <string name="zm_home_card_subtitle">Sakin bir yanıt ve sana uygun bir pratik</string>
+    <string name="zm_subtitle">Mindfulness yolculuğunda rehberin</string>
+    <string name="zm_status_ready">Seni dinliyorum</string>
+    <string name="zm_sender_you">Sen</string>
+    <string name="zm_status_typing">Yazıyor…</string>
+    <string name="zm_input_placeholder">Bir şey sor…</string>
+    <string name="zm_suggested_header">Başlamak için bir soru seç:</string>
+    <string name="zm_send">Gönder</string>
+    <string name="zm_clear_history">Sohbeti temizle</string>
+    <string name="zm_clear_title">Geçmişi temizle</string>
+    <string name="zm_clear_message">Tüm sohbet geçmişi silinecek. Emin misin?</string>
+    <string name="zm_clear_confirm">Temizle</string>
+    <string name="zm_cancel">İptal</string>
+    <string name="zm_disclaimer">Zen Master bir farkındalık arkadaşıdır; tıbbi veya ruh sağlığı hizmetinin yerine geçmez.</string>
+    <string name="zm_prompt_0">Meditasyona nasıl başlarım?</string>
+    <string name="zm_prompt_1">Zihinsel olarak yorgunum, yardım et</string>
+    <string name="zm_prompt_2">Odaklanmamı nasıl artırabilirim?</string>
+    <string name="zm_prompt_3">Gece rahat uyuyamıyorum</string>
+    <string name="zm_prompt_4">Bugün için motivasyon lazım</string>
+    <string name="zm_action_breathing">Nefes egzersizi başlat</string>
+    <string name="zm_action_478">4-7-8 Tekniği</string>
+    <string name="zm_action_meditation">Meditasyon öğren</string>
+    <string name="zm_action_focus">Pomodoro başlat</string>
+    <string name="zm_action_garden">Zen bahçeni gör</string>
+    <string name="zm_action_progress">İlerlemeni gör</string>
+    <string name="zm_crisis_reply">Bunu benimle paylaştığın için teşekkür ederim. Yaşadıkların çok ağır geliyor olmalı ve bununla yalnız başa çıkmak zorunda değilsin.\n\nBu düşünceler doğrultusunda hareket etme ihtimalin varsa ya da acil bir tehlikedeysen lütfen hemen 112\'yi ara veya güvendiğin birine ulaş. Ülkendeki ücretsiz yardım hatlarını findahelpline.com adresinde bulabilirsin.\n\nBen bir farkındalık arkadaşıyım, kriz hizmeti değilim; şu an hak ettiğin desteği veremem. Ama eğitimli bir uzman verebilir.</string>
+    <string name="zm_personalization_streak">🔥 Bu arada, %1$d günlük serin devam ediyor! Harika bir disiplin.</string>
+    <string name="zm_personalization_milestone">🎉 %1$d dakikaya ulaştın! Bu muazzam bir başarı!</string>
+
+    <!-- Responses (intent x sentiment x 3 variants) -->
+    <string name="zm_response_stress_positive_0">Harika! Stresinle baş etmeye hazırsın. Bu farkındalık büyük bir adım.\n\n\"Aydınlanma, uzaktaki bir hedef değil, her adımdaki farkındalıktır.\" 👣\n\nNefes egzersizlerimizi görmek ister misin?</string>
+    <string name="zm_response_stress_positive_1">Proaktif yaklaşım mükemmel! Zen bize öğretir: Hazırlıklı ol, ama endişeli olma.\n\n\"Şimdiki an, sahip olduğun tek andır. Onu kucakla.\" 🌸\n\nBox Breathing veya 4-7-8 tekniğinden hangisini denemek istersin?</string>
+    <string name="zm_response_stress_positive_2">Süper! Stres yönetiminde ilk adım farkındalık, ikinci adım eylem.\n\n\"Gel, gör, kabul et. Bu Zen\'in yoludur.\" 🛤️\n\nŞimdi pratik yapalım!</string>
+    <string name="zm_response_stress_neutral_0">Stres yönetiminde düzenli nefes egzersizleri çok işe yarar. Modern yaklaşımlar ve Zen bunda hemfikir.\n\n\"Nefes, beden ve zihin arasındaki köprüdür.\" 🌉\n\nHangi tekniği denemek istersin?</string>
+    <string name="zm_response_stress_neutral_1">Stresle baş etmenin birçok yolu var. Zen felsefesi bize şunu öğretir: Direnmek yerine, akışa bırak.\n\n\"Barış dışarıda aranmaz, içeride keşfedilir.\" 🕊️\n\nSeninle uygun tekniği bulalım.</string>
+    <string name="zm_response_stress_neutral_2">Düzenli nefes egzersizleri gerginliği yatıştırmaya yardımcı olabilir. Zen ise bize şunu söyler:\n\n\"Zihin sakinleştiğinde, ruhun güzelliği parlar.\" ✨\n\nBaşlamak için hazır mısın?</string>
+    <string name="zm_response_stress_negative_0">Stresli hissetmek tamamen normal. Zihnin fırtınada gibi görünse de, nefesle limana dönebilirsin.\n\n\"Su akıştır, rüzgar esintir, akış ritmini bulmaktır.\" 🌊\n\nBox Breathing egzersizi ile başlamak ister misin?</string>
+    <string name="zm_response_stress_negative_1">Anlıyorum, zor bir gün geçiriyorsun. Hatırla: Sen düşüncelerin değilsin, onları gözlemleyensin.\n\n\"Düşünce bulutları gelir ve geçer. Sen gökyüzüsün.\" ☁️\n\nBeraber derin nefes alalım mı?</string>
+    <string name="zm_response_stress_negative_2">Stres zamanla zihinsel yorgunluk yaratabilir. Ama her nefes, yeni bir başlangıç.\n\n\"Her nefes, yeni bir başlangıçtır.\" 🫁\n\n5 dakikalık nefes egzersizi ile rahatlamaya ne dersin?</string>
+    <string name="zm_response_focus_positive_0">Harika enerji! Şimdi bu enerjiyi odaklanmaya kanalize et!\n\n\"Boş bir zihin, her şeyin mümkün olduğu yerdir.\" 🌌\n\nPomodoro başlatıyoruz!</string>
+    <string name="zm_response_focus_positive_1">Motivasyonun yüksek! Bu tam doğru zaman.\n\n\"Tam burada, tam şimdi - sonsuzluk bu anda gizli.\" ⏰\n\nHadi gidelim!</string>
+    <string name="zm_response_focus_positive_2">Süper! Zihin berrak olduğunda, her şey mümkün.\n\n\"Gözlemci ol, yargılayıcı değil.\" 👁️\n\nİyi odaklanma + düzenli molalar = Maksimum verim. Başlıyoruz!</string>
+    <string name="zm_response_focus_neutral_0">Odaklanma için Pomodoro tekniği bilim ve Zen\'in buluşma noktası:\n\n\"Her an meditasyon fırsatıdır.\" 🧘\n\n25 dakika derin konsantrasyon + 5 dakika mola. Deneyelim mi?</string>
+    <string name="zm_response_focus_neutral_1">Verimli çalışmanın sırrı: Kısa aralıklarla yoğun odaklanma.\n\n\"Yolculuk varış noktasından daha önemlidir.\" 🗺️\n\nPomodoro ile başlamaya hazır mısın?</string>
+    <string name="zm_response_focus_neutral_2">Konsantrasyon kas gibidir, egzersiz gerektirir. Her Pomodoro bir antrenman:\n\n\"Düşüşte bile zarafet vardır. Kalk ve devam et.\" 🍂\n\nGünlük antrenman yapalım!</string>
+    <string name="zm_response_focus_negative_0">Odaklanmakta zorlanmak çok yaygın. Modern dünya dikkati parçalıyor. Ama Zen der ki:\n\n\"Zihnin dalgaları dindiğinde, gerçeklik ortaya çıkar.\" 🌊\n\nÖnce zihnini sakinleştir, sonra Pomodoro ile başla. Deneyelim mi?</string>
+    <string name="zm_response_focus_negative_1">Dağınık hissetmek normal. Ama hatırla: Odaklanma bir kas gibidir, güçlendirilebilir.\n\n\"Sabır, bilgeliğin meyveleridir.\" 🌳\n\n2 dakika nefes + 25 dakika odaklanma = Harika sonuçlar!</string>
+    <string name="zm_response_focus_negative_2">Dikkat dağınıklığı günümüzün en büyük sorunu. Çözüm basittir:\n\n\"Basit ol, sadece ol.\" 🪷\n\nPomodoro tekniği! Göstereyim mi?</string>
+    <string name="zm_response_sleep_positive_0">İyi bir uyku rutini oluşturmak istemen harika!\n\n\"Aydınlanma, uzaktaki bir hedef değil, her adımdaki farkındalıktır.\" 👣\n\n4-7-8 tekniği ile başlayalım.</string>
+    <string name="zm_response_sleep_positive_1">Uyku hijyeni için proaktif adım atmak mükemmel!\n\n\"Her an meditasyon fırsatıdır.\" 🧘\n\nNefes egzersizlerine bakalım.</string>
+    <string name="zm_response_sleep_positive_2">Süper! Düzenli uyku rutini = Daha enerjik günler.\n\n\"Şimdiki an, sahip olduğun tek andır. Onu kucakla.\" 🌸\n\nHadi başlayalım!</string>
+    <string name="zm_response_sleep_neutral_0">Kaliteli uyku için zihinsel gevşeme şart. Zen öğretir:\n\n\"Barış dışarıda aranmaz, içeride keşfedilir.\" 🕊️\n\n4-7-8 nefes tekniği bunun için tasarlandı. Göstereyim mi?</string>
+    <string name="zm_response_sleep_neutral_1">Uyku öncesi rutini çok önemli. Her gece aynı ritüel zihnini hazırlar.\n\n\"Nefes, beden ve zihin arasındaki köprüdür.\" 🌉\n\n5-10 dakika nefes egzersizi ile uyku kalitenizi artırabilirsiniz.</string>
+    <string name="zm_response_sleep_neutral_2">Derin bir uyku için beden ve zihnin gevşemesi gerekir.\n\n\"Su akıştır, rüzgar esintir, akış ritmini bulmaktır.\" 🌊\n\nBox Breathing güzel bir başlangıç!</string>
+    <string name="zm_response_sleep_negative_0">Uyku öncesi sevilen bir teknik: 4-7-8 nefes egzersizi. Beden ve zihin uyum içinde olmalı.\n\n\"Sessizlik, tüm cevapları içerir.\" 🤫\n\nBirkaç dakikalık yavaş ve düzenli nefes, bedenini dinlenmeye hazırlayabilir.</string>
+    <string name="zm_response_sleep_negative_1">Uykusuzluk zor bir durum. Ama unutma:\n\n\"Zihin sakinleştiğinde, ruhun güzelliği parlar.\" ✨\n\n4-7-8 tekniği sakinleşmene yardımcı olabilir. Denemeye hazır mısın?</string>
+    <string name="zm_response_sleep_negative_2">Zihnini yatıştırmak için derin nefes alma egzersizi yapalım.\n\n\"Hayat şimdi yaşanır, dün değil, yarın değil.\" 🌅\n\nVücudun dinlenmeye hazır hale gelecek.</string>
+    <string name="zm_response_breathing_positive_0">Harika seçim! Nefes egzersizleri zihin-beden bağlantısını güçlendirir.\n\n\"Zihin sakinleştiğinde, ruhun güzelliği parlar.\" ✨\n\nHadi başlayalım!</string>
+    <string name="zm_response_breathing_positive_1">Süper! Düzenli nefes pratiği hayat kalitesini artırır.\n\n\"Tam burada, tam şimdi - sonsuzluk bu anda gizli.\" ⏰\n\nHangi tekniği deneyelim?</string>
+    <string name="zm_response_breathing_positive_2">Mükemmel! Nefes farkındalığı mindfulness\'ın kalbidir.\n\n\"Her an meditasyon fırsatıdır.\" 🧘\n\nİlk adımı atalım!</string>
+    <string name="zm_response_breathing_neutral_0">Nefes egzersizlerimizde Box Breathing, 4-7-8 ve Calming Breath gibi teknikler var.\n\n\"Gel, gör, kabul et. Bu Zen\'in yoludur.\" 🛤️\n\nHangisini görmek istersin?</string>
+    <string name="zm_response_breathing_neutral_1">Nefes kontrolü meditasyonun temelidir. Eski Zen ustalarının ilk dersi:\n\n\"Nefes, beden ve zihin arasındaki köprüdür.\" 🌉\n\nHangi teknikle başlamak istersin?</string>
+    <string name="zm_response_breathing_neutral_2">Farklı nefes teknikleri farklı amaçlara hizmet eder.\n\n\"Yolculuk varış noktasından daha önemlidir.\" 🗺️\n\nSana uygun olanı bulalım!</string>
+    <string name="zm_response_breathing_negative_0">Nefes almakta zorlanıyorsan, önce rahat bir pozisyon bul. Hiçbir acele yok.\n\n\"Sabır, bilgeliğin meyveleridir.\" 🌳\n\nBox Breathing ile başlamak ister misin?</string>
+    <string name="zm_response_breathing_negative_1">Derin nefes alma zihin ve bedeni sakinleştirir. Zen der ki:\n\n\"Her nefes, yeni bir başlangıçtır.\" 🫁\n\nBeraber yavaşça başlayalım.</string>
+    <string name="zm_response_breathing_negative_2">Nefes egzersizleri çok etkili. 3-4 dakika bile fark yaratıyor.\n\n\"Basit ol, sadece ol.\" 🪷\n\nDenemek ister misin?</string>
+    <string name="zm_response_motivation_positive_0">İşte bu enerji! Şimdi bu motivasyonu bir egzersize kanalize edelim!\n\n\"Boş bir zihin, her şeyin mümkün olduğu yerdir.\" 🌌\n\nHadi başlayalım!</string>
+    <string name="zm_response_motivation_positive_1">Harika! Motivasyonlu anları değerlendirmek çok önemli.\n\n\"Şimdiki an, sahip olduğun tek andır. Onu kucakla.\" 🌸\n\nHadi başlayalım!</string>
+    <string name="zm_response_motivation_positive_2">Süper enerji! Bu momentum ile neler başarabileceğini görelim!\n\n\"Gözlemci ol, yargılayıcı değil.\" 👁️\n\nİleri!</string>
+    <string name="zm_response_motivation_neutral_0">Motivasyon dalgalıdır, önemli olan süreklilik.\n\n\"Sabır, bilgeliğin meyveleridir.\" 🌳\n\nKüçük kazanımlar büyük değişim yaratır. Başlayalım mı?</string>
+    <string name="zm_response_motivation_neutral_1">En zor kısım başlamaktır. Bir kez başladığında momentum gelir.\n\n\"Gel, gör, kabul et. Bu Zen\'in yoludur.\" 🛤️\n\n5 dakikalık bir egzersiz ile deneyelim mi?</string>
+    <string name="zm_response_motivation_neutral_2">Zen bahçen ve rozetlerin sana ilham verebilir. Unutma:\n\n\"Yolculuk varış noktasından daha önemlidir.\" 🗺️\n\nİlerlemenize bakmak ister misin?</string>
+    <string name="zm_response_motivation_negative_0">Motivasyon eksikliği yaşamak insani. Zen öğretir:\n\n\"Düşüşte bile zarafet vardır. Kalk ve devam et.\" 🍂\n\nKüçük adımlar atmak çok etkili. 2 dakikalık bir egzersiz ile başlamaya ne dersin?</string>
+    <string name="zm_response_motivation_negative_1">İlham bulmak zor olabilir. Ama bazen sadece başlamak yeterli.\n\n\"Aydınlanma, uzaktaki bir hedef değil, her adımdaki farkındalıktır.\" 👣\n\nBeraber küçük bir adım atalım mı?</string>
+    <string name="zm_response_motivation_negative_2">Tembellik hissi normaldir. Unutma:\n\n\"Hayat şimdi yaşanır, dün değil, yarın değil.\" 🌅\n\nZen bahçene bakmak veya kısa bir meditasyon seni motive edebilir. Hangisi?</string>
+    <string name="zm_response_meditation_positive_0">Harika karar! Meditasyon öğrenmek en güzel hediyelerden biri.\n\n\"Şimdiki an, sahip olduğun tek andır. Onu kucakla.\" 🌸\n\nHadi ilk adımı atalım!</string>
+    <string name="zm_response_meditation_positive_1">Mükemmel! Meditasyon pratiği zihinsel netlik getirir.\n\n\"Sessizlik, tüm cevapları içerir.\" 🤫\n\nİlk egzersizimizi görelim!</string>
+    <string name="zm_response_meditation_positive_2">Süper! Meditasyon öğrenmeye istekli olmak başarının yarısı.\n\n\"Her an meditasyon fırsatıdır.\" 🧘\n\nBaşlıyoruz!</string>
+    <string name="zm_response_meditation_neutral_0">Meditasyon nefes farkındalığı ile başlar. Zen öğretir:\n\n\"Nefes, beden ve zihin arasındaki köprüdür.\" 🌉\n\nAdım adım öğreneceğiz. İlk egzersizi görmek ister misin?</string>
+    <string name="zm_response_meditation_neutral_1">Mindfulness pratiği hayatı değiştirir. Binlerce yıllık bilgelik:\n\n\"Zihin sakinleştiğinde, ruhun güzelliği parlar.\" ✨\n\nBaşlangıç seviyesi egzersizlerimiz tam sana göre. Bakalım mı?</string>
+    <string name="zm_response_meditation_neutral_2">Meditasyon öğrenmek yolculuktur. Her gün biraz pratik = Büyük gelişim.\n\n\"Aydınlanma, uzaktaki bir hedef değil, her adımdaki farkındalıktır.\" 👣\n\nBaşlayalım mı?</string>
+    <string name="zm_response_meditation_negative_0">Meditasyon öğrenmek göz korkutucu gelebilir, ama Zen der ki:\n\n\"Basit ol, sadece ol.\" 🪷\n\nAslında çok basit. 2 dakikalık bir deneme ile başlamak ister misin?</string>
+    <string name="zm_response_meditation_negative_1">Herkes meditasyon yapabilir, pratik gerektirir. Unutma:\n\n\"Düşüşte bile zarafet vardır. Kalk ve devam et.\" 🍂\n\nBasit nefes odaklı bir egzersiz ile başlayalım mı?</string>
+    <string name="zm_response_meditation_negative_2">Meditasyonun \'yanlış\' yapılma şekli yoktur. Rahat ol ve deneyelim.\n\n\"Gözlemci ol, yargılayıcı değil.\" 👁️\n\nBaşlamaya hazır mısın?</string>
+    <string name="zm_response_progress_positive_0">Harika! İlerleme takibi seni daha da motive edecek.\n\n\"Şimdiki an, sahip olduğun tek andır. Onu kucakla.\" 🌸\n\nRozetlerine ve Zen bahçene bakalım!</string>
+    <string name="zm_response_progress_positive_1">Süper! Başarılarını görmek çok keyifli. Hatırla:\n\n\"Tam burada, tam şimdi - sonsuzluk bu anda gizli.\" ⏰\n\nİstatistiklerin ve rozetlerin burada!</string>
+    <string name="zm_response_progress_positive_2">Mükemmel! Kendini takip etmek başarıyı artırır.\n\n\"Boş bir zihin, her şeyin mümkün olduğu yerdir.\" 🌌\n\nHadi ilerlemenize bakalım!</string>
+    <string name="zm_response_progress_neutral_0">İstatistiklerini görmek motivasyon artırıcı. Her sayı, bir adım:\n\n\"Aydınlanma, uzaktaki bir hedef değil, her adımdaki farkındalıktır.\" 👣\n\nToplam süren, serin ve rozetlerin burada!</string>
+    <string name="zm_response_progress_neutral_1">Gelişimini takip etmek önemli. Zen bize öğretir:\n\n\"Zihnin dalgaları dindiğinde, gerçeklik ortaya çıkar.\" 🌊\n\nZen bahçene ve rozetlerine bakmaya ne dersin?</string>
+    <string name="zm_response_progress_neutral_2">İlerleme raporunu görmek ister misin? Her rakam bir başarı:\n\n\"Düşüşte bile zarafet vardır. Kalk ve devam et.\" 🍂\n\nToplam seans, dakika ve başarıların burada!</string>
+    <string name="zm_response_progress_negative_0">İlerleme görmek zaman alır, ama sen harika gidiyorsun! Zen der ki:\n\n\"Sabır, bilgeliğin meyveleridir.\" 🌳\n\nİstatistiklerini görmek ister misin?</string>
+    <string name="zm_response_progress_negative_1">Her küçük adım önemli. Zen bahçen ve rozetlerin gelişimini gösteriyor.\n\n\"Yolculuk varış noktasından daha önemlidir.\" 🗺️\n\nBakalım mı?</string>
+    <string name="zm_response_progress_negative_2">Kendini karşılaştırma, kendi yolculuğuna odaklan.\n\n\"Gözlemci ol, yargılayıcı değil.\" 👁️\n\nİlerlemen muhtemelen düşündüğünden iyi!</string>
+    <string name="zm_response_general_positive_0">Harika bir enerji! Bugün ne yapmak istersin?\n\n\"Şimdiki an, sahip olduğun tek andır. Onu kucakla.\" 🌸\n\nMeditasyon, odaklanma egzersizi veya ilerleme kontrolü?</string>
+    <string name="zm_response_general_positive_1">Güzel bir gün gibi görünüyor! Hangi konuda destek istiyorsun?\n\n\"Hayat şimdi yaşanır, dün değil, yarın değil.\" 🌅</string>
+    <string name="zm_response_general_positive_2">Mükemmel! Sana nasıl yardımcı olabilirim?\n\n\"Boş bir zihin, her şeyin mümkün olduğu yerdir.\" 🌌\n\nNefes, odaklanma, uyku veya başka?</string>
+    <string name="zm_response_general_neutral_0">Merhaba! Sana bugün nasıl yardımcı olabilirim?\n\n\"Gel, gör, kabul et. Bu Zen\'in yoludur.\" 🛤️\n\nStres, uyku, odaklanma veya başka bir konuda mı destek istiyorsun?</string>
+    <string name="zm_response_general_neutral_1">Anlıyorum. Meditasyon, nefes egzersizleri, Pomodoro veya ilerleme takibi konusunda yardımcı olabilirim.\n\n\"Her an meditasyon fırsatıdır.\" 🧘\n\nHangi alan ilgini çekiyor?</string>
+    <string name="zm_response_general_neutral_2">Senin için buradayım. Zen yolculuğunda ne konuda rehberlik istiyorsun?\n\n\"Nefes, beden ve zihin arasındaki köprüdür.\" 🌉</string>
+    <string name="zm_response_general_negative_0">Üzgün görünüyorsun. Sana nasıl yardımcı olabilirim?\n\n\"Barış dışarıda aranmaz, içeride keşfedilir.\" 🕊️\n\nNefes egzersizi, meditasyon veya sadece konuşmak ister misin?</string>
+    <string name="zm_response_general_negative_1">Anlıyorum. Biraz rahatlama egzersizi yapmak ister misin?\n\n\"Zihin sakinleştiğinde, ruhun güzelliği parlar.\" ✨\n\nBeraber bir şeyler bulalım.</string>
+    <string name="zm_response_general_negative_2">Zor zamanlar herkesin başına gelir. Unutma:\n\n\"Her nefes, yeni bir başlangıçtır.\" 🫁\n\nNasıl destek olabilirim?</string>
+
+    <!-- Fallback -->
+    <string name="zm_response_fallback">Anlıyorum. Sana nasıl yardımcı olabilirim? 🧘</string>
+
+    <!-- Zen quotes (fallback replies) -->
+    <string name="zm_quote_0">\"Su akıştır, rüzgar esintir, akış ritmini bulmaktır.\" 🌊</string>
+    <string name="zm_quote_1">\"Şimdiki an, sahip olduğun tek andır. Onu kucakla.\" 🌸</string>
+    <string name="zm_quote_2">\"Zihin sakinleştiğinde, ruhun güzelliği parlar.\" ✨</string>
+    <string name="zm_quote_3">\"Her nefes, yeni bir başlangıçtır.\" 🫁</string>
+    <string name="zm_quote_4">\"Sessizlik, tüm cevapları içerir.\" 🤫</string>
+    <string name="zm_quote_5">\"Aydınlanma, uzaktaki bir hedef değil, her adımdaki farkındalıktır.\" 👣</string>
+    <string name="zm_quote_6">\"Düşünce bulutları gelir ve geçer. Sen gökyüzüsün.\" ☁️</string>
+    <string name="zm_quote_7">\"Tam burada, tam şimdi - sonsuzluk bu anda gizli.\" ⏰</string>
+    <string name="zm_quote_8">\"Boş bir zihin, her şeyin mümkün olduğu yerdir.\" 🌌</string>
+    <string name="zm_quote_9">\"Barış dışarıda aranmaz, içeride keşfedilir.\" 🕊️</string>
+    <string name="zm_quote_10">\"Nefes, beden ve zihin arasındaki köprüdür.\" 🌉</string>
+    <string name="zm_quote_11">\"Gel, gör, kabul et. Bu Zen\'in yoludur.\" 🛤️</string>
+    <string name="zm_quote_12">\"Düşüşte bile zarafet vardır. Kalk ve devam et.\" 🍂</string>
+    <string name="zm_quote_13">\"Sabır, bilgeliğin meyveleridir.\" 🌳</string>
+    <string name="zm_quote_14">\"Her an meditasyon fırsatıdır.\" 🧘</string>
+    <string name="zm_quote_15">\"Zihnin dalgaları dindiğinde, gerçeklik ortaya çıkar.\" 🌊</string>
+    <string name="zm_quote_16">\"Yolculuk varış noktasından daha önemlidir.\" 🗺️</string>
+    <string name="zm_quote_17">\"Gözlemci ol, yargılayıcı değil.\" 👁️</string>
+    <string name="zm_quote_18">\"Hayat şimdi yaşanır, dün değil, yarın değil.\" 🌅</string>
+    <string name="zm_quote_19">\"Basit ol, sadece ol.\" 🪷</string>
+</resources>

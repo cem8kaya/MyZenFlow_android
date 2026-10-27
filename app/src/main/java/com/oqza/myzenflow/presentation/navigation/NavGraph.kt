@@ -17,7 +17,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.oqza.myzenflow.presentation.screens.BreathingScreen
 import com.oqza.myzenflow.presentation.screens.CalendarScreen
 import com.oqza.myzenflow.presentation.screens.FocusScreen
@@ -26,6 +28,8 @@ import com.oqza.myzenflow.presentation.screens.OnboardingScreen
 import com.oqza.myzenflow.presentation.screens.ProfileScreen
 import com.oqza.myzenflow.presentation.screens.SettingsScreen
 import com.oqza.myzenflow.presentation.screens.ZenGardenScreen
+import com.oqza.myzenflow.presentation.screens.ZenMasterScreen
+import com.oqza.myzenflow.presentation.theme.LocalPremiumUnlocked
 
 @Composable
 fun NavGraph(
@@ -96,10 +100,27 @@ fun NavGraph(
             )
         }
 
-        composable(route = Screen.Breathing.route) {
+        composable(
+            route = Screen.Breathing.pattern,
+            arguments = listOf(
+                navArgument(Screen.Breathing.ARG_EXERCISE) {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                }
+            )
+        ) {
             BreathingScreen(
                 onNavigateBack = { navController.goBackOrHome() },
                 onOpenPaywall = { navController.navigateTo(Screen.Paywall.route) }
+            )
+        }
+
+        composable(route = Screen.ZenMaster.route) {
+            val premiumUnlocked = LocalPremiumUnlocked.current
+            ZenMasterScreen(
+                onNavigateBack = { navController.goBackOrHome() },
+                onAction = { action -> navController.navigateTo(action.toRoute(premiumUnlocked)) }
             )
         }
 

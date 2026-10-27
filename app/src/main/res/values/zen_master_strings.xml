@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <!-- Zen Master chat. Shipped for en + tr first; other locales fall back to English. -->
+
+    <!-- UI -->
+    <string name="zm_title">Zen Master</string>
+    <string name="zm_home_card_title">Ask the Zen Master</string>
+    <string name="zm_home_card_subtitle">A calm answer and a practice to match</string>
+    <string name="zm_subtitle">Your guide on the mindfulness journey</string>
+    <string name="zm_status_ready">Here for you</string>
+    <string name="zm_sender_you">You</string>
+    <string name="zm_status_typing">Typing…</string>
+    <string name="zm_input_placeholder">Ask something…</string>
+    <string name="zm_suggested_header">Pick a question to get started:</string>
+    <string name="zm_send">Send</string>
+    <string name="zm_clear_history">Clear conversation</string>
+    <string name="zm_clear_title">Clear history</string>
+    <string name="zm_clear_message">The whole conversation will be deleted. Are you sure?</string>
+    <string name="zm_clear_confirm">Clear</string>
+    <string name="zm_cancel">Cancel</string>
+    <string name="zm_disclaimer">Zen Master is a mindfulness companion. It is not a medical or mental health service.</string>
+    <string name="zm_prompt_0">How do I start meditating?</string>
+    <string name="zm_prompt_1">I\'m mentally tired, help me</string>
+    <string name="zm_prompt_2">How can I improve my focus?</string>
+    <string name="zm_prompt_3">I can\'t sleep well at night</string>
+    <string name="zm_prompt_4">I need motivation today</string>
+    <string name="zm_action_breathing">Start breathing exercise</string>
+    <string name="zm_action_478">4-7-8 Technique</string>
+    <string name="zm_action_meditation">Learn meditation</string>
+    <string name="zm_action_focus">Start Pomodoro</string>
+    <string name="zm_action_garden">See your Zen garden</string>
+    <string name="zm_action_progress">See your progress</string>
+    <string name="zm_crisis_reply">Thank you for telling me. What you\'re going through sounds really heavy, and you don\'t have to face it alone.\n\nIf you might act on these thoughts or you are in immediate danger, please contact your local emergency number right now, or reach out to someone you trust. You can find a free helpline in your country at findahelpline.com.\n\nI\'m a mindfulness companion, not a crisis service, so I can\'t give you the support you deserve right now. A trained person can.</string>
+    <string name="zm_personalization_streak">🔥 By the way, your %1$d-day streak is going strong! Great discipline.</string>
+    <string name="zm_personalization_milestone">🎉 You\'ve reached %1$d minutes! That\'s a wonderful achievement!</string>
+
+    <!-- Responses (intent x sentiment x 3 variants) -->
+    <string name="zm_response_stress_positive_0">Great! You\'re ready to deal with your stress. This awareness is a big step.\n\n\"Enlightenment is not a distant goal, but awareness in every step.\" 👣\n\nWould you like to see our breathing exercises?</string>
+    <string name="zm_response_stress_positive_1">A proactive approach is excellent! Zen teaches us: be prepared, but not anxious.\n\n\"The present moment is the only moment you have. Embrace it.\" 🌸\n\nWould you like to try Box Breathing or the 4-7-8 technique?</string>
+    <string name="zm_response_stress_positive_2">Awesome! In stress management, the first step is awareness, the second is action.\n\n\"Come, see, accept. This is the way of Zen.\" 🛤️\n\nLet\'s practice now!</string>
+    <string name="zm_response_stress_neutral_0">Regular breathing exercises work well for managing stress. Modern practice and Zen agree on this.\n\n\"Breath is the bridge between body and mind.\" 🌉\n\nWhich technique would you like to try?</string>
+    <string name="zm_response_stress_neutral_1">There are many ways to cope with stress. Zen philosophy teaches us: instead of resisting, let go into the flow.\n\n\"Peace is not sought outside, it is discovered within.\" 🕊️\n\nLet\'s find the right technique for you.</string>
+    <string name="zm_response_stress_neutral_2">Regular breathing exercises can help ease tension. And Zen tells us:\n\n\"When the mind is calm, the beauty of the soul shines.\" ✨\n\nReady to start?</string>
+    <string name="zm_response_stress_negative_0">Feeling stressed is completely normal. Even if your mind feels like a storm, you can return to harbor with your breath.\n\n\"Water flows, wind blows; the way is to find your rhythm in the flow.\" 🌊\n\nWould you like to start with a Box Breathing exercise?</string>
+    <string name="zm_response_stress_negative_1">I understand, you\'re having a hard day. Remember: you are not your thoughts, you are the one who observes them.\n\n\"Clouds of thought come and go. You are the sky.\" ☁️\n\nShall we take a deep breath together?</string>
+    <string name="zm_response_stress_negative_2">Stress can build up into mental fatigue over time. But every breath is a new beginning.\n\n\"Every breath is a new beginning.\" 🫁\n\nHow about relaxing with a 5-minute breathing exercise?</string>
+    <string name="zm_response_focus_positive_0">Great energy! Now channel it into focus!\n\n\"An empty mind is where everything is possible.\" 🌌\n\nStarting a Pomodoro!</string>
+    <string name="zm_response_focus_positive_1">Your motivation is high! This is exactly the right time.\n\n\"Right here, right now – eternity is hidden in this moment.\" ⏰\n\nLet\'s go!</string>
+    <string name="zm_response_focus_positive_2">Awesome! When the mind is clear, everything is possible.\n\n\"Be an observer, not a judge.\" 👁️\n\nGood focus + regular breaks = maximum efficiency. Let\'s start!</string>
+    <string name="zm_response_focus_neutral_0">For focus, the Pomodoro technique is where science meets Zen:\n\n\"Every moment is an opportunity to meditate.\" 🧘\n\n25 minutes of deep concentration + 5 minutes of rest. Shall we try?</string>
+    <string name="zm_response_focus_neutral_1">The secret of productive work: short intervals of intense focus.\n\n\"The journey matters more than the destination.\" 🗺️\n\nReady to get started with Pomodoro?</string>
+    <string name="zm_response_focus_neutral_2">Concentration is like a muscle, it needs exercise. Every Pomodoro is a workout:\n\n\"There is grace even in falling. Get up and keep going.\" 🍂\n\nLet\'s train every day!</string>
+    <string name="zm_response_focus_negative_0">Struggling to focus is very common. The modern world fragments our attention. But Zen says:\n\n\"When the waves of the mind settle, reality appears.\" 🌊\n\nFirst calm your mind, then start a Pomodoro. Shall we try?</string>
+    <string name="zm_response_focus_negative_1">Feeling scattered is normal. But remember: focus is like a muscle, it can be strengthened.\n\n\"Patience is the fruit of wisdom.\" 🌳\n\n2 minutes of breathing + 25 minutes of focus = great results!</string>
+    <string name="zm_response_focus_negative_2">Distraction is one of the biggest problems of our time. The solution is simple:\n\n\"Be simple, just be.\" 🪷\n\nThe Pomodoro technique! Shall I show you?</string>
+    <string name="zm_response_sleep_positive_0">It\'s great that you want to build a good sleep routine!\n\n\"Enlightenment is not a distant goal, but awareness in every step.\" 👣\n\nLet\'s start with the 4-7-8 technique.</string>
+    <string name="zm_response_sleep_positive_1">Taking a proactive step for your sleep hygiene is excellent!\n\n\"Every moment is an opportunity to meditate.\" 🧘\n\nLet\'s look at the breathing exercises.</string>
+    <string name="zm_response_sleep_positive_2">Awesome! A regular sleep routine = more energetic days.\n\n\"The present moment is the only moment you have. Embrace it.\" 🌸\n\nLet\'s begin!</string>
+    <string name="zm_response_sleep_neutral_0">Mental relaxation is essential for quality sleep. Zen teaches:\n\n\"Peace is not sought outside, it is discovered within.\" 🕊️\n\nThe 4-7-8 breathing technique was designed for this. Shall I show you?</string>
+    <string name="zm_response_sleep_neutral_1">A bedtime routine is very important. The same ritual every night prepares your mind.\n\n\"Breath is the bridge between body and mind.\" 🌉\n\n5-10 minutes of breathing exercises can improve your sleep quality.</string>
+    <string name="zm_response_sleep_neutral_2">For deep sleep, the body and mind need to unwind.\n\n\"Water flows, wind blows; the way is to find your rhythm in the flow.\" 🌊\n\nBox Breathing is a good place to start!</string>
+    <string name="zm_response_sleep_negative_0">A popular technique before bed: the 4-7-8 breathing exercise. Body and mind should be in harmony.\n\n\"Silence contains all the answers.\" 🤫\n\nA few minutes of slow, steady breathing can help your body get ready to rest.</string>
+    <string name="zm_response_sleep_negative_1">Sleeplessness is hard. But remember:\n\n\"When the mind is calm, the beauty of the soul shines.\" ✨\n\nThe 4-7-8 technique can help you settle down. Ready to try?</string>
+    <string name="zm_response_sleep_negative_2">Let\'s do a deep breathing exercise to settle your mind.\n\n\"Life is lived now, not yesterday, not tomorrow.\" 🌅\n\nYour body will become ready to rest.</string>
+    <string name="zm_response_breathing_positive_0">Great choice! Breathing exercises strengthen the mind-body connection.\n\n\"When the mind is calm, the beauty of the soul shines.\" ✨\n\nLet\'s begin!</string>
+    <string name="zm_response_breathing_positive_1">Awesome! A regular breathing practice improves quality of life.\n\n\"Right here, right now – eternity is hidden in this moment.\" ⏰\n\nWhich technique shall we try?</string>
+    <string name="zm_response_breathing_positive_2">Wonderful! Breath awareness is the heart of mindfulness.\n\n\"Every moment is an opportunity to meditate.\" 🧘\n\nLet\'s take the first step!</string>
+    <string name="zm_response_breathing_neutral_0">Our breathing exercises include Box Breathing, 4-7-8 and Calming Breath, among others.\n\n\"Come, see, accept. This is the way of Zen.\" 🛤️\n\nWhich one would you like to see?</string>
+    <string name="zm_response_breathing_neutral_1">Breath control is the foundation of meditation. The first lesson of the old Zen masters:\n\n\"Breath is the bridge between body and mind.\" 🌉\n\nWhich technique would you like to start with?</string>
+    <string name="zm_response_breathing_neutral_2">Different breathing techniques serve different purposes.\n\n\"The journey matters more than the destination.\" 🗺️\n\nLet\'s find the one that suits you!</string>
+    <string name="zm_response_breathing_negative_0">If breathing feels difficult, first find a comfortable position. There\'s no rush.\n\n\"Patience is the fruit of wisdom.\" 🌳\n\nWould you like to start with Box Breathing?</string>
+    <string name="zm_response_breathing_negative_1">Deep breathing calms the mind and body. Zen says:\n\n\"Every breath is a new beginning.\" 🫁\n\nLet\'s begin slowly, together.</string>
+    <string name="zm_response_breathing_negative_2">Breathing exercises can be very effective. Even 3-4 minutes can make a difference.\n\n\"Be simple, just be.\" 🪷\n\nWould you like to try?</string>
+    <string name="zm_response_motivation_positive_0">That\'s the energy! Let\'s channel this motivation into an exercise!\n\n\"An empty mind is where everything is possible.\" 🌌\n\nLet\'s begin!</string>
+    <string name="zm_response_motivation_positive_1">Great! Making the most of motivated moments is so important.\n\n\"The present moment is the only moment you have. Embrace it.\" 🌸\n\nLet\'s begin!</string>
+    <string name="zm_response_motivation_positive_2">Super energy! Let\'s see what you can achieve with this momentum!\n\n\"Be an observer, not a judge.\" 👁️\n\nOnward!</string>
+    <string name="zm_response_motivation_neutral_0">Motivation comes in waves, what matters is consistency.\n\n\"Patience is the fruit of wisdom.\" 🌳\n\nSmall wins create big change. Shall we start?</string>
+    <string name="zm_response_motivation_neutral_1">The hardest part is starting. Once you begin, momentum follows.\n\n\"Come, see, accept. This is the way of Zen.\" 🛤️\n\nShall we try a 5-minute exercise?</string>
+    <string name="zm_response_motivation_neutral_2">Your Zen garden and badges can inspire you. Remember:\n\n\"The journey matters more than the destination.\" 🗺️\n\nWould you like to look at your progress?</string>
+    <string name="zm_response_motivation_negative_0">Lacking motivation is human. Zen teaches:\n\n\"There is grace even in falling. Get up and keep going.\" 🍂\n\nSmall steps are very effective. How about starting with a 2-minute exercise?</string>
+    <string name="zm_response_motivation_negative_1">Finding inspiration can be hard. But sometimes simply starting is enough.\n\n\"Enlightenment is not a distant goal, but awareness in every step.\" 👣\n\nShall we take a small step together?</string>
+    <string name="zm_response_motivation_negative_2">Feeling lazy is normal. Remember:\n\n\"Life is lived now, not yesterday, not tomorrow.\" 🌅\n\nLooking at your Zen garden or a short meditation might motivate you. Which one?</string>
+    <string name="zm_response_meditation_positive_0">Great decision! Learning to meditate is one of the best gifts you can give yourself.\n\n\"The present moment is the only moment you have. Embrace it.\" 🌸\n\nLet\'s take the first step!</string>
+    <string name="zm_response_meditation_positive_1">Wonderful! A meditation practice brings mental clarity.\n\n\"Silence contains all the answers.\" 🤫\n\nLet\'s see our first exercise!</string>
+    <string name="zm_response_meditation_positive_2">Awesome! Being eager to learn meditation is half the success.\n\n\"Every moment is an opportunity to meditate.\" 🧘\n\nLet\'s begin!</string>
+    <string name="zm_response_meditation_neutral_0">Meditation begins with breath awareness. Zen teaches:\n\n\"Breath is the bridge between body and mind.\" 🌉\n\nWe\'ll learn step by step. Would you like to see the first exercise?</string>
+    <string name="zm_response_meditation_neutral_1">A mindfulness practice can change your life. Wisdom thousands of years old:\n\n\"When the mind is calm, the beauty of the soul shines.\" ✨\n\nOur beginner exercises are just right for you. Shall we take a look?</string>
+    <string name="zm_response_meditation_neutral_2">Learning to meditate is a journey. A little practice every day = big progress.\n\n\"Enlightenment is not a distant goal, but awareness in every step.\" 👣\n\nShall we begin?</string>
+    <string name="zm_response_meditation_negative_0">Learning to meditate can feel intimidating, but Zen says:\n\n\"Be simple, just be.\" 🪷\n\nIt\'s actually very simple. Would you like to start with a 2-minute try?</string>
+    <string name="zm_response_meditation_negative_1">Anyone can meditate, it just takes practice. Remember:\n\n\"There is grace even in falling. Get up and keep going.\" 🍂\n\nShall we start with a simple breath-focused exercise?</string>
+    <string name="zm_response_meditation_negative_2">There is no \'wrong\' way to meditate. Relax and let\'s give it a try.\n\n\"Be an observer, not a judge.\" 👁️\n\nReady to begin?</string>
+    <string name="zm_response_progress_positive_0">Great! Tracking your progress will motivate you even more.\n\n\"The present moment is the only moment you have. Embrace it.\" 🌸\n\nLet\'s look at your badges and Zen garden!</string>
+    <string name="zm_response_progress_positive_1">Awesome! Seeing your achievements is a joy. Remember:\n\n\"Right here, right now – eternity is hidden in this moment.\" ⏰\n\nYour stats and badges are right here!</string>
+    <string name="zm_response_progress_positive_2">Wonderful! Tracking yourself boosts success.\n\n\"An empty mind is where everything is possible.\" 🌌\n\nLet\'s look at your progress!</string>
+    <string name="zm_response_progress_neutral_0">Seeing your stats is motivating. Every number is a step:\n\n\"Enlightenment is not a distant goal, but awareness in every step.\" 👣\n\nYour total time, streak and badges are right here!</string>
+    <string name="zm_response_progress_neutral_1">Tracking your growth matters. Zen teaches us:\n\n\"When the waves of the mind settle, reality appears.\" 🌊\n\nHow about a look at your Zen garden and badges?</string>
+    <string name="zm_response_progress_neutral_2">Would you like to see your progress report? Every number is an achievement:\n\n\"There is grace even in falling. Get up and keep going.\" 🍂\n\nYour total sessions, minutes and achievements are right here!</string>
+    <string name="zm_response_progress_negative_0">Progress takes time, but you\'re doing great! Zen says:\n\n\"Patience is the fruit of wisdom.\" 🌳\n\nWould you like to see your stats?</string>
+    <string name="zm_response_progress_negative_1">Every small step matters. Your Zen garden and badges show your growth.\n\n\"The journey matters more than the destination.\" 🗺️\n\nShall we take a look?</string>
+    <string name="zm_response_progress_negative_2">Don\'t compare yourself to others, focus on your own journey.\n\n\"Be an observer, not a judge.\" 👁️\n\nYour progress is probably better than you think!</string>
+    <string name="zm_response_general_positive_0">What great energy! What would you like to do today?\n\n\"The present moment is the only moment you have. Embrace it.\" 🌸\n\nMeditation, a focus exercise, or a progress check?</string>
+    <string name="zm_response_general_positive_1">Looks like a lovely day! What would you like support with?\n\n\"Life is lived now, not yesterday, not tomorrow.\" 🌅</string>
+    <string name="zm_response_general_positive_2">Wonderful! How can I help you?\n\n\"An empty mind is where everything is possible.\" 🌌\n\nBreathing, focus, sleep, or something else?</string>
+    <string name="zm_response_general_neutral_0">Hello! How can I help you today?\n\n\"Come, see, accept. This is the way of Zen.\" 🛤️\n\nWould you like support with stress, sleep, focus, or something else?</string>
+    <string name="zm_response_general_neutral_1">I see. I can help with meditation, breathing exercises, Pomodoro or progress tracking.\n\n\"Every moment is an opportunity to meditate.\" 🧘\n\nWhich area interests you?</string>
+    <string name="zm_response_general_neutral_2">I\'m here for you. What would you like guidance on in your Zen journey?\n\n\"Breath is the bridge between body and mind.\" 🌉</string>
+    <string name="zm_response_general_negative_0">You seem down. How can I help you?\n\n\"Peace is not sought outside, it is discovered within.\" 🕊️\n\nA breathing exercise, meditation, or just talking?</string>
+    <string name="zm_response_general_negative_1">I understand. Would you like to do a short relaxation exercise?\n\n\"When the mind is calm, the beauty of the soul shines.\" ✨\n\nLet\'s find something together.</string>
+    <string name="zm_response_general_negative_2">Hard times come to everyone. Remember:\n\n\"Every breath is a new beginning.\" 🫁\n\nHow can I support you?</string>
+
+    <!-- Fallback -->
+    <string name="zm_response_fallback">I understand. How can I help you? 🧘</string>
+
+    <!-- Zen quotes (fallback replies) -->
+    <string name="zm_quote_0">\"Water flows, wind blows; the way is to find your rhythm in the flow.\" 🌊</string>
+    <string name="zm_quote_1">\"The present moment is the only moment you have. Embrace it.\" 🌸</string>
+    <string name="zm_quote_2">\"When the mind is calm, the beauty of the soul shines.\" ✨</string>
+    <string name="zm_quote_3">\"Every breath is a new beginning.\" 🫁</string>
+    <string name="zm_quote_4">\"Silence contains all the answers.\" 🤫</string>
+    <string name="zm_quote_5">\"Enlightenment is not a distant goal, but awareness in every step.\" 👣</string>
+    <string name="zm_quote_6">\"Clouds of thought come and go. You are the sky.\" ☁️</string>
+    <string name="zm_quote_7">\"Right here, right now – eternity is hidden in this moment.\" ⏰</string>
+    <string name="zm_quote_8">\"An empty mind is where everything is possible.\" 🌌</string>
+    <string name="zm_quote_9">\"Peace is not sought outside, it is discovered within.\" 🕊️</string>
+    <string name="zm_quote_10">\"Breath is the bridge between body and mind.\" 🌉</string>
+    <string name="zm_quote_11">\"Come, see, accept. This is the way of Zen.\" 🛤️</string>
+    <string name="zm_quote_12">\"There is grace even in falling. Get up and keep going.\" 🍂</string>
+    <string name="zm_quote_13">\"Patience is the fruit of wisdom.\" 🌳</string>
+    <string name="zm_quote_14">\"Every moment is an opportunity to meditate.\" 🧘</string>
+    <string name="zm_quote_15">\"When the waves of the mind settle, reality appears.\" 🌊</string>
+    <string name="zm_quote_16">\"The journey matters more than the destination.\" 🗺️</string>
+    <string name="zm_quote_17">\"Be an observer, not a judge.\" 👁️</string>
+    <string name="zm_quote_18">\"Life is lived now, not yesterday, not tomorrow.\" 🌅</string>
+    <string name="zm_quote_19">\"Be simple, just be.\" 🪷</string>
+</resources>

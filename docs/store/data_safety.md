@@ -9,7 +9,7 @@ update this form and the privacy policy.
 | Does the app collect or share any of the required user data types? | **No**, data stays on the device. (Declare differently if you add analytics, crash reporting or a server.) |
 | Is all collected data encrypted in transit? | Not applicable (no data leaves the device). |
 | Do you provide a way for users to request data deletion? | Data is local. Uninstalling or "Clear storage" deletes it. State this in the policy. |
-| Data locally stored | Name (optional), practice sessions, mood check-ins, settings, achievements. Android Auto Backup may copy the app data to the user's own Google account (system feature). |
+| Data locally stored | Name (optional), practice sessions, mood check-ins, Zen Master chat history (last 50 messages, deletable in the chat screen), settings, achievements. Android Auto Backup may copy the app data to the user's own Google account (system feature). |
 | Purchases | Handled by Google Play. The app only reads purchase status. |
 | Target audience | 13+ (not designed for children). Do not enroll in Designed for Families. |
 | Ads | None. |
